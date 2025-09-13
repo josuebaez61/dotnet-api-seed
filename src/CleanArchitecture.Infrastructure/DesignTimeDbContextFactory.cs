@@ -11,6 +11,7 @@ namespace CleanArchitecture.Infrastructure.Data
       var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
       // Build configuration from appsettings files
+      // This replicates the same configuration logic as Program.cs
       var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
 
       var configuration = new ConfigurationBuilder()
@@ -20,6 +21,7 @@ namespace CleanArchitecture.Infrastructure.Data
           .AddEnvironmentVariables()
           .Build();
 
+      // Get connection string using the same key as Program.cs
       var connectionString = configuration.GetConnectionString("DefaultConnection");
       optionsBuilder.UseNpgsql(connectionString);
 
