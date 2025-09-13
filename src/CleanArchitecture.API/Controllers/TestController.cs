@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CleanArchitecture.API.Controllers
 {
   [ApiController]
-  [Route("api/[controller]")]
+  [Route("[controller]")]
   [Authorize] // Proteger todo el controlador con autenticación
   public class TestController : ControllerBase
   {

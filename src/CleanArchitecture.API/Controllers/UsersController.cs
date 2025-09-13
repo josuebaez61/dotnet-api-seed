@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CleanArchitecture.API.Controllers
 {
   [ApiController]
-  [Route("api/[controller]")]
+  [Route("[controller]")]
   [Authorize]
   public class UsersController : ControllerBase
   {

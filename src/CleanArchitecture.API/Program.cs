@@ -1,4 +1,5 @@
 using System.Text;
+using CleanArchitecture.API.Extensions;
 using CleanArchitecture.API.Middleware;
 using CleanArchitecture.Application;
 using CleanArchitecture.Infrastructure;
@@ -13,7 +14,11 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    // Add global route prefix
+    options.UseGeneralRoutePrefix("api/v1");
+});
 builder.Services.AddEndpointsApiExplorer();
 
 // Configure Swagger with JWT support
