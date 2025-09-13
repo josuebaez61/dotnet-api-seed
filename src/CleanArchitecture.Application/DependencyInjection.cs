@@ -24,6 +24,7 @@ namespace CleanArchitecture.Application
       services.AddScoped<IEmailService, EmailService>();
       services.AddScoped<IPermissionService, PermissionService>();
       services.AddScoped<ILocalizationService, LocalizationService>();
+      services.AddScoped<IPaginationService, PaginationService>();
 
       // Add HttpContextAccessor for localization
       services.AddHttpContextAccessor();

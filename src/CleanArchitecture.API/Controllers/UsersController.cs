@@ -5,6 +5,7 @@ using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Application.Features.Users.Commands.CreateUser;
 using CleanArchitecture.Application.Features.Users.Queries.GetAllUsers;
 using CleanArchitecture.Application.Features.Users.Queries.GetUserById;
+using CleanArchitecture.Application.Features.Users.Queries.GetUsersPaginated;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,15 @@ namespace CleanArchitecture.API.Controllers
     public UsersController(IMediator mediator)
     {
       _mediator = mediator;
+    }
+
+    [HttpGet("paginated")]
+    [Authorize(Policy = "Users.Read")]
+    public async Task<ActionResult<ApiResponse<PaginationResponse<UserDto>>>> GetUsersPaginated([FromQuery] GetUsersPaginatedRequestDto request)
+    {
+      var query = new GetUsersPaginatedQuery { Request = request };
+      var result = await _mediator.Send(query);
+      return Ok(ApiResponse<PaginationResponse<UserDto>>.SuccessResponse(result));
     }
 
     [HttpGet]

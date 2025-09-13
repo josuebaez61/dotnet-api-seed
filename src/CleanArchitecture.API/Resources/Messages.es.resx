@@ -206,4 +206,10 @@
   <data name="Success_TestEmailSent" xml:space="preserve">
     <value>Correo de prueba {0} enviado exitosamente</value>
   </data>
+  <data name="Success_UsersRetrieved" xml:space="preserve">
+    <value>Usuarios obtenidos exitosamente</value>
+  </data>
+  <data name="Error_InvalidPaginationParameters" xml:space="preserve">
+    <value>Parámetros de paginación inválidos</value>
+  </data>
 </root>

@@ -1,4 +1,5 @@
 using System;
+using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Domain.Common.Interfaces;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Infrastructure.Data;
@@ -18,6 +19,9 @@ namespace CleanArchitecture.Infrastructure
       // Database
       services.AddDbContext<ApplicationDbContext>(options =>
           options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+
+      // Register IApplicationDbContext
+      services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
       // Identity - Full configuration with SignInManager
       services.AddIdentity<User, Role>(options =>
