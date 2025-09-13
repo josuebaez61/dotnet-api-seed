@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using CleanArchitecture.Domain.Common.Constants;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
@@ -114,7 +115,7 @@ namespace CleanArchitecture.Infrastructure.Services
         new Permission
         {
           Id = UserReadPermissionId,
-          Name = "Users.Read",
+          Name = PermissionConstants.Users.Read,
           Description = "Read access to users",
           Resource = "Users",
           Action = "Read",
@@ -124,7 +125,7 @@ namespace CleanArchitecture.Infrastructure.Services
         new Permission
         {
           Id = UserWritePermissionId,
-          Name = "Users.Write",
+          Name = PermissionConstants.Users.Write,
           Description = "Write access to users",
           Resource = "Users",
           Action = "Write",
@@ -134,7 +135,7 @@ namespace CleanArchitecture.Infrastructure.Services
         new Permission
         {
           Id = UserDeletePermissionId,
-          Name = "Users.Delete",
+          Name = PermissionConstants.Users.Delete,
           Description = "Delete access to users",
           Resource = "Users",
           Action = "Delete",
@@ -144,7 +145,7 @@ namespace CleanArchitecture.Infrastructure.Services
         new Permission
         {
           Id = RoleReadPermissionId,
-          Name = "Roles.Read",
+          Name = PermissionConstants.Roles.Read,
           Description = "Read access to roles",
           Resource = "Roles",
           Action = "Read",
@@ -154,7 +155,7 @@ namespace CleanArchitecture.Infrastructure.Services
         new Permission
         {
           Id = RoleWritePermissionId,
-          Name = "Roles.Write",
+          Name = PermissionConstants.Roles.Write,
           Description = "Write access to roles",
           Resource = "Roles",
           Action = "Write",
@@ -164,7 +165,7 @@ namespace CleanArchitecture.Infrastructure.Services
         new Permission
         {
           Id = PermissionReadPermissionId,
-          Name = "Permissions.Read",
+          Name = PermissionConstants.Permissions.Read,
           Description = "Read access to permissions",
           Resource = "Permissions",
           Action = "Read",
@@ -174,7 +175,7 @@ namespace CleanArchitecture.Infrastructure.Services
         new Permission
         {
           Id = PermissionWritePermissionId,
-          Name = "Permissions.Write",
+          Name = PermissionConstants.Permissions.Write,
           Description = "Write access to permissions",
           Resource = "Permissions",
           Action = "Write",

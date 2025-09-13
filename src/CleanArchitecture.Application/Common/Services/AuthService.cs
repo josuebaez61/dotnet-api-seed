@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.DTOs;
+using CleanArchitecture.Domain.Common.Constants;
 using CleanArchitecture.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;

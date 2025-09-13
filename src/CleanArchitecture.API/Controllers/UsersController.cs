@@ -6,6 +6,7 @@ using CleanArchitecture.Application.Features.Users.Commands.CreateUser;
 using CleanArchitecture.Application.Features.Users.Queries.GetAllUsers;
 using CleanArchitecture.Application.Features.Users.Queries.GetUserById;
 using CleanArchitecture.Application.Features.Users.Queries.GetUsersPaginated;
+using CleanArchitecture.Domain.Common.Constants;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,7 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpGet("paginated")]
-    [Authorize(Policy = "Users.Read")]
+    [Authorize(Policy = PermissionConstants.Users.Read)]
     public async Task<ActionResult<ApiResponse<PaginationResponse<UserDto>>>> GetUsersPaginated([FromQuery] GetUsersPaginatedRequestDto request)
     {
       var query = new GetUsersPaginatedQuery { Request = request };
@@ -34,7 +35,7 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpGet]
-    [Authorize(Policy = "Users.Read")]
+    [Authorize(Policy = PermissionConstants.Users.Read)]
     public async Task<ActionResult<ApiResponse<List<UserDto>>>> GetAllUsers()
     {
       var query = new GetAllUsersQuery();
@@ -43,7 +44,7 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpGet("{id}")]
-    [Authorize(Policy = "Users.Read")]
+    [Authorize(Policy = PermissionConstants.Users.Read)]
     public async Task<ActionResult<ApiResponse<UserDto>>> GetUserById(Guid id)
     {
       var query = new GetUserByIdQuery { Id = id };
@@ -56,7 +57,7 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpPost]
-    [Authorize(Policy = "Users.Write")]
+    [Authorize(Policy = PermissionConstants.Users.Write)]
     public async Task<ActionResult<ApiResponse<UserDto>>> CreateUser([FromBody] CreateUserDto userDto)
     {
       var command = new CreateUserCommand { User = userDto };

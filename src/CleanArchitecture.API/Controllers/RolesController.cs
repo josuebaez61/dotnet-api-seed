@@ -6,6 +6,7 @@ using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Application.Features.Roles.Commands.CreateRole;
 using CleanArchitecture.Application.Features.Roles.Commands.UpdateRolePermissions;
 using CleanArchitecture.Application.Features.Roles.Queries.GetAllRoles;
+using CleanArchitecture.Domain.Common.Constants;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,7 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpGet]
-    [Authorize(Policy = "Roles.Read")]
+    [Authorize(Policy = PermissionConstants.Roles.Read)]
     public async Task<ActionResult<ApiResponse<List<RoleDto>>>> GetAllRoles()
     {
       try
@@ -41,7 +42,7 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpPost]
-    [Authorize(Policy = "Roles.Write")]
+    [Authorize(Policy = PermissionConstants.Roles.Write)]
     public async Task<ActionResult<ApiResponse<RoleDto>>> CreateRole([FromBody] CreateRoleDto request)
     {
       try
@@ -57,7 +58,7 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpPatch("{roleId}/permissions")]
-    [Authorize(Policy = "Roles.Write")]
+    [Authorize(Policy = PermissionConstants.Roles.Write)]
     public async Task<ActionResult<ApiResponse>> UpdateRolePermissions(
         [FromRoute] Guid roleId,
         [FromBody] UpdateRolePermissionsRequestDto request)

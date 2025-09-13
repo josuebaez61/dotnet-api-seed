@@ -5,6 +5,7 @@ using CleanArchitecture.Application.Common.Models;
 using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Application.Features.Permissions.Commands.CreatePermission;
 using CleanArchitecture.Application.Features.Permissions.Queries.GetAllPermissions;
+using CleanArchitecture.Domain.Common.Constants;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,7 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpGet]
-    [Authorize(Policy = "Permissions.Read")]
+    [Authorize(Policy = PermissionConstants.Permissions.Read)]
     public async Task<ActionResult<ApiResponse<List<PermissionDto>>>> GetAllPermissions()
     {
       try
@@ -40,7 +41,7 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpPost]
-    [Authorize(Policy = "Permissions.Write")]
+    [Authorize(Policy = PermissionConstants.Permissions.Write)]
     public async Task<ActionResult<ApiResponse<PermissionDto>>> CreatePermission([FromBody] CreatePermissionDto request)
     {
       try
