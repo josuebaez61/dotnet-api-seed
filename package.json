@@ -1,0 +1,48 @@
+{
+  "name": "clean-architecture-api",
+  "version": "1.0.0",
+  "description": "Clean Architecture API with .NET Core, PostgreSQL, and Docker",
+  "scripts": {
+    "dev": "dotnet run --project src/CleanArchitecture.API",
+    "build": "dotnet build",
+    "clean": "dotnet clean",
+    "restore": "dotnet restore",
+    "test": "dotnet test",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "docker:restart": "dotnet ef database update --project src/CleanArchitecture.Infrastructure --startup-project src/CleanArchitecture.API",
+    "db:migrate:dev": "dotnet ef database update --project src/CleanArchitecture.Infrastructure --startup-project src/CleanArchitecture.API",
+    "db:migrate:prod": "dotnet ef database update --project src/CleanArchitecture.Infrastructure --startup-project src/CleanArchitecture.API",
+    "db:add-migration": "dotnet ef migrations add --project src/CleanArchitecture.Infrastructure",
+    "db:remove-migration": "dotnet ef migrations remove --project src/CleanArchitecture.Infrastructure",
+    "db:drop": "dotnet ef database drop --project src/CleanArchitecture.Infrastructure --startup-project src/CleanArchitecture.API --force",
+    "db:seed": "dotnet run --project src/CleanArchitecture.API --seed",
+    "setup": "npm run restore && npm run docker:up && sleep 10 && npm run db:migrate",
+    "setup:dev": "npm run restore && npm run docker:up && sleep 10 && npm run db:migrate",
+    "reset": "npm run docker:down && npm run docker:up && sleep 10 && npm run db:migrate",
+    "logs": "docker compose logs -f cleanarch-postgres cleanarch-pgadmin",
+    "pgadmin": "open http://localhost:5050",
+    "swagger": "open https://localhost:7000/swagger",
+    "health": "curl -k https://localhost:7000/health || echo 'API not running'",
+    "format": "dotnet format",
+    "lint": "dotnet format --verify-no-changes",
+    "publish": "dotnet publish src/CleanArchitecture.API -c Release -o ./publish",
+    "start": "npm run dev",
+    "stop": "docker compose down"
+  },
+  "keywords": [
+    "dotnet",
+    "clean-architecture",
+    "postgresql",
+    "docker",
+    "api"
+  ],
+  "author": "Clean Architecture Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "nodemon": "^3.0.2"
+  }
+}

@@ -1,0 +1,21 @@
+{
+    "omnisharp.enableRoslynAnalyzers": true,
+    "omnisharp.enableEditorConfigSupport": true,
+    "omnisharp.enableAsyncCompletion": true,
+    "csharp.debug.logging.engineLogging": true,
+    "csharp.debug.logging.exceptions": true,
+    "csharp.debug.logging.moduleLoad": true,
+    "csharp.debug.logging.programOutput": true,
+    "csharp.debug.logging.threadExit": true,
+    "csharp.debug.logging.processExit": true,
+    "dotnet.completion.showCompletionItemsFromUnimportedNamespaces": true,
+    "dotnet.inlayHints.enableInlayHintsForParameters": true,
+    "dotnet.inlayHints.enableInlayHintsForLiteralParameters": true,
+    "dotnet.inlayHints.enableInlayHintsForIndexerParameters": true,
+    "dotnet.inlayHints.enableInlayHintsForObjectCreationParameters": true,
+    "dotnet.inlayHints.enableInlayHintsForOtherParameters": true,
+    "dotnet.inlayHints.suppressInlayHintsForParametersThatDifferOnlyBySuffix": true,
+    "dotnet.inlayHints.suppressInlayHintsForParametersThatMatchMethodIntent": true,
+    "dotnet.inlayHints.suppressInlayHintsForParametersThatMatchArgumentName": true,
+    "dotnet.formatting.organizeImportsOnFormat": true
+}

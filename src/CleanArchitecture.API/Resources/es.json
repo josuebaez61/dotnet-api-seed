@@ -1,0 +1,59 @@
+{
+  "Messages": {
+    "Success": {
+      "UserCreated": "Usuario creado exitosamente",
+      "UserUpdated": "Usuario actualizado exitosamente",
+      "UserDeleted": "Usuario eliminado exitosamente",
+      "LoginSuccessful": "Inicio de sesión exitoso",
+      "LogoutSuccessful": "Cierre de sesión exitoso",
+      "PasswordChanged": "Contraseña cambiada exitosamente",
+      "PasswordResetCodeSent": "Código de restablecimiento de contraseña enviado",
+      "PasswordResetSuccessful": "Contraseña restablecida exitosamente",
+      "EmailSent": "Correo electrónico enviado exitosamente",
+      "TokenRefreshed": "Token renovado exitosamente"
+    },
+    "Errors": {
+      "InvalidCredentials": "Credenciales inválidas",
+      "UserNotFound": "Usuario no encontrado",
+      "UserAlreadyExists": "El usuario ya existe",
+      "EmailAlreadyExists": "El correo electrónico ya está registrado",
+      "UsernameAlreadyExists": "El nombre de usuario ya está en uso",
+      "InvalidToken": "Token inválido o expirado",
+      "InvalidRefreshToken": "Token de renovación inválido",
+      "AccountDeactivated": "La cuenta está desactivada",
+      "InvalidPassword": "Contraseña inválida",
+      "CurrentPasswordIncorrect": "La contraseña actual es incorrecta",
+      "PasswordResetCodeExpired": "El código de restablecimiento ha expirado",
+      "PasswordResetCodeInvalid": "Código de restablecimiento inválido",
+      "EmailNotConfirmed": "El correo electrónico no ha sido confirmado",
+      "ValidationFailed": "Error de validación",
+      "Unauthorized": "No autorizado",
+      "Forbidden": "Acceso denegado",
+      "InternalServerError": "Error interno del servidor",
+      "DatabaseError": "Error de base de datos",
+      "EmailSendingFailed": "Error al enviar el correo electrónico"
+    },
+    "Validation": {
+      "Required": "El campo {0} es requerido",
+      "EmailInvalid": "El formato del correo electrónico no es válido",
+      "PasswordTooShort": "La contraseña debe tener al menos {0} caracteres",
+      "PasswordComplexity": "La contraseña debe contener al menos una letra minúscula, una mayúscula, un dígito y un carácter especial",
+      "UsernameInvalid": "El nombre de usuario solo puede contener letras, números, guiones y guiones bajos",
+      "DateOfBirthInvalid": "La fecha de nacimiento debe ser en el pasado",
+      "DateOfBirthTooOld": "La fecha de nacimiento no puede ser más de {0} años atrás",
+      "MaxLength": "El campo {0} no puede exceder {1} caracteres",
+      "MinLength": "El campo {0} debe tener al menos {1} caracteres"
+    }
+  },
+  "Email": {
+    "PasswordReset": {
+      "Subject": "Restablecer Contraseña - Clean Architecture"
+    },
+    "Welcome": {
+      "Subject": "¡Bienvenido a Clean Architecture!"
+    },
+    "PasswordChanged": {
+      "Subject": "Contraseña Actualizada - Clean Architecture"
+    }
+  }
+}

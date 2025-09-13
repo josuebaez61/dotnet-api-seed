@@ -1,0 +1,182 @@
+### Clean Architecture API - Ejemplos de Uso
+### Base URL: https://localhost:7000
+### Idioma: Agregar header "Accept-Language: es" para español
+
+### 1. Registro de Usuario
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Juan",
+  "lastName": "Pérez",
+  "email": "juan.perez@example.com",
+  "userName": "jperez",
+  "password": "Password123!",
+  "dateOfBirth": "1990-01-01T00:00:00Z",
+  "profilePicture": "https://example.com/photo.jpg"
+}
+
+### 2. Login con Email
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "emailOrUsername": "juan.perez@example.com",
+  "password": "Password123!"
+}
+
+### 3. Login con Username
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "emailOrUsername": "jperez",
+  "password": "Password123!"
+}
+
+### 4. Obtener información del usuario actual
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer {{token}}
+
+### 5. Obtener todos los usuarios (requiere autenticación)
+GET {{baseUrl}}/api/users
+Authorization: Bearer {{token}}
+
+### 6. Obtener usuario por ID (requiere autenticación)
+GET {{baseUrl}}/api/users/{{userId}}
+Authorization: Bearer {{token}}
+
+### 7. Crear nuevo usuario (requiere autenticación)
+POST {{baseUrl}}/api/users
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "María",
+  "lastName": "García",
+  "email": "maria.garcia@example.com",
+  "password": "Password123!",
+  "dateOfBirth": "1985-05-15T00:00:00Z",
+  "profilePicture": "https://example.com/maria.jpg"
+}
+
+### 8. Cambiar contraseña (requiere autenticación)
+POST {{baseUrl}}/api/auth/change-password
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "currentPassword": "Password123!",
+  "newPassword": "NewPassword123!"
+}
+
+### 9. Refresh Token
+POST {{baseUrl}}/api/auth/refresh-token
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### 10. Solicitar Recuperación de Contraseña
+POST {{baseUrl}}/api/auth/request-password-reset
+Content-Type: application/json
+Accept-Language: es
+
+{
+  "email": "user@example.com"
+}
+
+### 11. Recuperar Contraseña con Código
+POST {{baseUrl}}/api/auth/reset-password
+Content-Type: application/json
+Accept-Language: es
+
+{
+  "email": "user@example.com",
+  "code": "123456",
+  "newPassword": "NewPassword123!"
+}
+
+### 12. Obtener Todos los Permisos
+GET {{baseUrl}}/api/permissions
+Authorization: Bearer {{token}}
+
+### 13. Crear Permiso
+POST {{baseUrl}}/api/permissions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Products.Read",
+  "description": "Read access to products",
+  "resource": "Products",
+  "action": "Read",
+  "module": "ProductManagement"
+}
+
+### 14. Obtener Todos los Roles
+GET {{baseUrl}}/api/roles
+Authorization: Bearer {{token}}
+
+### 15. Crear Rol
+POST {{baseUrl}}/api/roles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Manager",
+  "description": "Manager role with limited access",
+  "permissionIds": ["permission-guid-1", "permission-guid-2"]
+}
+
+### Variables para usar en las peticiones:
+# @baseUrl = https://localhost:7000
+# @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+# @refreshToken = base64-encoded-refresh-token
+# @userId = guid-del-usuario
+# @resetCode = 123456
+
+### Headers para localización:
+# Accept-Language: es (para español)
+# Accept-Language: en (para inglés)
+
+### Ejemplos de respuestas de error:
+
+### Error 400 - Datos inválidos (Respuesta Estandarizada)
+# {
+#   "success": false,
+#   "message": "Error de validación",
+#   "errors": {
+#     "email": ["El formato del correo electrónico no es válido"],
+#     "password": ["La contraseña debe tener al menos 8 caracteres"]
+#   },
+#   "timestamp": "2024-01-01T12:00:00Z"
+# }
+
+### Error 401 - No autorizado (Respuesta Estandarizada)
+# {
+#   "success": false,
+#   "message": "Credenciales inválidas",
+#   "timestamp": "2024-01-01T12:00:00Z"
+# }
+
+### Error 409 - Usuario ya existe (Respuesta Estandarizada)
+# {
+#   "success": false,
+#   "message": "El usuario ya existe",
+#   "timestamp": "2024-01-01T12:00:00Z"
+# }
+
+### Respuesta Exitosa (Estructura Estandarizada)
+# {
+#   "success": true,
+#   "message": "Usuario creado exitosamente",
+#   "data": {
+#     "id": "guid",
+#     "firstName": "Juan",
+#     "lastName": "Pérez",
+#     "email": "juan@example.com"
+#   },
+#   "timestamp": "2024-01-01T12:00:00Z"
+# }

@@ -1,0 +1,344 @@
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+using CleanArchitecture.Application.Common.Interfaces;
+using CleanArchitecture.Application.DTOs;
+using CleanArchitecture.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+
+namespace CleanArchitecture.Application.Common.Services
+{
+  public class AuthService : IAuthService
+  {
+    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
+    private readonly IConfiguration _configuration;
+    private readonly IPermissionService _permissionService;
+    private readonly Dictionary<string, string> _refreshTokens = new();
+    private readonly Dictionary<Guid, List<PasswordResetCode>> _passwordResetCodes = new();
+
+    public AuthService(
+        UserManager<User> userManager,
+        SignInManager<User> signInManager,
+        IConfiguration configuration,
+        IPermissionService permissionService)
+    {
+      _userManager = userManager;
+      _signInManager = signInManager;
+      _configuration = configuration;
+      _permissionService = permissionService;
+    }
+
+    public async Task<AuthResponseDto> LoginAsync(LoginRequestDto request)
+    {
+      var user = await GetUserByEmailOrUsernameAsync(request.EmailOrUsername);
+      if (user == null)
+      {
+        throw new UnauthorizedAccessException("Invalid credentials");
+      }
+
+      var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
+      if (!result.Succeeded)
+      {
+        throw new UnauthorizedAccessException("Invalid credentials");
+      }
+
+      if (!user.IsActive)
+      {
+        throw new UnauthorizedAccessException("Account is deactivated");
+      }
+
+      var token = await GenerateJwtTokenAsync(user);
+      var refreshToken = GenerateRefreshToken();
+
+      // Store refresh token (in production, store in database)
+      _refreshTokens[refreshToken] = user.Id.ToString();
+
+      return new AuthResponseDto
+      {
+        Token = token,
+        RefreshToken = refreshToken,
+        ExpiresAt = DateTime.UtcNow.AddHours(1),
+        User = new UserDto
+        {
+          Id = user.Id,
+          FirstName = user.FirstName,
+          LastName = user.LastName,
+          Email = user.Email!,
+          UserName = user.UserName,
+          DateOfBirth = user.DateOfBirth,
+          ProfilePicture = user.ProfilePicture,
+          CreatedAt = user.CreatedAt,
+          UpdatedAt = user.UpdatedAt,
+          IsActive = user.IsActive,
+          EmailConfirmed = user.EmailConfirmed
+        }
+      };
+    }
+
+    public async Task<AuthResponseDto> RegisterAsync(RegisterRequestDto request)
+    {
+      var existingUser = await _userManager.FindByEmailAsync(request.Email);
+      if (existingUser != null)
+      {
+        throw new InvalidOperationException("User with this email already exists");
+      }
+
+      existingUser = await _userManager.FindByNameAsync(request.UserName);
+      if (existingUser != null)
+      {
+        throw new InvalidOperationException("Username is already taken");
+      }
+
+      var user = new User
+      {
+        Id = Guid.NewGuid(),
+        FirstName = request.FirstName,
+        LastName = request.LastName,
+        Email = request.Email,
+        UserName = request.UserName,
+        DateOfBirth = request.DateOfBirth,
+        ProfilePicture = request.ProfilePicture,
+        CreatedAt = DateTime.UtcNow,
+        IsActive = true,
+        EmailConfirmed = true // For simplicity, auto-confirm emails
+      };
+
+      var result = await _userManager.CreateAsync(user, request.Password);
+      if (!result.Succeeded)
+      {
+        throw new InvalidOperationException($"Failed to create user: {string.Join(", ", result.Errors)}");
+      }
+
+      // Generate tokens for the new user
+      var token = await GenerateJwtTokenAsync(user);
+      var refreshToken = GenerateRefreshToken();
+      _refreshTokens[refreshToken] = user.Id.ToString();
+
+      return new AuthResponseDto
+      {
+        Token = token,
+        RefreshToken = refreshToken,
+        ExpiresAt = DateTime.UtcNow.AddHours(1),
+        User = new UserDto
+        {
+          Id = user.Id,
+          FirstName = user.FirstName,
+          LastName = user.LastName,
+          Email = user.Email!,
+          UserName = user.UserName,
+          DateOfBirth = user.DateOfBirth,
+          ProfilePicture = user.ProfilePicture,
+          CreatedAt = user.CreatedAt,
+          UpdatedAt = user.UpdatedAt,
+          IsActive = user.IsActive,
+          EmailConfirmed = user.EmailConfirmed
+        }
+      };
+    }
+
+    public async Task<AuthResponseDto> RefreshTokenAsync(string refreshToken)
+    {
+      if (!_refreshTokens.TryGetValue(refreshToken, out var userIdString))
+      {
+        throw new UnauthorizedAccessException("Invalid refresh token");
+      }
+
+      if (!Guid.TryParse(userIdString, out var userId))
+      {
+        throw new UnauthorizedAccessException("Invalid user ID in refresh token");
+      }
+
+      var user = await _userManager.FindByIdAsync(userIdString);
+      if (user == null || !user.IsActive)
+      {
+        throw new UnauthorizedAccessException("User not found or inactive");
+      }
+
+      // Remove old refresh token
+      _refreshTokens.Remove(refreshToken);
+
+      // Generate new tokens
+      var newToken = await GenerateJwtTokenAsync(user);
+      var newRefreshToken = GenerateRefreshToken();
+      _refreshTokens[newRefreshToken] = user.Id.ToString();
+
+      return new AuthResponseDto
+      {
+        Token = newToken,
+        RefreshToken = newRefreshToken,
+        ExpiresAt = DateTime.UtcNow.AddHours(1),
+        User = new UserDto
+        {
+          Id = user.Id,
+          FirstName = user.FirstName,
+          LastName = user.LastName,
+          Email = user.Email!,
+          UserName = user.UserName,
+          DateOfBirth = user.DateOfBirth,
+          ProfilePicture = user.ProfilePicture,
+          CreatedAt = user.CreatedAt,
+          UpdatedAt = user.UpdatedAt,
+          IsActive = user.IsActive,
+          EmailConfirmed = user.EmailConfirmed
+        }
+      };
+    }
+
+    public async Task<bool> ChangePasswordAsync(Guid userId, ChangePasswordRequestDto request)
+    {
+      var user = await _userManager.FindByIdAsync(userId.ToString());
+      if (user == null)
+      {
+        return false;
+      }
+
+      var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+      return result.Succeeded;
+    }
+
+    public async Task<bool> LogoutAsync(string refreshToken)
+    {
+      if (_refreshTokens.ContainsKey(refreshToken))
+      {
+        _refreshTokens.Remove(refreshToken);
+        return true;
+      }
+      return false;
+    }
+
+    public async Task<User?> GetUserByEmailOrUsernameAsync(string emailOrUsername)
+    {
+      var user = await _userManager.FindByEmailAsync(emailOrUsername);
+      if (user != null)
+        return user;
+
+      return await _userManager.FindByNameAsync(emailOrUsername);
+    }
+
+    public async Task<string> GenerateJwtTokenAsync(User user)
+    {
+      var jwtSettings = _configuration.GetSection("JwtSettings");
+      var secretKey = jwtSettings["SecretKey"] ?? "YourSuperSecretKeyThatIsAtLeast32CharactersLong!";
+      var issuer = jwtSettings["Issuer"] ?? "CleanArchitecture";
+      var audience = jwtSettings["Audience"] ?? "CleanArchitectureUsers";
+      var expiryHours = int.Parse(jwtSettings["ExpiryHours"] ?? "1");
+
+      var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+      var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+      // Get user permissions
+      var userPermissions = await _permissionService.GetUserPermissionsAsync(user.Id);
+
+      var claims = new List<Claim>
+      {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
+                new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
+                new Claim("firstName", user.FirstName),
+                new Claim("lastName", user.LastName),
+                new Claim("isActive", user.IsActive.ToString())
+            };
+
+      // Add permission claims
+      foreach (var permission in userPermissions)
+      {
+        claims.Add(new Claim("permission", permission.Name));
+      }
+
+      var token = new JwtSecurityToken(
+          issuer: issuer,
+          audience: audience,
+          claims: claims,
+          expires: DateTime.UtcNow.AddHours(expiryHours),
+          signingCredentials: credentials
+      );
+
+      return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    public string GenerateJwtToken(User user)
+    {
+      // For backward compatibility, but this should not be used
+      return GenerateJwtTokenAsync(user).GetAwaiter().GetResult();
+    }
+
+    public string GenerateRefreshToken()
+    {
+      var randomNumber = new byte[32];
+      using var rng = RandomNumberGenerator.Create();
+      rng.GetBytes(randomNumber);
+      return Convert.ToBase64String(randomNumber);
+    }
+
+    public async Task<string> GeneratePasswordResetCodeAsync(Guid userId)
+    {
+      // Generar código de 6 dígitos
+      var random = new Random();
+      var code = random.Next(100000, 999999).ToString();
+
+      var resetCode = new PasswordResetCode
+      {
+        Id = Guid.NewGuid(),
+        UserId = userId,
+        Code = code,
+        ExpiresAt = DateTime.UtcNow.AddMinutes(15),
+        IsUsed = false,
+        CreatedAt = DateTime.UtcNow
+      };
+
+      // Limpiar códigos expirados del usuario
+      if (_passwordResetCodes.ContainsKey(userId))
+      {
+        _passwordResetCodes[userId] = _passwordResetCodes[userId]
+            .Where(c => c.ExpiresAt > DateTime.UtcNow && !c.IsUsed)
+            .ToList();
+      }
+      else
+      {
+        _passwordResetCodes[userId] = new List<PasswordResetCode>();
+      }
+
+      // Agregar nuevo código
+      _passwordResetCodes[userId].Add(resetCode);
+
+      return code;
+    }
+
+    public async Task<bool> ValidatePasswordResetCodeAsync(Guid userId, string code)
+    {
+      if (!_passwordResetCodes.ContainsKey(userId))
+        return false;
+
+      var userCodes = _passwordResetCodes[userId];
+      var validCode = userCodes.FirstOrDefault(c =>
+          c.Code == code &&
+          c.ExpiresAt > DateTime.UtcNow &&
+          !c.IsUsed);
+
+      return validCode != null;
+    }
+
+    public async Task MarkPasswordResetCodeAsUsedAsync(Guid userId, string code)
+    {
+      if (!_passwordResetCodes.ContainsKey(userId))
+        return;
+
+      var userCodes = _passwordResetCodes[userId];
+      var codeToMark = userCodes.FirstOrDefault(c => c.Code == code);
+
+      if (codeToMark != null)
+      {
+        codeToMark.IsUsed = true;
+        codeToMark.UsedAt = DateTime.UtcNow;
+      }
+    }
+  }
+}

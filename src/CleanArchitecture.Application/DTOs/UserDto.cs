@@ -1,0 +1,40 @@
+using System;
+
+namespace CleanArchitecture.Application.DTOs
+{
+  public class UserDto
+  {
+    public Guid Id { get; set; }
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string? UserName { get; set; }
+    public DateTime DateOfBirth { get; set; }
+    public string? ProfilePicture { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+    public bool IsActive { get; set; }
+    public bool EmailConfirmed { get; set; }
+  }
+
+  public class CreateUserDto
+  {
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+    public DateTime DateOfBirth { get; set; }
+    public string? ProfilePicture { get; set; }
+  }
+
+  public class UpdateUserDto
+  {
+    public Guid Id { get; set; }
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public DateTime DateOfBirth { get; set; }
+    public string? ProfilePicture { get; set; }
+    public bool IsActive { get; set; }
+  }
+}
