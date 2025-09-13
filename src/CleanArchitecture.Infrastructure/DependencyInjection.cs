@@ -47,6 +47,10 @@ namespace CleanArchitecture.Infrastructure
       // Database initialization
       services.AddScoped<DatabaseInitializationService>();
 
+      // Cleanup services
+      services.AddHostedService<CleanupService>();
+      services.AddScoped<ICleanupService, ManualCleanupService>();
+
       return services;
     }
   }
