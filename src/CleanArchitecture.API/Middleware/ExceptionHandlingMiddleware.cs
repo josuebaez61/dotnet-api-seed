@@ -143,6 +143,21 @@ namespace CleanArchitecture.API.Middleware
 
     private static string GetCurrentCulture(HttpContext context)
     {
+      // Check query parameter first (higher priority)
+      if (context?.Request?.Query?.ContainsKey("culture") == true)
+      {
+        var culture = context.Request.Query["culture"].ToString().ToLower();
+        if (culture == "es" || culture.StartsWith("es-"))
+        {
+          return "es";
+        }
+        if (culture == "en" || culture.StartsWith("en-"))
+        {
+          return "en";
+        }
+      }
+
+      // Check Accept-Language header
       if (context?.Request?.Headers?.ContainsKey("Accept-Language") == true)
       {
         var acceptLanguage = context.Request.Headers["Accept-Language"].ToString();

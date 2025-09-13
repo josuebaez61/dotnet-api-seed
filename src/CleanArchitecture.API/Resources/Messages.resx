@@ -200,4 +200,10 @@
   <data name="Error_EmailSendingFailed" xml:space="preserve">
     <value>Failed to send email</value>
   </data>
+  <data name="Error_TestEmailFailed" xml:space="preserve">
+    <value>Failed to send test email: {0}</value>
+  </data>
+  <data name="Success_TestEmailSent" xml:space="preserve">
+    <value>Test {0} email sent successfully</value>
+  </data>
 </root>

@@ -1,5 +1,6 @@
 using System.Xml.Linq;
 using CleanArchitecture.Application.Common.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace CleanArchitecture.Application.Common.Services
 {
@@ -16,6 +17,11 @@ namespace CleanArchitecture.Application.Common.Services
     public LocalizationService(string culture)
     {
       _culture = culture ?? "en";
+    }
+
+    public LocalizationService(IHttpContextAccessor httpContextAccessor)
+    {
+      _culture = GetCurrentCulture(httpContextAccessor.HttpContext);
     }
 
     public string GetString(string key, params object[] args)
@@ -159,6 +165,35 @@ namespace CleanArchitecture.Application.Common.Services
         }
         _cache[culture] = dictionary;
       }
+    }
+
+    private static string GetCurrentCulture(HttpContext? context)
+    {
+      // Check query parameter first (higher priority)
+      if (context?.Request?.Query?.ContainsKey("culture") == true)
+      {
+        var culture = context.Request.Query["culture"].ToString().ToLower();
+        if (culture == "es" || culture.StartsWith("es-"))
+        {
+          return "es";
+        }
+        if (culture == "en" || culture.StartsWith("en-"))
+        {
+          return "en";
+        }
+      }
+
+      // Check Accept-Language header
+      if (context?.Request?.Headers?.ContainsKey("Accept-Language") == true)
+      {
+        var acceptLanguage = context.Request.Headers["Accept-Language"].ToString();
+        if (acceptLanguage.Contains("es"))
+        {
+          return "es";
+        }
+      }
+
+      return "en"; // Default to English
     }
   }
 }

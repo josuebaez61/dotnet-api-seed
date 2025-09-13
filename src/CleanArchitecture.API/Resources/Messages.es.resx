@@ -200,4 +200,10 @@
   <data name="Error_EmailSendingFailed" xml:space="preserve">
     <value>Error al enviar el correo electrónico</value>
   </data>
+  <data name="Error_TestEmailFailed" xml:space="preserve">
+    <value>Error al enviar correo de prueba: {0}</value>
+  </data>
+  <data name="Success_TestEmailSent" xml:space="preserve">
+    <value>Correo de prueba {0} enviado exitosamente</value>
+  </data>
 </root>

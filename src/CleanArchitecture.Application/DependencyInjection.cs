@@ -4,6 +4,7 @@ using CleanArchitecture.Application.Common.Services;
 using CleanArchitecture.Application.Validators;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CleanArchitecture.Application
@@ -23,6 +24,9 @@ namespace CleanArchitecture.Application
       services.AddScoped<IEmailService, EmailService>();
       services.AddScoped<IPermissionService, PermissionService>();
       services.AddScoped<ILocalizationService, LocalizationService>();
+
+      // Add HttpContextAccessor for localization
+      services.AddHttpContextAccessor();
 
       return services;
     }

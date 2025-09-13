@@ -1,19 +1,18 @@
 # Sistema de Localización y Correos Electrónicos
 
-Este documento describe las nuevas funcionalidades implementadas: sistema de localización (es/en), respuestas estandarizadas de API, servicio de correos electrónicos y reset de contraseña con códigos.
+Este documento describe las nuevas funcionalidades implementadas: sistema de localización (es/en) con archivos .resx, respuestas estandarizadas de API, servicio de correos electrónicos y reset de contraseña con códigos.
 
 ## 🌍 Sistema de Localización
 
 ### Idiomas Soportados
-- **Español (es)** - Idioma por defecto
-- **Inglés (en)** - Idioma alternativo
+- **Español (es)** - Idioma alternativo
+- **Inglés (en)** - Idioma por defecto
 
 ### Configuración
 La localización se configura automáticamente en `Program.cs`:
 
 ```csharp
 // Configure localization
-builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     var supportedCultures = new[] { "en", "es" };
@@ -24,9 +23,9 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 ```
 
 ### Archivos de Recursos
-- `Resources/es.json` - Traducciones en español
-- `Resources/en.json` - Traducciones en inglés
-- `Resources/SharedResource.cs` - Clase de recursos compartidos
+- `src/CleanArchitecture.API/Resources/Messages.resx` - Recursos en inglés
+- `src/CleanArchitecture.API/Resources/Messages.es.resx` - Recursos en español
+- `src/CleanArchitecture.API/Resources/Messages.cs` - Clase de recursos compartidos
 
 ### Uso en el Código
 ```csharp
@@ -216,47 +215,134 @@ return BadRequest(ApiResponse<UserDto>.ValidationErrorResponse("Error de validac
 
 ## 🔧 Configuración de Idiomas
 
-### Cambiar Idioma por Header
+El sistema soporta múltiples métodos para especificar el idioma, con el siguiente orden de prioridad:
+
+### 1. Query Parameter (Mayor Prioridad)
+```http
+POST /api/auth/login?culture=es
+GET /api/users?culture=en
+```
+
+**Ejemplos:**
+- `?culture=es` - Español
+- `?culture=en` - Inglés
+- `?culture=es-ES` - Español (España)
+- `?culture=en-US` - Inglés (Estados Unidos)
+
+### 2. Accept-Language Header
 ```http
 Accept-Language: es-ES
+Accept-Language: en-US
+Accept-Language: es
 ```
 
-### Cambiar Idioma por Query String
-```http
-GET /api/users?culture=es
+### 3. Idioma por Defecto
+Si no se especifica ningún idioma, se usa **Inglés (en)** como predeterminado.
+
+### Ejemplos de Uso
+
+#### Prioridad de Query Parameter sobre Header
+```bash
+# Este request devolverá mensajes en español, aunque el header diga inglés
+curl -X POST "http://localhost:5103/api/auth/login?culture=es" \
+  -H "Accept-Language: en" \
+  -H "Content-Type: application/json" \
+  -d '{"emailOrUsername": "test", "password": "test"}'
 ```
 
-### Cambiar Idioma por Cookie
-```http
-Cookie: .AspNetCore.Culture=c=es-ES|uic=es-ES
+#### Solo Header
+```bash
+# Este request devolverá mensajes en español
+curl -X POST "http://localhost:5103/api/auth/login" \
+  -H "Accept-Language: es" \
+  -H "Content-Type: application/json" \
+  -d '{"emailOrUsername": "test", "password": "test"}'
+```
+
+#### Idioma por Defecto
+```bash
+# Este request devolverá mensajes en inglés (por defecto)
+curl -X POST "http://localhost:5103/api/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"emailOrUsername": "test", "password": "test"}'
 ```
 
 ## 📝 Mensajes de Localización
 
-### Estructura de Mensajes
+### Estructura de Archivos .resx
+
+Los mensajes están organizados en archivos `.resx` con la siguiente estructura:
+
+#### Messages.resx (Inglés)
+```xml
+<data name="Error_USER_NOT_FOUND" xml:space="preserve">
+  <value>User not found</value>
+</data>
+<data name="Error_INVALID_CREDENTIALS" xml:space="preserve">
+  <value>Invalid credentials</value>
+</data>
+<data name="Success_LoginSuccessful" xml:space="preserve">
+  <value>Login successful</value>
+</data>
+```
+
+#### Messages.es.resx (Español)
+```xml
+<data name="Error_USER_NOT_FOUND" xml:space="preserve">
+  <value>Usuario no encontrado</value>
+</data>
+<data name="Error_INVALID_CREDENTIALS" xml:space="preserve">
+  <value>Credenciales inválidas</value>
+</data>
+<data name="Success_LoginSuccessful" xml:space="preserve">
+  <value>Inicio de sesión exitoso</value>
+</data>
+```
+
+### Convención de Nombres
+- **Error_** - Mensajes de error: `Error_USER_NOT_FOUND`
+- **Success_** - Mensajes de éxito: `Success_LoginSuccessful`
+- **Validation_** - Mensajes de validación: `Validation_Required`
+
+### Manejo de Errores Localizado
+
+El sistema incluye un middleware centralizado que maneja todas las excepciones y las traduce automáticamente:
+
+#### Ejemplos de Respuestas Localizadas
+
+**Usuario no encontrado (Español):**
 ```json
 {
-  "Messages": {
-    "Success": {
-      "UserCreated": "Usuario creado exitosamente",
-      "LoginSuccessful": "Inicio de sesión exitoso"
-    },
-    "Errors": {
-      "InvalidCredentials": "Credenciales inválidas",
-      "UserNotFound": "Usuario no encontrado"
-    },
-    "Validation": {
-      "Required": "El campo {0} es requerido",
-      "EmailInvalid": "El formato del correo electrónico no es válido"
-    }
-  },
-  "Email": {
-    "PasswordReset": {
-      "Subject": "Restablecer Contraseña - Clean Architecture"
-    }
-  }
+  "success": false,
+  "message": "Usuario no encontrado",
+  "data": null,
+  "errors": null,
+  "errorCode": "USER_NOT_FOUND",
+  "timestamp": "2025-09-13T14:48:20.161813Z",
+  "requestId": null
 }
 ```
+
+**Usuario no encontrado (Inglés):**
+```json
+{
+  "success": false,
+  "message": "User not found",
+  "data": null,
+  "errors": null,
+  "errorCode": "USER_NOT_FOUND",
+  "timestamp": "2025-09-13T14:48:20.161813Z",
+  "requestId": null
+}
+```
+
+#### Flujo de Localización de Errores
+
+1. **Excepción lanzada** en la capa de aplicación
+2. **Middleware captura** la excepción
+3. **Detecta idioma** del request (query param o header)
+4. **Traduce mensaje** usando archivos .resx
+5. **Devuelve respuesta** estandarizada localizada
 
 ## 🚀 Nuevos Endpoints
 
@@ -305,19 +391,55 @@ _logger.LogError(ex, "Failed to send email to {Email}", to);
 
 ### Ejemplos de Pruebas
 
-#### Test de Localización
+#### Test de Localización con Query Parameter
 ```csharp
 [Test]
-public void Should_Return_Spanish_Message_When_Culture_Is_ES()
+public async Task Should_Return_Spanish_Message_When_Culture_Query_Parameter_Is_ES()
 {
     // Arrange
-    var culture = "es-ES";
+    var client = _factory.CreateClient();
+    var request = new { emailOrUsername = "test", password = "test" };
     
     // Act
-    var message = _localizationService.GetSuccessMessage("UserCreated");
+    var response = await client.PostAsJsonAsync("/api/auth/login?culture=es", request);
+    var content = await response.Content.ReadAsStringAsync();
+    var result = JsonSerializer.Deserialize<ApiResponse>(content);
     
     // Assert
-    Assert.AreEqual("Usuario creado exitosamente", message);
+    Assert.AreEqual("Usuario no encontrado", result.Message);
+}
+
+[Test]
+public async Task Should_Return_English_Message_When_Culture_Query_Parameter_Is_EN()
+{
+    // Arrange
+    var client = _factory.CreateClient();
+    var request = new { emailOrUsername = "test", password = "test" };
+    
+    // Act
+    var response = await client.PostAsJsonAsync("/api/auth/login?culture=en", request);
+    var content = await response.Content.ReadAsStringAsync();
+    var result = JsonSerializer.Deserialize<ApiResponse>(content);
+    
+    // Assert
+    Assert.AreEqual("User not found", result.Message);
+}
+
+[Test]
+public async Task Should_Prioritize_Query_Parameter_Over_Header()
+{
+    // Arrange
+    var client = _factory.CreateClient();
+    client.DefaultRequestHeaders.Add("Accept-Language", "en");
+    var request = new { emailOrUsername = "test", password = "test" };
+    
+    // Act
+    var response = await client.PostAsJsonAsync("/api/auth/login?culture=es", request);
+    var content = await response.Content.ReadAsStringAsync();
+    var result = JsonSerializer.Deserialize<ApiResponse>(content);
+    
+    // Assert
+    Assert.AreEqual("Usuario no encontrado", result.Message); // Query param should win
 }
 ```
 
