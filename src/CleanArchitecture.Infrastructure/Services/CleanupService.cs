@@ -1,3 +1,4 @@
+using CleanArchitecture.Domain.Common.Interfaces;
 using CleanArchitecture.Infrastructure.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,46 +56,18 @@ namespace CleanArchitecture.Infrastructure.Services
     private async Task PerformCleanupAsync()
     {
       using var scope = _serviceProvider.CreateScope();
-      var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+      var emailCodeRepository = scope.ServiceProvider.GetRequiredService<IEmailVerificationCodeRepository>();
+      var passwordCodeRepository = scope.ServiceProvider.GetRequiredService<IPasswordResetCodeRepository>();
 
       _logger.LogInformation("Starting cleanup of expired verification codes");
 
-      var currentTime = DateTime.UtcNow;
-      var deletedCount = 0;
-
       // Limpiar códigos de verificación de email expirados
-      var expiredEmailCodes = context.EmailVerificationCodes
-          .Where(evc => evc.ExpiresAt < currentTime && !evc.IsDeleted)
-          .ToList();
-
-      foreach (var code in expiredEmailCodes)
-      {
-        code.IsDeleted = true;
-        code.UpdatedAt = currentTime;
-        deletedCount++;
-      }
+      await emailCodeRepository.CleanupExpiredCodesAsync();
 
       // Limpiar códigos de reset de contraseña expirados
-      var expiredPasswordCodes = context.PasswordResetCodes
-          .Where(prc => prc.ExpiresAt < currentTime && !prc.IsDeleted)
-          .ToList();
+      await passwordCodeRepository.CleanupExpiredCodesAsync();
 
-      foreach (var code in expiredPasswordCodes)
-      {
-        code.IsDeleted = true;
-        code.UpdatedAt = currentTime;
-        deletedCount++;
-      }
-
-      if (deletedCount > 0)
-      {
-        await context.SaveChangesAsync();
-        _logger.LogInformation("Cleanup completed. Marked {Count} expired codes as deleted", deletedCount);
-      }
-      else
-      {
-        _logger.LogInformation("Cleanup completed. No expired codes found");
-      }
+      _logger.LogInformation("Cleanup completed successfully");
     }
 
     public override async Task StopAsync(CancellationToken cancellationToken)

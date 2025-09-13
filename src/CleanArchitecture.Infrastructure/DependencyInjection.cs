@@ -44,6 +44,10 @@ namespace CleanArchitecture.Infrastructure
       services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
       services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+      // Specific repositories
+      services.AddScoped<IPasswordResetCodeRepository, PasswordResetCodeRepository>();
+      services.AddScoped<IEmailVerificationCodeRepository, EmailVerificationCodeRepository>();
+
       // Database initialization
       services.AddScoped<DatabaseInitializationService>();
 
