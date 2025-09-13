@@ -87,6 +87,12 @@
   <data name="Success_EmailSent" xml:space="preserve">
     <value>Correo electrónico enviado exitosamente</value>
   </data>
+  <data name="Success_EmailChangeVerificationSent" xml:space="preserve">
+    <value>Verificación de cambio de correo enviada</value>
+  </data>
+  <data name="Success_EmailChanged" xml:space="preserve">
+    <value>Correo electrónico cambiado exitosamente</value>
+  </data>
   <data name="Success_TokenRefreshed" xml:space="preserve">
     <value>Token renovado exitosamente</value>
   </data>
@@ -203,6 +209,21 @@
   <data name="Error_TestEmailFailed" xml:space="preserve">
     <value>Error al enviar correo de prueba: {0}</value>
   </data>
+  <data name="Error_EMAIL_ALREADY_EXISTS" xml:space="preserve">
+    <value>El correo electrónico ya existe</value>
+  </data>
+  <data name="Error_EMAIL_CHANGE_VERIFICATION_CODE_INVALID" xml:space="preserve">
+    <value>Código de verificación de cambio de correo inválido</value>
+  </data>
+  <data name="Error_EMAIL_CHANGE_VERIFICATION_CODE_EXPIRED" xml:space="preserve">
+    <value>El código de verificación de cambio de correo ha expirado</value>
+  </data>
+  <data name="Error_EMAIL_CHANGE_VERIFICATION_CODE_ALREADY_USED" xml:space="preserve">
+    <value>El código de verificación de cambio de correo ya ha sido utilizado</value>
+  </data>
+  <data name="Error_INVALID_OPERATION" xml:space="preserve">
+    <value>Operación inválida</value>
+  </data>
   <data name="Success_TestEmailSent" xml:space="preserve">
     <value>Correo de prueba {0} enviado exitosamente</value>
   </data>
@@ -214,5 +235,13 @@
   </data>
   <data name="Error_InvalidPaginationParameters" xml:space="preserve">
     <value>Parámetros de paginación inválidos</value>
+  </data>
+  
+  <!-- Email Subject Messages -->
+  <data name="Email:EmailChangeVerification:Subject" xml:space="preserve">
+    <value>Verifica tu Cambio de Correo</value>
+  </data>
+  <data name="Email:EmailChangeConfirmation:Subject" xml:space="preserve">
+    <value>Correo Cambiado Exitosamente</value>
   </data>
 </root>

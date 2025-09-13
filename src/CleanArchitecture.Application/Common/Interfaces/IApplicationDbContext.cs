@@ -9,6 +9,8 @@ namespace CleanArchitecture.Application.Common.Interfaces
     DbSet<Role> Roles { get; }
     DbSet<Permission> Permissions { get; }
     DbSet<RolePermission> RolePermissions { get; }
+    DbSet<PasswordResetCode> PasswordResetCodes { get; }
+    DbSet<EmailVerificationCode> EmailVerificationCodes { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
   }

@@ -14,6 +14,7 @@ namespace CleanArchitecture.Infrastructure.Data
     }
 
     public DbSet<PasswordResetCode> PasswordResetCodes { get; set; }
+    public DbSet<EmailVerificationCode> EmailVerificationCodes { get; set; }
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
 
@@ -95,6 +96,21 @@ namespace CleanArchitecture.Infrastructure.Data
                   .WithMany(e => e.RoleClaims)
                   .HasForeignKey(e => e.RoleId)
                   .OnDelete(DeleteBehavior.Cascade);
+      });
+
+      // Configure EmailVerificationCode entity
+      builder.Entity<EmailVerificationCode>(entity =>
+      {
+        entity.ToTable("EmailVerificationCodes");
+        entity.HasKey(e => e.Id);
+        entity.Property(e => e.Email).IsRequired().HasMaxLength(256);
+        entity.Property(e => e.VerificationCode).IsRequired().HasMaxLength(32);
+        entity.Property(e => e.ExpiresAt).IsRequired();
+        entity.Property(e => e.IsUsed).IsRequired();
+        entity.Property(e => e.CreatedAt).IsRequired();
+        entity.HasIndex(e => e.VerificationCode).IsUnique();
+        entity.HasIndex(e => e.UserId);
+        entity.HasIndex(e => e.Email);
       });
 
       // Configure Permission entity

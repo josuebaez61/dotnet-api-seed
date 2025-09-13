@@ -10,8 +10,18 @@ namespace CleanArchitecture.Infrastructure.Data
     {
       var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
-      // Use a simple connection string for design time
-      optionsBuilder.UseNpgsql("Host=localhost;Database=CleanArchitectureDB;Username=postgres;Password=postgres");
+      // Build configuration from appsettings files
+      var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
+
+      var configuration = new ConfigurationBuilder()
+          .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "..", "CleanArchitecture.API"))
+          .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+          .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
+          .AddEnvironmentVariables()
+          .Build();
+
+      var connectionString = configuration.GetConnectionString("DefaultConnection");
+      optionsBuilder.UseNpgsql(connectionString);
 
       return new ApplicationDbContext(optionsBuilder.Options);
     }

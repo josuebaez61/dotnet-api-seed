@@ -87,6 +87,12 @@
   <data name="Success_EmailSent" xml:space="preserve">
     <value>Email sent successfully</value>
   </data>
+  <data name="Success_EmailChangeVerificationSent" xml:space="preserve">
+    <value>Email change verification sent</value>
+  </data>
+  <data name="Success_EmailChanged" xml:space="preserve">
+    <value>Email changed successfully</value>
+  </data>
   <data name="Success_TokenRefreshed" xml:space="preserve">
     <value>Token refreshed successfully</value>
   </data>
@@ -203,6 +209,21 @@
   <data name="Error_TestEmailFailed" xml:space="preserve">
     <value>Failed to send test email: {0}</value>
   </data>
+  <data name="Error_EMAIL_ALREADY_EXISTS" xml:space="preserve">
+    <value>Email already exists</value>
+  </data>
+  <data name="Error_EMAIL_CHANGE_VERIFICATION_CODE_INVALID" xml:space="preserve">
+    <value>Invalid email change verification code</value>
+  </data>
+  <data name="Error_EMAIL_CHANGE_VERIFICATION_CODE_EXPIRED" xml:space="preserve">
+    <value>Email change verification code has expired</value>
+  </data>
+  <data name="Error_EMAIL_CHANGE_VERIFICATION_CODE_ALREADY_USED" xml:space="preserve">
+    <value>Email change verification code has already been used</value>
+  </data>
+  <data name="Error_INVALID_OPERATION" xml:space="preserve">
+    <value>Invalid operation</value>
+  </data>
   <data name="Success_TestEmailSent" xml:space="preserve">
     <value>Test {0} email sent successfully</value>
   </data>
@@ -214,5 +235,13 @@
   </data>
   <data name="Error_InvalidPaginationParameters" xml:space="preserve">
     <value>Invalid pagination parameters</value>
+  </data>
+  
+  <!-- Email Subject Messages -->
+  <data name="Email:EmailChangeVerification:Subject" xml:space="preserve">
+    <value>Verify Your Email Change</value>
+  </data>
+  <data name="Email:EmailChangeConfirmation:Subject" xml:space="preserve">
+    <value>Email Successfully Changed</value>
   </data>
 </root>

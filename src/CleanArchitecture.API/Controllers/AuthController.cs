@@ -7,8 +7,10 @@ using CleanArchitecture.Application.Features.Auth.Commands.ChangePassword;
 using CleanArchitecture.Application.Features.Auth.Commands.Login;
 using CleanArchitecture.Application.Features.Auth.Commands.RefreshToken;
 using CleanArchitecture.Application.Features.Auth.Commands.Register;
+using CleanArchitecture.Application.Features.Auth.Commands.RequestEmailChange;
 using CleanArchitecture.Application.Features.Auth.Commands.RequestPasswordReset;
 using CleanArchitecture.Application.Features.Auth.Commands.ResetPassword;
+using CleanArchitecture.Application.Features.Auth.Commands.VerifyEmailChange;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -112,6 +114,34 @@ namespace CleanArchitecture.API.Controllers
     public async Task<ActionResult<ApiResponse>> ResetPassword([FromBody] ResetPasswordDto request)
     {
       var command = new ResetPasswordCommand { Request = request };
+      var result = await _mediator.Send(command);
+      return Ok(result);
+    }
+
+    [HttpPost("request-email-change")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse>> RequestEmailChange([FromBody] RequestEmailChangeDto request)
+    {
+      var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+      {
+        return Unauthorized(ApiResponse.ErrorResponse("Invalid user token"));
+      }
+
+      var command = new RequestEmailChangeCommand
+      {
+        UserId = userId,
+        Request = request
+      };
+
+      var result = await _mediator.Send(command);
+      return Ok(result);
+    }
+
+    [HttpPost("verify-email-change")]
+    public async Task<ActionResult<ApiResponse>> VerifyEmailChange([FromBody] VerifyEmailChangeDto request)
+    {
+      var command = new VerifyEmailChangeCommand { Request = request };
       var result = await _mediator.Send(command);
       return Ok(result);
     }
