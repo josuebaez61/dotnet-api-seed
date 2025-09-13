@@ -1,6 +1,6 @@
 namespace CleanArchitecture.API.Resources
 {
-  public class SharedResource
+  public class Messages
   {
   }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.Common.Models;
 using MediatR;
@@ -32,20 +33,16 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.ResetPassword
       var user = await _userManager.FindByEmailAsync(request.Request.Email);
       if (user == null)
       {
-        return ApiResponse.ErrorResponse(_localizationService.GetErrorMessage("UserNotFound"));
+        throw new UserNotFoundError(request.Request.Email);
       }
 
       if (!user.IsActive)
       {
-        return ApiResponse.ErrorResponse(_localizationService.GetErrorMessage("AccountDeactivated"));
+        throw new AccountDeactivatedError(user.Id.ToString());
       }
 
       // Validar código de reset
-      var isValidCode = await _authService.ValidatePasswordResetCodeAsync(user.Id, request.Request.Code);
-      if (!isValidCode)
-      {
-        return ApiResponse.ErrorResponse(_localizationService.GetErrorMessage("PasswordResetCodeInvalid"));
-      }
+      await _authService.ValidatePasswordResetCodeAsync(user.Id, request.Request.Code);
 
       // Cambiar contraseña
       var token = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -53,7 +50,7 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.ResetPassword
 
       if (!result.Succeeded)
       {
-        return ApiResponse.ErrorResponse(_localizationService.GetErrorMessage("InvalidPassword"));
+        throw new InvalidPasswordError();
       }
 
       // Marcar código como usado

@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Domain.Entities;
@@ -41,18 +42,18 @@ namespace CleanArchitecture.Application.Common.Services
       var user = await GetUserByEmailOrUsernameAsync(request.EmailOrUsername);
       if (user == null)
       {
-        throw new UnauthorizedAccessException("Invalid credentials");
+        throw new UserNotFoundError(request.EmailOrUsername);
       }
 
       var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
       if (!result.Succeeded)
       {
-        throw new UnauthorizedAccessException("Invalid credentials");
+        throw new InvalidCredentialsError();
       }
 
       if (!user.IsActive)
       {
-        throw new UnauthorizedAccessException("Account is deactivated");
+        throw new AccountDeactivatedError(user.Id.ToString());
       }
 
       var token = await GenerateJwtTokenAsync(user);
@@ -88,13 +89,13 @@ namespace CleanArchitecture.Application.Common.Services
       var existingUser = await _userManager.FindByEmailAsync(request.Email);
       if (existingUser != null)
       {
-        throw new InvalidOperationException("User with this email already exists");
+        throw new UserAlreadyExistsError("email", request.Email);
       }
 
       existingUser = await _userManager.FindByNameAsync(request.UserName);
       if (existingUser != null)
       {
-        throw new InvalidOperationException("Username is already taken");
+        throw new UserAlreadyExistsError("username", request.UserName);
       }
 
       var user = new User
@@ -114,7 +115,7 @@ namespace CleanArchitecture.Application.Common.Services
       var result = await _userManager.CreateAsync(user, request.Password);
       if (!result.Succeeded)
       {
-        throw new InvalidOperationException($"Failed to create user: {string.Join(", ", result.Errors)}");
+        throw new InvalidPasswordError();
       }
 
       // Generate tokens for the new user
@@ -148,18 +149,18 @@ namespace CleanArchitecture.Application.Common.Services
     {
       if (!_refreshTokens.TryGetValue(refreshToken, out var userIdString))
       {
-        throw new UnauthorizedAccessException("Invalid refresh token");
+        throw new InvalidRefreshTokenError();
       }
 
       if (!Guid.TryParse(userIdString, out var userId))
       {
-        throw new UnauthorizedAccessException("Invalid user ID in refresh token");
+        throw new InvalidRefreshTokenError();
       }
 
       var user = await _userManager.FindByIdAsync(userIdString);
       if (user == null || !user.IsActive)
       {
-        throw new UnauthorizedAccessException("User not found or inactive");
+        throw new UserNotFoundError(userIdString);
       }
 
       // Remove old refresh token
@@ -197,11 +198,16 @@ namespace CleanArchitecture.Application.Common.Services
       var user = await _userManager.FindByIdAsync(userId.ToString());
       if (user == null)
       {
-        return false;
+        throw new UserNotFoundError(userId.ToString());
       }
 
       var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
-      return result.Succeeded;
+      if (!result.Succeeded)
+      {
+        throw new CurrentPasswordIncorrectError();
+      }
+
+      return true;
     }
 
     public async Task<bool> LogoutAsync(string refreshToken)
@@ -315,7 +321,7 @@ namespace CleanArchitecture.Application.Common.Services
     public async Task<bool> ValidatePasswordResetCodeAsync(Guid userId, string code)
     {
       if (!_passwordResetCodes.ContainsKey(userId))
-        return false;
+        throw new PasswordResetCodeInvalidError(userId.ToString());
 
       var userCodes = _passwordResetCodes[userId];
       var validCode = userCodes.FirstOrDefault(c =>
@@ -323,7 +329,27 @@ namespace CleanArchitecture.Application.Common.Services
           c.ExpiresAt > DateTime.UtcNow &&
           !c.IsUsed);
 
-      return validCode != null;
+      if (validCode == null)
+      {
+        // Check if code exists but is expired
+        var expiredCode = userCodes.FirstOrDefault(c => c.Code == code && c.ExpiresAt <= DateTime.UtcNow);
+        if (expiredCode != null)
+        {
+          throw new PasswordResetCodeExpiredError(userId.ToString());
+        }
+
+        // Check if code exists but is already used
+        var usedCode = userCodes.FirstOrDefault(c => c.Code == code && c.IsUsed);
+        if (usedCode != null)
+        {
+          throw new PasswordResetCodeAlreadyUsedError(userId.ToString());
+        }
+
+        // Code doesn't exist
+        throw new PasswordResetCodeInvalidError(userId.ToString());
+      }
+
+      return true;
     }
 
     public async Task MarkPasswordResetCodeAsUsedAsync(Guid userId, string code)

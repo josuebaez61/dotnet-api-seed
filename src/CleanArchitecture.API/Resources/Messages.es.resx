@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  
+  <!-- Success Messages -->
+  <data name="Success_UserCreated" xml:space="preserve">
+    <value>Usuario creado exitosamente</value>
+  </data>
+  <data name="Success_UserUpdated" xml:space="preserve">
+    <value>Usuario actualizado exitosamente</value>
+  </data>
+  <data name="Success_UserDeleted" xml:space="preserve">
+    <value>Usuario eliminado exitosamente</value>
+  </data>
+  <data name="Success_LoginSuccessful" xml:space="preserve">
+    <value>Inicio de sesión exitoso</value>
+  </data>
+  <data name="Success_LogoutSuccessful" xml:space="preserve">
+    <value>Cierre de sesión exitoso</value>
+  </data>
+  <data name="Success_PasswordChanged" xml:space="preserve">
+    <value>Contraseña cambiada exitosamente</value>
+  </data>
+  <data name="Success_PasswordResetCodeSent" xml:space="preserve">
+    <value>Código de restablecimiento de contraseña enviado</value>
+  </data>
+  <data name="Success_PasswordResetSuccessful" xml:space="preserve">
+    <value>Contraseña restablecida exitosamente</value>
+  </data>
+  <data name="Success_EmailSent" xml:space="preserve">
+    <value>Correo electrónico enviado exitosamente</value>
+  </data>
+  <data name="Success_TokenRefreshed" xml:space="preserve">
+    <value>Token renovado exitosamente</value>
+  </data>
+  
+  <!-- Error Messages -->
+  <data name="Error_USER_NOT_FOUND" xml:space="preserve">
+    <value>Usuario no encontrado</value>
+  </data>
+  <data name="Error_INVALID_CREDENTIALS" xml:space="preserve">
+    <value>Credenciales inválidas</value>
+  </data>
+  <data name="Error_ACCOUNT_DEACTIVATED" xml:space="preserve">
+    <value>La cuenta está desactivada</value>
+  </data>
+  <data name="Error_USER_ALREADY_EXISTS" xml:space="preserve">
+    <value>El usuario ya existe</value>
+  </data>
+  <data name="Error_INVALID_PASSWORD" xml:space="preserve">
+    <value>Contraseña inválida</value>
+  </data>
+  <data name="Error_INVALID_REFRESH_TOKEN" xml:space="preserve">
+    <value>Token de renovación inválido</value>
+  </data>
+  <data name="Error_PASSWORD_RESET_CODE_INVALID" xml:space="preserve">
+    <value>Código de restablecimiento inválido</value>
+  </data>
+  <data name="Error_PASSWORD_RESET_CODE_EXPIRED" xml:space="preserve">
+    <value>El código de restablecimiento ha expirado</value>
+  </data>
+  <data name="Error_PASSWORD_RESET_CODE_ALREADY_USED" xml:space="preserve">
+    <value>El código de restablecimiento ya ha sido utilizado</value>
+  </data>
+  <data name="Error_CURRENT_PASSWORD_INCORRECT" xml:space="preserve">
+    <value>La contraseña actual es incorrecta</value>
+  </data>
+  <data name="Error_PASSWORD_CHANGE_FAILED" xml:space="preserve">
+    <value>Error al cambiar la contraseña</value>
+  </data>
+  <data name="Error_REQUIRED_FIELD" xml:space="preserve">
+    <value>El campo '{0}' es requerido</value>
+  </data>
+  <data name="Error_INVALID_EMAIL_FORMAT" xml:space="preserve">
+    <value>Formato de correo electrónico inválido</value>
+  </data>
+  <data name="Error_PASSWORD_TOO_WEAK" xml:space="preserve">
+    <value>La contraseña no cumple con los requisitos de seguridad</value>
+  </data>
+  <data name="Error_INVALID_DATE_OF_BIRTH" xml:space="preserve">
+    <value>Fecha de nacimiento inválida</value>
+  </data>
+  <data name="Error_INVALID_AGE" xml:space="preserve">
+    <value>Edad inválida. Debe estar entre 13 y 120 años</value>
+  </data>
+  <data name="Error_USERNAME_TOO_SHORT" xml:space="preserve">
+    <value>El nombre de usuario debe tener al menos {0} caracteres</value>
+  </data>
+  <data name="Error_USERNAME_TOO_LONG" xml:space="preserve">
+    <value>El nombre de usuario debe tener como máximo {0} caracteres</value>
+  </data>
+  <data name="Error_INVALID_USERNAME_FORMAT" xml:space="preserve">
+    <value>Formato de nombre de usuario inválido. Solo se permiten letras, números y guiones bajos</value>
+  </data>
+  <data name="Error_INSUFFICIENT_PERMISSIONS" xml:space="preserve">
+    <value>Permisos insuficientes. Requerido: {0}</value>
+  </data>
+  <data name="Error_ROLE_NOT_FOUND" xml:space="preserve">
+    <value>Rol no encontrado: {0}</value>
+  </data>
+  <data name="Error_ROLE_NOT_FOUND_BY_ID" xml:space="preserve">
+    <value>Rol no encontrado con ID: {0}</value>
+  </data>
+  <data name="Error_ROLE_ALREADY_EXISTS" xml:space="preserve">
+    <value>El rol ya existe: {0}</value>
+  </data>
+  <data name="Error_PERMISSION_NOT_FOUND" xml:space="preserve">
+    <value>Permiso no encontrado: {0}</value>
+  </data>
+  <data name="Error_PERMISSION_NOT_FOUND_BY_ID" xml:space="preserve">
+    <value>Permiso no encontrado con ID: {0}</value>
+  </data>
+  <data name="Error_PERMISSION_ALREADY_EXISTS" xml:space="preserve">
+    <value>El permiso ya existe: {0}</value>
+  </data>
+  <data name="Error_USER_NOT_IN_ROLE" xml:space="preserve">
+    <value>El usuario {0} no está en el rol {1}</value>
+  </data>
+  <data name="Error_ROLE_PERMISSION_NOT_FOUND" xml:space="preserve">
+    <value>El rol {0} no tiene el permiso {1}</value>
+  </data>
+  <data name="Error_InvalidToken" xml:space="preserve">
+    <value>Token inválido o expirado</value>
+  </data>
+  <data name="Error_EmailNotConfirmed" xml:space="preserve">
+    <value>El correo electrónico no ha sido confirmado</value>
+  </data>
+  <data name="Error_ValidationFailed" xml:space="preserve">
+    <value>Error de validación</value>
+  </data>
+  <data name="Error_Unauthorized" xml:space="preserve">
+    <value>No autorizado</value>
+  </data>
+  <data name="Error_Forbidden" xml:space="preserve">
+    <value>Acceso denegado</value>
+  </data>
+  <data name="Error_InternalServerError" xml:space="preserve">
+    <value>Error interno del servidor</value>
+  </data>
+  <data name="Error_DatabaseError" xml:space="preserve">
+    <value>Error de base de datos</value>
+  </data>
+  <data name="Error_EmailSendingFailed" xml:space="preserve">
+    <value>Error al enviar el correo electrónico</value>
+  </data>
+</root>

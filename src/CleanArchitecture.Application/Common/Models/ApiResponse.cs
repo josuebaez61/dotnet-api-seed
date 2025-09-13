@@ -8,6 +8,7 @@ namespace CleanArchitecture.Application.Common.Models
     public string Message { get; set; } = string.Empty;
     public T? Data { get; set; }
     public object? Errors { get; set; }
+    public string? ErrorCode { get; set; }
     public DateTime Timestamp { get; set; } = DateTime.UtcNow;
     public string? RequestId { get; set; }
 
@@ -21,13 +22,14 @@ namespace CleanArchitecture.Application.Common.Models
       };
     }
 
-    public static ApiResponse<T> ErrorResponse(string message, object? errors = null)
+    public static ApiResponse<T> ErrorResponse(string message, object? errors = null, string? errorCode = null)
     {
       return new ApiResponse<T>
       {
         Success = false,
         Message = message,
-        Errors = errors
+        Errors = errors,
+        ErrorCode = errorCode
       };
     }
 
@@ -53,13 +55,14 @@ namespace CleanArchitecture.Application.Common.Models
       };
     }
 
-    public static new ApiResponse ErrorResponse(string message, object? errors = null)
+    public static new ApiResponse ErrorResponse(string message, object? errors = null, string? errorCode = null)
     {
       return new ApiResponse
       {
         Success = false,
         Message = message,
-        Errors = errors
+        Errors = errors,
+        ErrorCode = errorCode
       };
     }
 

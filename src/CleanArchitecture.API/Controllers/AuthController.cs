@@ -29,91 +29,51 @@ namespace CleanArchitecture.API.Controllers
     [HttpPost("login")]
     public async Task<ActionResult<ApiResponse<AuthResponseDto>>> Login([FromBody] LoginRequestDto request)
     {
-      try
-      {
-        var command = new LoginCommand { Request = request };
-        var result = await _mediator.Send(command);
-        return Ok(ApiResponse<AuthResponseDto>.SuccessResponse(result));
-      }
-      catch (UnauthorizedAccessException ex)
-      {
-        return Unauthorized(ApiResponse<AuthResponseDto>.ErrorResponse(ex.Message));
-      }
-      catch (Exception ex)
-      {
-        return BadRequest(ApiResponse<AuthResponseDto>.ErrorResponse(ex.Message));
-      }
+      var command = new LoginCommand { Request = request };
+      var result = await _mediator.Send(command);
+      return Ok(ApiResponse<AuthResponseDto>.SuccessResponse(result));
     }
 
     [HttpPost("register")]
     public async Task<ActionResult<ApiResponse<AuthResponseDto>>> Register([FromBody] RegisterRequestDto request)
     {
-      try
-      {
-        var command = new RegisterCommand { Request = request };
-        var result = await _mediator.Send(command);
-        return CreatedAtAction(nameof(Login), ApiResponse<AuthResponseDto>.SuccessResponse(result));
-      }
-      catch (InvalidOperationException ex)
-      {
-        return BadRequest(ApiResponse<AuthResponseDto>.ErrorResponse(ex.Message));
-      }
-      catch (Exception ex)
-      {
-        return BadRequest(ApiResponse<AuthResponseDto>.ErrorResponse(ex.Message));
-      }
+      var command = new RegisterCommand { Request = request };
+      var result = await _mediator.Send(command);
+      return CreatedAtAction(nameof(Login), ApiResponse<AuthResponseDto>.SuccessResponse(result));
     }
 
     [HttpPost("refresh-token")]
     public async Task<ActionResult<ApiResponse<AuthResponseDto>>> RefreshToken([FromBody] RefreshTokenRequestDto request)
     {
-      try
-      {
-        var command = new RefreshTokenCommand { Request = request };
-        var result = await _mediator.Send(command);
-        return Ok(ApiResponse<AuthResponseDto>.SuccessResponse(result));
-      }
-      catch (UnauthorizedAccessException ex)
-      {
-        return Unauthorized(ApiResponse<AuthResponseDto>.ErrorResponse(ex.Message));
-      }
-      catch (Exception ex)
-      {
-        return BadRequest(ApiResponse<AuthResponseDto>.ErrorResponse(ex.Message));
-      }
+      var command = new RefreshTokenCommand { Request = request };
+      var result = await _mediator.Send(command);
+      return Ok(ApiResponse<AuthResponseDto>.SuccessResponse(result));
     }
 
     [HttpPost("change-password")]
     [Authorize]
     public async Task<ActionResult<ApiResponse>> ChangePassword([FromBody] ChangePasswordRequestDto request)
     {
-      try
+      var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
       {
-        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
-        {
-          return Unauthorized(ApiResponse.ErrorResponse("Invalid user token"));
-        }
-
-        var command = new ChangePasswordCommand
-        {
-          UserId = userId,
-          Request = request
-        };
-
-        var result = await _mediator.Send(command);
-
-        if (result)
-        {
-          return Ok(ApiResponse.SuccessResponse("Password changed successfully"));
-        }
-
-        return BadRequest(ApiResponse.ErrorResponse("Failed to change password"));
+        return Unauthorized(ApiResponse.ErrorResponse("Invalid user token"));
       }
-      catch (Exception ex)
+
+      var command = new ChangePasswordCommand
       {
-        return BadRequest(ApiResponse.ErrorResponse(ex.Message));
+        UserId = userId,
+        Request = request
+      };
+
+      var result = await _mediator.Send(command);
+
+      if (result)
+      {
+        return Ok(ApiResponse.SuccessResponse("Password changed successfully"));
       }
+
+      return BadRequest(ApiResponse.ErrorResponse("Failed to change password"));
     }
 
     [HttpGet("me")]
@@ -143,31 +103,17 @@ namespace CleanArchitecture.API.Controllers
     [HttpPost("request-password-reset")]
     public async Task<ActionResult<ApiResponse<PasswordResetResponseDto>>> RequestPasswordReset([FromBody] RequestPasswordResetDto request)
     {
-      try
-      {
-        var command = new RequestPasswordResetCommand { Request = request };
-        var result = await _mediator.Send(command);
-        return Ok(ApiResponse<PasswordResetResponseDto>.SuccessResponse(result));
-      }
-      catch (Exception ex)
-      {
-        return BadRequest(ApiResponse<PasswordResetResponseDto>.ErrorResponse(ex.Message));
-      }
+      var command = new RequestPasswordResetCommand { Request = request };
+      var result = await _mediator.Send(command);
+      return Ok(ApiResponse<PasswordResetResponseDto>.SuccessResponse(result));
     }
 
     [HttpPost("reset-password")]
     public async Task<ActionResult<ApiResponse>> ResetPassword([FromBody] ResetPasswordDto request)
     {
-      try
-      {
-        var command = new ResetPasswordCommand { Request = request };
-        var result = await _mediator.Send(command);
-        return Ok(result);
-      }
-      catch (Exception ex)
-      {
-        return BadRequest(ApiResponse.ErrorResponse(ex.Message));
-      }
+      var command = new ResetPasswordCommand { Request = request };
+      var result = await _mediator.Send(command);
+      return Ok(result);
     }
   }
 }

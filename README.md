@@ -11,6 +11,7 @@ CleanArchitecture/
 │   ├── PASSWORD_RECOVERY.md          # Recuperación de contraseña
 │   ├── PERMISSIONS_AND_ROLES.md      # Sistema de permisos y roles
 │   ├── LOCALIZATION_AND_EMAIL.md     # Localización y correos
+│   ├── ERROR_HANDLING.md             # Sistema de manejo de errores
 │   └── SCRIPTS_AND_AUTOMATION.md     # Scripts y automatización
 ├── src/                              # Código fuente de la aplicación
 │   ├── CleanArchitecture.Domain/     # Capa de Dominio
@@ -266,6 +267,25 @@ El sistema incluye un sistema completo de permisos y roles:
 - **Permissions.Read/Write** - Gestión de permisos
 
 Para más detalles, consulta [PERMISSIONS_AND_ROLES.md](PERMISSIONS_AND_ROLES.md).
+
+## 🚨 Sistema de Manejo de Errores
+
+El sistema incluye un manejo robusto y consistente de errores:
+
+- ✅ **Excepciones específicas** con códigos de error únicos
+- ✅ **Localización automática** de mensajes de error
+- ✅ **Middleware centralizado** para manejo de excepciones
+- ✅ **Códigos HTTP apropiados** mapeados automáticamente
+- ✅ **Respuestas estructuradas** con metadatos consistentes
+- ✅ **Logging estructurado** para debugging y monitoreo
+- ✅ **Testing simplificado** con excepciones específicas
+
+### Tipos de Errores Soportados
+- **Autenticación**: `UserNotFoundError`, `InvalidCredentialsError`, etc.
+- **Validación**: `RequiredFieldError`, `InvalidEmailFormatError`, etc.
+- **Permisos**: `InsufficientPermissionsError`, `RoleNotFoundError`, etc.
+
+Para más detalles, consulta [ERROR_HANDLING.md](docs/ERROR_HANDLING.md) y [ERROR_HANDLING_EXAMPLES.md](docs/ERROR_HANDLING_EXAMPLES.md).
 
 ## 🛠️ Scripts y Automatización
 
