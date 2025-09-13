@@ -12,6 +12,11 @@ namespace CleanArchitecture.Application.Common.Exceptions
 
   public class RoleNotFoundError : ApplicationException
   {
+    public RoleNotFoundError()
+        : base("ROLE_NOT_FOUND", "Role not found", new { })
+    {
+    }
+
     public RoleNotFoundError(string roleName)
         : base("ROLE_NOT_FOUND", $"Role not found: {roleName}", new { RoleName = roleName })
     {
@@ -36,6 +41,11 @@ namespace CleanArchitecture.Application.Common.Exceptions
 
   public class PermissionNotFoundError : ApplicationException
   {
+    public PermissionNotFoundError()
+        : base("PERMISSION_NOT_FOUND", "Permission not found", new { })
+    {
+    }
+
     public PermissionNotFoundError(string permissionName)
         : base("PERMISSION_NOT_FOUND", $"Permission not found: {permissionName}", new { PermissionName = permissionName })
     {

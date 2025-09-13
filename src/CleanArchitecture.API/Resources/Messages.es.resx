@@ -209,6 +209,9 @@
   <data name="Success_UsersRetrieved" xml:space="preserve">
     <value>Usuarios obtenidos exitosamente</value>
   </data>
+  <data name="RolePermissionsUpdated" xml:space="preserve">
+    <value>Permisos del rol actualizados exitosamente</value>
+  </data>
   <data name="Error_InvalidPaginationParameters" xml:space="preserve">
     <value>Parámetros de paginación inválidos</value>
   </data>

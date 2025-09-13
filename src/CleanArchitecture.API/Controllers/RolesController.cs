@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Models;
 using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Application.Features.Roles.Commands.CreateRole;
+using CleanArchitecture.Application.Features.Roles.Commands.UpdateRolePermissions;
 using CleanArchitecture.Application.Features.Roles.Queries.GetAllRoles;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -53,6 +54,21 @@ namespace CleanArchitecture.API.Controllers
       {
         return BadRequest(ApiResponse<RoleDto>.ErrorResponse(ex.Message));
       }
+    }
+
+    [HttpPatch("{roleId}/permissions")]
+    [Authorize(Policy = "Roles.Write")]
+    public async Task<ActionResult<ApiResponse>> UpdateRolePermissions(
+        [FromRoute] Guid roleId,
+        [FromBody] UpdateRolePermissionsRequestDto request)
+    {
+      var command = new UpdateRolePermissionsCommand
+      {
+        RoleId = roleId,
+        Request = request
+      };
+      var result = await _mediator.Send(command);
+      return Ok(result);
     }
   }
 }
