@@ -1,45 +1,45 @@
 namespace CleanArchitecture.Domain.Common.Constants
 {
   /// <summary>
-  /// Constantes para todos los permisos del sistema
-  /// Centraliza los nombres de permisos para evitar errores de tipeo y facilitar el mantenimiento
+  /// Constants for all system permissions
+  /// Centralizes permission names to avoid typos and facilitate maintenance
   /// </summary>
   public static class PermissionConstants
   {
     #region Users Permissions
 
     /// <summary>
-    /// Permisos relacionados con la gestión de usuarios
+    /// Permissions related to user management
     /// </summary>
     public static class Users
     {
       /// <summary>
-      /// Permiso para leer/listar usuarios
+      /// Permission to read/list users
       /// </summary>
       public const string Read = "Users.Read";
 
       /// <summary>
-      /// Permiso para crear nuevos usuarios
+      /// Permission to create new users
       /// </summary>
       public const string Write = "Users.Write";
 
       /// <summary>
-      /// Permiso para actualizar usuarios existentes
+      /// Permission to update existing users
       /// </summary>
       public const string Update = "Users.Update";
 
       /// <summary>
-      /// Permiso para eliminar usuarios
+      /// Permission to delete users
       /// </summary>
       public const string Delete = "Users.Delete";
 
       /// <summary>
-      /// Permiso para gestionar roles de usuarios
+      /// Permission to manage user roles
       /// </summary>
       public const string ManageRoles = "Users.ManageRoles";
 
       /// <summary>
-      /// Permiso para ver información sensible de usuarios
+      /// Permission to view sensitive user information
       /// </summary>
       public const string ViewSensitive = "Users.ViewSensitive";
     }
@@ -49,32 +49,32 @@ namespace CleanArchitecture.Domain.Common.Constants
     #region Roles Permissions
 
     /// <summary>
-    /// Permisos relacionados con la gestión de roles
+    /// Permissions related to role management
     /// </summary>
     public static class Roles
     {
       /// <summary>
-      /// Permiso para leer/listar roles
+      /// Permission to read/list roles
       /// </summary>
       public const string Read = "Roles.Read";
 
       /// <summary>
-      /// Permiso para crear nuevos roles
+      /// Permission to create new roles
       /// </summary>
       public const string Write = "Roles.Write";
 
       /// <summary>
-      /// Permiso para actualizar roles existentes
+      /// Permission to update existing roles
       /// </summary>
       public const string Update = "Roles.Update";
 
       /// <summary>
-      /// Permiso para eliminar roles
+      /// Permission to delete roles
       /// </summary>
       public const string Delete = "Roles.Delete";
 
       /// <summary>
-      /// Permiso para gestionar permisos de roles
+      /// Permission to manage role permissions
       /// </summary>
       public const string ManagePermissions = "Roles.ManagePermissions";
     }
@@ -84,27 +84,27 @@ namespace CleanArchitecture.Domain.Common.Constants
     #region Permissions Permissions
 
     /// <summary>
-    /// Permisos relacionados con la gestión de permisos
+    /// Permissions related to permission management
     /// </summary>
     public static class Permissions
     {
       /// <summary>
-      /// Permiso para leer/listar permisos
+      /// Permission to read/list permissions
       /// </summary>
       public const string Read = "Permissions.Read";
 
       /// <summary>
-      /// Permiso para crear nuevos permisos
+      /// Permission to create new permissions
       /// </summary>
       public const string Write = "Permissions.Write";
 
       /// <summary>
-      /// Permiso para actualizar permisos existentes
+      /// Permission to update existing permissions
       /// </summary>
       public const string Update = "Permissions.Update";
 
       /// <summary>
-      /// Permiso para eliminar permisos
+      /// Permission to delete permissions
       /// </summary>
       public const string Delete = "Permissions.Delete";
     }
@@ -114,27 +114,27 @@ namespace CleanArchitecture.Domain.Common.Constants
     #region System Permissions
 
     /// <summary>
-    /// Permisos relacionados con la administración del sistema
+    /// Permissions related to system administration
     /// </summary>
     public static class System
     {
       /// <summary>
-      /// Permiso para acceder al panel de administración
+      /// Permission to access the administration panel
       /// </summary>
       public const string Admin = "System.Admin";
 
       /// <summary>
-      /// Permiso para ver logs del sistema
+      /// Permission to view system logs
       /// </summary>
       public const string ViewLogs = "System.ViewLogs";
 
       /// <summary>
-      /// Permiso para gestionar configuraciones del sistema
+      /// Permission to manage system settings
       /// </summary>
       public const string ManageSettings = "System.ManageSettings";
 
       /// <summary>
-      /// Permiso para ejecutar tareas de mantenimiento
+      /// Permission to execute maintenance tasks
       /// </summary>
       public const string Maintenance = "System.Maintenance";
     }
@@ -144,17 +144,17 @@ namespace CleanArchitecture.Domain.Common.Constants
     #region Audit Permissions
 
     /// <summary>
-    /// Permisos relacionados con auditoría y reportes
+    /// Permissions related to audit and reports
     /// </summary>
     public static class Audit
     {
       /// <summary>
-      /// Permiso para ver reportes de auditoría
+      /// Permission to view audit reports
       /// </summary>
       public const string ViewReports = "Audit.ViewReports";
 
       /// <summary>
-      /// Permiso para exportar datos de auditoría
+      /// Permission to export audit data
       /// </summary>
       public const string ExportData = "Audit.ExportData";
     }
@@ -164,9 +164,9 @@ namespace CleanArchitecture.Domain.Common.Constants
     #region Helper Methods
 
     /// <summary>
-    /// Obtiene todos los permisos del sistema como una lista
+    /// Gets all system permissions as a list
     /// </summary>
-    /// <returns>Lista de todos los permisos disponibles</returns>
+    /// <returns>List of all available permissions</returns>
     public static List<string> GetAllPermissions()
     {
       return new List<string>
@@ -205,30 +205,30 @@ namespace CleanArchitecture.Domain.Common.Constants
     }
 
     /// <summary>
-    /// Obtiene los permisos básicos que debe tener un usuario estándar
+    /// Gets the basic permissions that a standard user should have
     /// </summary>
-    /// <returns>Lista de permisos básicos</returns>
+    /// <returns>List of basic permissions</returns>
     public static List<string> GetBasicUserPermissions()
     {
       return new List<string>
             {
-                Users.Read, // Puede ver su propio perfil y listar usuarios básicos
+                Users.Read, // Can view their own profile and list basic users
             };
     }
 
     /// <summary>
-    /// Obtiene los permisos que debe tener un administrador
+    /// Gets the permissions that an administrator should have
     /// </summary>
-    /// <returns>Lista de permisos de administrador</returns>
+    /// <returns>List of administrator permissions</returns>
     public static List<string> GetAdminPermissions()
     {
       return GetAllPermissions();
     }
 
     /// <summary>
-    /// Obtiene los permisos que debe tener un moderador
+    /// Gets the permissions that a moderator should have
     /// </summary>
-    /// <returns>Lista de permisos de moderador</returns>
+    /// <returns>List of moderator permissions</returns>
     public static List<string> GetModeratorPermissions()
     {
       return new List<string>
@@ -243,10 +243,10 @@ namespace CleanArchitecture.Domain.Common.Constants
     }
 
     /// <summary>
-    /// Verifica si un permiso existe en el sistema
+    /// Verifies if a permission exists in the system
     /// </summary>
-    /// <param name="permission">Permiso a verificar</param>
-    /// <returns>True si el permiso existe, False en caso contrario</returns>
+    /// <param name="permission">Permission to verify</param>
+    /// <returns>True if the permission exists, False otherwise</returns>
     public static bool IsValidPermission(string permission)
     {
       return GetAllPermissions().Contains(permission);

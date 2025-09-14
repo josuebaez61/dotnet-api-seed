@@ -1,21 +1,21 @@
-# 🚨 Sistema de Manejo de Errores
+# 🚨 Error Handling System
 
-Este documento describe el sistema completo de manejo de errores implementado en la aplicación Clean Architecture, que proporciona un manejo consistente, localizable y estructurado de errores en toda la aplicación.
+This document describes the complete error handling system implemented in the Clean Architecture application, providing consistent, localizable, and structured error handling throughout the application.
 
-## 📋 Tabla de Contenidos
+## 📋 Table of Contents
 
-- [Arquitectura del Sistema](#arquitectura-del-sistema)
-- [Clases de Error](#clases-de-error)
-- [Middleware de Manejo de Excepciones](#middleware-de-manejo-de-excepciones)
-- [Localización de Errores](#localización-de-errores)
-- [Respuestas Estándar](#respuestas-estándar)
-- [Ejemplos de Uso](#ejemplos-de-uso)
-- [Códigos HTTP](#códigos-http)
-- [Mejores Prácticas](#mejores-prácticas)
+- [System Architecture](#system-architecture)
+- [Error Classes](#error-classes)
+- [Exception Handling Middleware](#exception-handling-middleware)
+- [Error Localization](#error-localization)
+- [Standard Responses](#standard-responses)
+- [Usage Examples](#usage-examples)
+- [HTTP Codes](#http-codes)
+- [Best Practices](#best-practices)
 
-## 🏗️ Arquitectura del Sistema
+## 🏗️ System Architecture
 
-El sistema de manejo de errores sigue los principios de Clean Architecture y está estructurado en las siguientes capas:
+The error handling system follows Clean Architecture principles and is structured in the following layers:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -26,11 +26,11 @@ El sistema de manejo de errores sigue los principios de Clean Architecture y est
 ├─────────────────────────────────────────────────────────────┤
 │              ExceptionHandlingMiddleware                    │
 │  ┌─────────────────────────────────────────────────────────┐ │
-│  │  • Captura excepciones                                 │ │
-│  │  • Mapea códigos HTTP                                  │ │
-│  │  • Localiza mensajes                                   │ │
-│  │  • Estructura respuestas                               │ │
-│  │  • Registra logs                                       │ │
+│  │  • Captures exceptions                                  │ │
+│  │  • Maps HTTP codes                                      │ │
+│  │  │  • Localizes messages                                │ │
+│  │  │  • Structures responses                              │ │
+│  │  │  • Logs errors                                       │ │
 │  └─────────────────────────────────────────────────────────┘ │
 ├─────────────────────────────────────────────────────────────┤
 │                Application Layer (Services)                 │
@@ -58,7 +58,7 @@ El sistema de manejo de errores sigue los principios de Clean Architecture y est
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Flujo de Manejo de Errores
+### Error Handling Flow
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
@@ -87,18 +87,18 @@ El sistema de manejo de errores sigue los principios de Clean Architecture y est
 └─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
 
-**Proceso paso a paso:**
+**Step-by-step process:**
 
-1. **Controller** recibe request y delega a service
-2. **Service** valida y lanza excepción específica con código de error
-3. **ExceptionHandlingMiddleware** captura la excepción automáticamente
-4. **LocalizationService** traduce el mensaje según idioma del usuario
-5. **Middleware** estructura respuesta JSON consistente
-6. **Cliente** recibe respuesta localizada con código HTTP apropiado
+1. **Controller** receives request and delegates to service
+2. **Service** validates and throws specific exception with error code
+3. **ExceptionHandlingMiddleware** automatically captures the exception
+4. **LocalizationService** translates the message according to user's language
+5. **Middleware** structures consistent JSON response
+6. **Client** receives localized response with appropriate HTTP code
 
-## 🔧 Clases de Error
+## 🔧 Error Classes
 
-### Clase Base: `ApplicationException`
+### Base Class: `ApplicationException`
 
 ```csharp
 public abstract class ApplicationException : Exception
@@ -115,58 +115,58 @@ public abstract class ApplicationException : Exception
 }
 ```
 
-**Características:**
-- ✅ Código de error único para identificación
-- ✅ Parámetros para personalización de mensajes
-- ✅ Base para todas las excepciones de la aplicación
+**Features:**
+- ✅ Unique error code for identification
+- ✅ Parameters for message customization
+- ✅ Base for all application exceptions
 
-### Errores de Autenticación (`AuthExceptions.cs`)
+### Authentication Errors (`AuthExceptions.cs`)
 
-| Error | Código | Descripción | HTTP Status |
-|-------|--------|-------------|-------------|
-| `UserNotFoundError` | `USER_NOT_FOUND` | Usuario no encontrado | 404 |
-| `InvalidCredentialsError` | `INVALID_CREDENTIALS` | Credenciales inválidas | 401 |
-| `AccountDeactivatedError` | `ACCOUNT_DEACTIVATED` | Cuenta desactivada | 403 |
-| `UserAlreadyExistsError` | `USER_ALREADY_EXISTS` | Usuario ya existe | 409 |
-| `InvalidPasswordError` | `INVALID_PASSWORD` | Contraseña inválida | 400 |
-| `InvalidRefreshTokenError` | `INVALID_REFRESH_TOKEN` | Token de renovación inválido | 401 |
-| `PasswordResetCodeInvalidError` | `PASSWORD_RESET_CODE_INVALID` | Código de reset inválido | 400 |
-| `PasswordResetCodeExpiredError` | `PASSWORD_RESET_CODE_EXPIRED` | Código de reset expirado | 400 |
-| `PasswordResetCodeAlreadyUsedError` | `PASSWORD_RESET_CODE_ALREADY_USED` | Código ya utilizado | 400 |
-| `CurrentPasswordIncorrectError` | `CURRENT_PASSWORD_INCORRECT` | Contraseña actual incorrecta | 400 |
-| `PasswordChangeFailedError` | `PASSWORD_CHANGE_FAILED` | Error al cambiar contraseña | 400 |
+| Error | Code | Description | HTTP Status |
+|-------|------|-------------|-------------|
+| `UserNotFoundError` | `USER_NOT_FOUND` | User not found | 404 |
+| `InvalidCredentialsError` | `INVALID_CREDENTIALS` | Invalid credentials | 401 |
+| `AccountDeactivatedError` | `ACCOUNT_DEACTIVATED` | Account deactivated | 403 |
+| `UserAlreadyExistsError` | `USER_ALREADY_EXISTS` | User already exists | 409 |
+| `InvalidPasswordError` | `INVALID_PASSWORD` | Invalid password | 400 |
+| `InvalidRefreshTokenError` | `INVALID_REFRESH_TOKEN` | Invalid refresh token | 401 |
+| `PasswordResetCodeInvalidError` | `PASSWORD_RESET_CODE_INVALID` | Invalid reset code | 400 |
+| `PasswordResetCodeExpiredError` | `PASSWORD_RESET_CODE_EXPIRED` | Expired reset code | 400 |
+| `PasswordResetCodeAlreadyUsedError` | `PASSWORD_RESET_CODE_ALREADY_USED` | Code already used | 400 |
+| `CurrentPasswordIncorrectError` | `CURRENT_PASSWORD_INCORRECT` | Current password incorrect | 400 |
+| `PasswordChangeFailedError` | `PASSWORD_CHANGE_FAILED` | Password change failed | 400 |
 
-### Errores de Validación (`ValidationExceptions.cs`)
+### Validation Errors (`ValidationExceptions.cs`)
 
-| Error | Código | Descripción | HTTP Status |
-|-------|--------|-------------|-------------|
-| `ValidationError` | `VALIDATION_ERROR` | Error de validación genérico | 400 |
-| `RequiredFieldError` | `REQUIRED_FIELD` | Campo requerido | 400 |
-| `InvalidEmailFormatError` | `INVALID_EMAIL_FORMAT` | Formato de email inválido | 400 |
-| `PasswordTooWeakError` | `PASSWORD_TOO_WEAK` | Contraseña débil | 400 |
-| `InvalidDateOfBirthError` | `INVALID_DATE_OF_BIRTH` | Fecha de nacimiento inválida | 400 |
-| `InvalidAgeError` | `INVALID_AGE` | Edad inválida | 400 |
-| `UsernameTooShortError` | `USERNAME_TOO_SHORT` | Usuario muy corto | 400 |
-| `UsernameTooLongError` | `USERNAME_TOO_LONG` | Usuario muy largo | 400 |
-| `InvalidUsernameFormatError` | `INVALID_USERNAME_FORMAT` | Formato de usuario inválido | 400 |
+| Error | Code | Description | HTTP Status |
+|-------|------|-------------|-------------|
+| `ValidationError` | `VALIDATION_ERROR` | Generic validation error | 400 |
+| `RequiredFieldError` | `REQUIRED_FIELD` | Required field | 400 |
+| `InvalidEmailFormatError` | `INVALID_EMAIL_FORMAT` | Invalid email format | 400 |
+| `PasswordTooWeakError` | `PASSWORD_TOO_WEAK` | Weak password | 400 |
+| `InvalidDateOfBirthError` | `INVALID_DATE_OF_BIRTH` | Invalid date of birth | 400 |
+| `InvalidAgeError` | `INVALID_AGE` | Invalid age | 400 |
+| `UsernameTooShortError` | `USERNAME_TOO_SHORT` | Username too short | 400 |
+| `UsernameTooLongError` | `USERNAME_TOO_LONG` | Username too long | 400 |
+| `InvalidUsernameFormatError` | `INVALID_USERNAME_FORMAT` | Invalid username format | 400 |
 
-### Errores de Permisos (`PermissionExceptions.cs`)
+### Permission Errors (`PermissionExceptions.cs`)
 
-| Error | Código | Descripción | HTTP Status |
-|-------|--------|-------------|-------------|
-| `InsufficientPermissionsError` | `INSUFFICIENT_PERMISSIONS` | Permisos insuficientes | 403 |
-| `RoleNotFoundError` | `ROLE_NOT_FOUND` | Rol no encontrado | 404 |
-| `RoleNotFoundByIdError` | `ROLE_NOT_FOUND_BY_ID` | Rol no encontrado por ID | 404 |
-| `RoleAlreadyExistsError` | `ROLE_ALREADY_EXISTS` | Rol ya existe | 409 |
-| `PermissionNotFoundError` | `PERMISSION_NOT_FOUND` | Permiso no encontrado | 404 |
-| `PermissionNotFoundByIdError` | `PERMISSION_NOT_FOUND_BY_ID` | Permiso no encontrado por ID | 404 |
-| `PermissionAlreadyExistsError` | `PERMISSION_ALREADY_EXISTS` | Permiso ya existe | 409 |
-| `UserNotInRoleError` | `USER_NOT_IN_ROLE` | Usuario no está en rol | 400 |
-| `RolePermissionNotFoundError` | `ROLE_PERMISSION_NOT_FOUND` | Rol no tiene permiso | 404 |
+| Error | Code | Description | HTTP Status |
+|-------|------|-------------|-------------|
+| `InsufficientPermissionsError` | `INSUFFICIENT_PERMISSIONS` | Insufficient permissions | 403 |
+| `RoleNotFoundError` | `ROLE_NOT_FOUND` | Role not found | 404 |
+| `RoleNotFoundByIdError` | `ROLE_NOT_FOUND_BY_ID` | Role not found by ID | 404 |
+| `RoleAlreadyExistsError` | `ROLE_ALREADY_EXISTS` | Role already exists | 409 |
+| `PermissionNotFoundError` | `PERMISSION_NOT_FOUND` | Permission not found | 404 |
+| `PermissionNotFoundByIdError` | `PERMISSION_NOT_FOUND_BY_ID` | Permission not found by ID | 404 |
+| `PermissionAlreadyExistsError` | `PERMISSION_ALREADY_EXISTS` | Permission already exists | 409 |
+| `UserNotInRoleError` | `USER_NOT_IN_ROLE` | User not in role | 400 |
+| `RolePermissionNotFoundError` | `ROLE_PERMISSION_NOT_FOUND` | Role doesn't have permission | 404 |
 
-## 🔄 Middleware de Manejo de Excepciones
+## 🔄 Exception Handling Middleware
 
-El `ExceptionHandlingMiddleware` se ejecuta automáticamente y maneja todas las excepciones no controladas:
+The `ExceptionHandlingMiddleware` runs automatically and handles all unhandled exceptions:
 
 ```csharp
 public class ExceptionHandlingMiddleware
@@ -185,27 +185,27 @@ public class ExceptionHandlingMiddleware
 }
 ```
 
-### Configuración en Program.cs
+### Configuration in Program.cs
 
 ```csharp
 // Add exception handling middleware
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 ```
 
-**Características:**
-- ✅ Captura automática de todas las excepciones
-- ✅ Mapeo de códigos de error a códigos HTTP apropiados
-- ✅ Localización automática de mensajes
-- ✅ Logging estructurado de errores
-- ✅ Respuestas JSON consistentes
+**Features:**
+- ✅ Automatic capture of all exceptions
+- ✅ Error code mapping to appropriate HTTP codes
+- ✅ Automatic message localization
+- ✅ Structured error logging
+- ✅ Consistent JSON responses
 
-## 🌍 Localización de Errores
+## 🌍 Error Localization
 
-### Archivos de Localización
+### Localization Files
 
-Los mensajes de error se localizan usando archivos JSON:
+Error messages are localized using JSON files:
 
-#### Español (`es.json`)
+#### Spanish (`es.json`)
 ```json
 {
   "Messages": {
@@ -219,7 +219,7 @@ Los mensajes de error se localizan usando archivos JSON:
 }
 ```
 
-#### Inglés (`en.json`)
+#### English (`en.json`)
 ```json
 {
   "Messages": {
@@ -233,7 +233,7 @@ Los mensajes de error se localizan usando archivos JSON:
 }
 ```
 
-### Configuración de Idiomas
+### Language Configuration
 
 ```csharp
 var supportedCultures = new[] { "en", "es" };
@@ -243,13 +243,13 @@ var localizationOptions = new RequestLocalizationOptions()
     .AddSupportedUICultures(supportedCultures);
 ```
 
-**Idiomas soportados:**
-- 🇺🇸 **Inglés (en)** - Idioma por defecto
-- 🇪🇸 **Español (es)** - Idioma alternativo
+**Supported languages:**
+- 🇺🇸 **English (en)** - Default language
+- 🇪🇸 **Spanish (es)** - Alternative language
 
-## 📊 Respuestas Estándar
+## 📊 Standard Responses
 
-### Estructura de Respuesta de Error
+### Error Response Structure
 
 ```json
 {
@@ -261,7 +261,7 @@ var localizationOptions = new RequestLocalizationOptions()
 }
 ```
 
-### Estructura de Respuesta de Éxito
+### Success Response Structure
 
 ```json
 {
@@ -269,14 +269,14 @@ var localizationOptions = new RequestLocalizationOptions()
   "message": "Usuario creado exitosamente",
   "data": {
     "id": "guid",
-    "firstName": "Juan",
-    "lastName": "Pérez"
+    "firstName": "John",
+    "lastName": "Doe"
   },
   "timestamp": "2025-01-13T12:00:00.000Z"
 }
 ```
 
-### Clase ApiResponse
+### ApiResponse Class
 
 ```csharp
 public class ApiResponse<T>
@@ -291,9 +291,9 @@ public class ApiResponse<T>
 }
 ```
 
-## 💡 Ejemplos de Uso
+## 💡 Usage Examples
 
-### 1. En Command Handlers
+### 1. In Command Handlers
 
 ```csharp
 public async Task<ApiResponse> Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -304,11 +304,11 @@ public async Task<ApiResponse> Handle(CreateUserCommand request, CancellationTok
         throw new UserAlreadyExistsError("email", request.Email);
     }
     
-    // ... resto del código
+    // ... rest of the code
 }
 ```
 
-### 2. En Services
+### 2. In Services
 
 ```csharp
 public async Task<AuthResponseDto> LoginAsync(LoginRequestDto request)
@@ -324,13 +324,13 @@ public async Task<AuthResponseDto> LoginAsync(LoginRequestDto request)
         throw new AccountDeactivatedError(user.Id.ToString());
     }
     
-    // ... resto del código
+    // ... rest of the code
 }
 ```
 
-### 3. En Controllers (Opcional)
+### 3. In Controllers (Optional)
 
-Los controllers pueden manejar excepciones específicas si es necesario:
+Controllers can handle specific exceptions if needed:
 
 ```csharp
 [HttpPost("login")]
@@ -344,18 +344,18 @@ public async Task<ActionResult<ApiResponse<AuthResponseDto>>> Login([FromBody] L
     }
     catch (ApplicationException ex)
     {
-        // El middleware manejará automáticamente estas excepciones
+        // Middleware will automatically handle these exceptions
         throw;
     }
 }
 ```
 
-## 🔢 Códigos HTTP
+## 🔢 HTTP Codes
 
-### Mapeo Automático de Códigos
+### Automatic Code Mapping
 
-| Tipo de Error | Código HTTP | Descripción |
-|---------------|-------------|-------------|
+| Error Type | HTTP Code | Description |
+|------------|-----------|-------------|
 | `UserNotFoundError` | 404 | Not Found |
 | `InvalidCredentialsError` | 401 | Unauthorized |
 | `AccountDeactivatedError` | 403 | Forbidden |
@@ -365,9 +365,9 @@ public async Task<ActionResult<ApiResponse<AuthResponseDto>>> Login([FromBody] L
 | `ValidationError` | 400 | Bad Request |
 | `UnauthorizedAccessException` | 401 | Unauthorized |
 | `ArgumentException` | 400 | Bad Request |
-| Otros errores | 500 | Internal Server Error |
+| Other errors | 500 | Internal Server Error |
 
-### Función de Mapeo
+### Mapping Function
 
 ```csharp
 private static int GetStatusCodeForApplicationException(ApplicationException exception)
@@ -386,42 +386,42 @@ private static int GetStatusCodeForApplicationException(ApplicationException exc
 }
 ```
 
-## ✅ Mejores Prácticas
+## ✅ Best Practices
 
-### 1. **Usar Excepciones Específicas**
+### 1. **Use Specific Exceptions**
 
-❌ **Mal:**
+❌ **Bad:**
 ```csharp
 throw new Exception("User not found");
 ```
 
-✅ **Bien:**
+✅ **Good:**
 ```csharp
 throw new UserNotFoundError(request.Email);
 ```
 
-### 2. **Incluir Contexto en las Excepciones**
+### 2. **Include Context in Exceptions**
 
-❌ **Mal:**
+❌ **Bad:**
 ```csharp
 throw new UserNotFoundError("User not found");
 ```
 
-✅ **Bien:**
+✅ **Good:**
 ```csharp
 throw new UserNotFoundError(request.Email);
 ```
 
-### 3. **No Manejar Excepciones en Controllers**
+### 3. **Don't Handle Exceptions in Controllers**
 
-❌ **Mal:**
+❌ **Bad:**
 ```csharp
 [HttpPost("login")]
 public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
 {
     try
     {
-        // ... código
+        // ... code
     }
     catch (UserNotFoundError ex)
     {
@@ -430,7 +430,7 @@ public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
 }
 ```
 
-✅ **Bien:**
+✅ **Good:**
 ```csharp
 [HttpPost("login")]
 public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
@@ -441,32 +441,32 @@ public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
 }
 ```
 
-### 4. **Usar Códigos de Error Consistentes**
+### 4. **Use Consistent Error Codes**
 
-❌ **Mal:**
+❌ **Bad:**
 ```csharp
 throw new ApplicationException("USER_NOT_FOUND", "User not found");
 throw new ApplicationException("user-not-found", "User not found");
 ```
 
-✅ **Bien:**
+✅ **Good:**
 ```csharp
-throw new UserNotFoundError(request.Email); // Siempre usa "USER_NOT_FOUND"
+throw new UserNotFoundError(request.Email); // Always use "USER_NOT_FOUND"
 ```
 
-### 5. **Localizar Mensajes de Error**
+### 5. **Localize Error Messages**
 
-❌ **Mal:**
+❌ **Bad:**
 ```csharp
 throw new ApplicationException("USER_NOT_FOUND", "Usuario no encontrado");
 ```
 
-✅ **Bien:**
+✅ **Good:**
 ```csharp
-throw new UserNotFoundError(request.Email); // El middleware localiza automáticamente
+throw new UserNotFoundError(request.Email); // Middleware automatically localizes
 ```
 
-### 6. **Logging de Errores**
+### 6. **Error Logging**
 
 ```csharp
 public class ExceptionHandlingMiddleware
@@ -486,9 +486,9 @@ public class ExceptionHandlingMiddleware
 }
 ```
 
-## 🔍 Debugging y Testing
+## 🔍 Debugging and Testing
 
-### Testing de Excepciones
+### Exception Testing
 
 ```csharp
 [Test]
@@ -505,7 +505,7 @@ public async Task Login_WithNonExistentUser_ThrowsUserNotFoundError()
 }
 ```
 
-### Logging Estructurado
+### Structured Logging
 
 ```csharp
 _logger.LogError("User not found with email {Email}", request.Email);
@@ -513,25 +513,25 @@ _logger.LogWarning("Invalid password attempt for user {UserId}", user.Id);
 _logger.LogInformation("Password reset code generated for user {UserId}", user.Id);
 ```
 
-## 🚀 Extensiones Futuras
+## 🚀 Future Extensions
 
-### Posibles Mejoras
+### Possible Improvements
 
-- [ ] **Rate Limiting**: Límites de intentos de login
-- [ ] **Error Analytics**: Métricas de errores más frecuentes
-- [ ] **Error Recovery**: Sugerencias de recuperación
-- [ ] **Error Context**: Más contexto en las respuestas de error
-- [ ] **Error Correlation**: IDs de correlación para debugging
-- [ ] **Error Notifications**: Notificaciones automáticas de errores críticos
+- [ ] **Rate Limiting**: Login attempt limits
+- [ ] **Error Analytics**: Metrics for most frequent errors
+- [ ] **Error Recovery**: Recovery suggestions
+- [ ] **Error Context**: More context in error responses
+- [ ] **Error Correlation**: Correlation IDs for debugging
+- [ ] **Error Notifications**: Automatic notifications for critical errors
 
-### Integración con Herramientas Externas
+### Integration with External Tools
 
-- [ ] **Sentry**: Para tracking de errores en producción
-- [ ] **Application Insights**: Para métricas y análisis
-- [ ] **Elasticsearch**: Para búsqueda de logs de errores
-- [ ] **Grafana**: Para dashboards de errores
+- [ ] **Sentry**: For production error tracking
+- [ ] **Application Insights**: For metrics and analysis
+- [ ] **Elasticsearch**: For error log search
+- [ ] **Grafana**: For error dashboards
 
-## 📚 Referencias
+## 📚 References
 
 - [Clean Architecture - Robert C. Martin](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - [ASP.NET Core Exception Handling](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/error-handling)
@@ -540,5 +540,5 @@ _logger.LogInformation("Password reset code generated for user {UserId}", user.I
 
 ---
 
-**Última actualización:** 13 de Enero, 2025  
-**Versión:** 1.0.0
+**Last updated:** January 13, 2025  
+**Version:** 1.0.0

@@ -1,244 +1,244 @@
-# Scripts y Automatización
+# Scripts and Automation
 
-Este documento describe todos los scripts y herramientas de automatización disponibles para el proyecto Clean Architecture API.
+This document describes all the scripts and automation tools available for the Clean Architecture API project.
 
-## 🚀 Opciones de Automatización
+## 🚀 Automation Options
 
-El proyecto incluye múltiples opciones para automatizar tareas comunes:
+The project includes multiple options for automating common tasks:
 
-1. **npm scripts** (Recomendado para desarrollo)
-2. **Scripts de Bash** (Unix/Linux/macOS)
-3. **Scripts de PowerShell** (Windows)
+1. **npm scripts** (Recommended for development)
+2. **Bash scripts** (Unix/Linux/macOS)
+3. **PowerShell scripts** (Windows)
 4. **Makefile** (Unix/Linux/macOS)
-5. **VS Code Tasks** (Editor integrado)
+5. **VS Code Tasks** (Integrated editor)
 
-## 📦 npm Scripts (Recomendado)
+## 📦 npm Scripts (Recommended)
 
-### **Instalación**
+### **Installation**
 ```bash
 npm install
 ```
 
-### **Scripts Disponibles**
+### **Available Scripts**
 
-#### **Desarrollo**
+#### **Development**
 ```bash
-npm run dev              # Iniciar servidor de desarrollo
-npm start               # Alias para dev
-npm run build           # Compilar la solución
-npm run clean           # Limpiar artefactos de compilación
-npm run restore         # Restaurar paquetes NuGet
+npm run dev              # Start development server
+npm start               # Alias for dev
+npm run build           # Compile the solution
+npm run clean           # Clean compilation artifacts
+npm run restore         # Restore NuGet packages
 ```
 
-#### **Base de Datos**
+#### **Database**
 ```bash
-npm run db:migrate      # Ejecutar migraciones
-npm run db:migrate:dev  # Migraciones en entorno de desarrollo
-npm run db:migrate:prod # Migraciones en entorno de producción
-npm run db:add-migration # Agregar nueva migración
-npm run db:remove-migration # Remover última migración
-npm run db:drop         # Eliminar base de datos
-npm run db:seed         # Sembrar datos iniciales
+npm run db:migrate      # Run migrations
+npm run db:migrate:dev  # Migrations in development environment
+npm run db:migrate:prod # Migrations in production environment
+npm run db:add-migration # Add new migration
+npm run db:remove-migration # Remove last migration
+npm run db:drop         # Drop database
+npm run db:seed         # Seed initial data
 ```
 
 #### **Docker**
 ```bash
-npm run docker:up       # Iniciar contenedores Docker
-npm run docker:down     # Detener contenedores Docker
-npm run docker:logs     # Ver logs de contenedores
-npm run docker:restart  # Reiniciar contenedores
+npm run docker:up       # Start Docker containers
+npm run docker:down     # Stop Docker containers
+npm run docker:logs     # View container logs
+npm run docker:restart  # Restart containers
 ```
 
-#### **Configuración y Utilidades**
+#### **Configuration and Utilities**
 ```bash
-npm run setup           # Configuración completa del proyecto
-npm run setup:dev       # Configuración para desarrollo
-npm run reset           # Resetear entorno (Docker + DB)
-npm run logs            # Ver logs de la aplicación
-npm run pgadmin         # Abrir pgAdmin
-npm run swagger         # Abrir Swagger UI
-npm run health          # Verificar salud de la API
+npm run setup           # Complete project setup
+npm run setup:dev       # Development setup
+npm run reset           # Reset environment (Docker + DB)
+npm run logs            # View application logs
+npm run pgadmin         # Open pgAdmin
+npm run swagger         # Open Swagger UI
+npm run health          # Check API health
 ```
 
-#### **Calidad de Código**
+#### **Code Quality**
 ```bash
-npm run format          # Formatear código
-npm run lint            # Verificar formato de código
-npm run test            # Ejecutar pruebas
-npm run publish         # Publicar aplicación
+npm run format          # Format code
+npm run lint            # Check code format
+npm run test            # Run tests
+npm run publish         # Publish application
 ```
 
-## 🐚 Scripts de Bash (Unix/Linux/macOS)
+## 🐚 Bash Scripts (Unix/Linux/macOS)
 
-### **Scripts Disponibles**
+### **Available Scripts**
 
-#### **setup.sh** - Configuración inicial
+#### **setup.sh** - Initial setup
 ```bash
 ./scripts/setup.sh
 ```
-- Restaura paquetes NuGet
-- Compila la solución
-- Inicia contenedores Docker
-- Espera a que PostgreSQL esté listo
-- Ejecuta migraciones de base de datos
+- Restores NuGet packages
+- Compiles the solution
+- Starts Docker containers
+- Waits for PostgreSQL to be ready
+- Runs database migrations
 
-#### **dev.sh** - Entorno de desarrollo
+#### **dev.sh** - Development environment
 ```bash
 ./scripts/dev.sh
 ```
-- Verifica que Docker esté ejecutándose
-- Inicia la API en modo desarrollo
-- Muestra información útil sobre endpoints
+- Verifies Docker is running
+- Starts the API in development mode
+- Shows useful information about endpoints
 
-#### **db.sh** - Gestión de base de datos
+#### **db.sh** - Database management
 ```bash
-./scripts/db.sh migrate          # Ejecutar migraciones
-./scripts/db.sh add-migration    # Agregar migración
-./scripts/db.sh remove-migration # Remover migración
-./scripts/db.sh drop             # Eliminar base de datos
-./scripts/db.sh reset            # Resetear base de datos
-./scripts/db.sh status           # Estado de migraciones
-./scripts/db.sh backup           # Crear respaldo
-./scripts/db.sh restore          # Restaurar desde respaldo
+./scripts/db.sh migrate          # Run migrations
+./scripts/db.sh add-migration    # Add migration
+./scripts/db.sh remove-migration # Remove migration
+./scripts/db.sh drop             # Drop database
+./scripts/db.sh reset            # Reset database
+./scripts/db.sh status           # Migration status
+./scripts/db.sh backup           # Create backup
+./scripts/db.sh restore          # Restore from backup
 ```
 
-#### **test.sh** - Pruebas y calidad
+#### **test.sh** - Testing and quality
 ```bash
-./scripts/test.sh test           # Ejecutar pruebas
-./scripts/test.sh build          # Compilar solución
-./scripts/test.sh format         # Formatear código
-./scripts/test.sh lint           # Verificar formato
-./scripts/test.sh clean          # Limpiar artefactos
-./scripts/test.sh restore        # Restaurar paquetes
-./scripts/test.sh all            # Ejecutar todas las verificaciones
+./scripts/test.sh test           # Run tests
+./scripts/test.sh build          # Compile solution
+./scripts/test.sh format         # Format code
+./scripts/test.sh lint           # Check format
+./scripts/test.sh clean          # Clean artifacts
+./scripts/test.sh restore        # Restore packages
+./scripts/test.sh all            # Run all checks
 ```
 
-### **Hacer Scripts Ejecutables**
+### **Make Scripts Executable**
 ```bash
 chmod +x scripts/*.sh
 ```
 
-## 💻 Scripts de PowerShell (Windows)
+## 💻 PowerShell Scripts (Windows)
 
-### **setup.ps1** - Configuración inicial
+### **setup.ps1** - Initial setup
 ```powershell
 .\scripts\setup.ps1
 ```
-- Verifica que Docker esté ejecutándose
-- Verifica que .NET esté instalado
-- Restaura paquetes NuGet
-- Compila la solución
-- Inicia contenedores Docker
-- Espera a que PostgreSQL esté listo
-- Ejecuta migraciones
+- Verifies Docker is running
+- Verifies .NET is installed
+- Restores NuGet packages
+- Compiles the solution
+- Starts Docker containers
+- Waits for PostgreSQL to be ready
+- Runs migrations
 
-### **Ejecutar en PowerShell**
+### **Run in PowerShell**
 ```powershell
-# Habilitar ejecución de scripts (si es necesario)
+# Enable script execution (if necessary)
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
-# Ejecutar script
+# Run script
 .\scripts\setup.ps1
 ```
 
 ## 🔧 Makefile (Unix/Linux/macOS)
 
-### **Comandos Disponibles**
+### **Available Commands**
 
-#### **Desarrollo**
+#### **Development**
 ```bash
-make dev              # Iniciar servidor de desarrollo
-make build            # Compilar la solución
-make clean            # Limpiar artefactos
-make restore          # Restaurar paquetes
-make test             # Ejecutar pruebas
+make dev              # Start development server
+make build            # Compile the solution
+make clean            # Clean artifacts
+make restore          # Restore packages
+make test             # Run tests
 ```
 
-#### **Base de Datos**
+#### **Database**
 ```bash
-make migrate          # Ejecutar migraciones
-make migrate-add NAME=migration_name  # Agregar migración
-make migrate-remove   # Remover última migración
-make db-drop          # Eliminar base de datos
-make db-reset         # Resetear base de datos
+make migrate          # Run migrations
+make migrate-add NAME=migration_name  # Add migration
+make migrate-remove   # Remove last migration
+make db-drop          # Drop database
+make db-reset         # Reset database
 ```
 
 #### **Docker**
 ```bash
-make docker-up        # Iniciar contenedores
-make docker-down      # Detener contenedores
-make docker-logs      # Ver logs
-make docker-restart   # Reiniciar contenedores
+make docker-up        # Start containers
+make docker-down      # Stop containers
+make docker-logs      # View logs
+make docker-restart   # Restart containers
 ```
 
-#### **Configuración**
+#### **Configuration**
 ```bash
-make setup            # Configuración completa
-make setup-dev        # Configuración para desarrollo
-make reset            # Resetear entorno
+make setup            # Complete setup
+make setup-dev        # Development setup
+make reset            # Reset environment
 ```
 
-#### **Utilidades**
+#### **Utilities**
 ```bash
-make logs             # Ver logs de aplicación
-make swagger          # Abrir Swagger UI
-make pgadmin          # Abrir pgAdmin
-make health           # Verificar salud de API
-make format           # Formatear código
-make lint             # Verificar formato
-make publish          # Publicar aplicación
+make logs             # View application logs
+make swagger          # Open Swagger UI
+make pgadmin          # Open pgAdmin
+make health           # Check API health
+make format           # Format code
+make lint             # Check format
+make publish          # Publish application
 ```
 
-#### **Ayuda**
+#### **Help**
 ```bash
-make help             # Mostrar todos los comandos disponibles
+make help             # Show all available commands
 ```
 
 ## 🎯 VS Code Tasks
 
-### **Tareas Disponibles**
+### **Available Tasks**
 
-Accede a las tareas desde VS Code:
+Access tasks from VS Code:
 - `Ctrl+Shift+P` → "Tasks: Run Task"
-- O desde el menú Terminal → Run Task
+- Or from Terminal menu → Run Task
 
-#### **Tareas Principales**
-- **Build** - Compilar la solución
-- **Run** - Ejecutar la API
-- **Test** - Ejecutar pruebas
-- **Clean** - Limpiar artefactos
-- **Restore** - Restaurar paquetes
+#### **Main Tasks**
+- **Build** - Compile the solution
+- **Run** - Run the API
+- **Test** - Run tests
+- **Clean** - Clean artifacts
+- **Restore** - Restore packages
 
-#### **Tareas de Docker**
-- **Docker Up** - Iniciar contenedores
-- **Docker Down** - Detener contenedores
+#### **Docker Tasks**
+- **Docker Up** - Start containers
+- **Docker Down** - Stop containers
 
-#### **Tareas de Base de Datos**
-- **Database Migrate** - Ejecutar migraciones
-- **Add Migration** - Agregar nueva migración
+#### **Database Tasks**
+- **Database Migrate** - Run migrations
+- **Add Migration** - Add new migration
 
-#### **Tareas de Calidad**
-- **Format Code** - Formatear código
+#### **Quality Tasks**
+- **Format Code** - Format code
 
-### **Configuración de Debug**
+### **Debug Configuration**
 
-El proyecto incluye configuraciones de debug para VS Code:
-- **Launch API** - Ejecutar en modo desarrollo
-- **Launch API (Production)** - Ejecutar en modo producción
+The project includes VS Code debug configurations:
+- **Launch API** - Run in development mode
+- **Launch API (Production)** - Run in production mode
 
-## 🔧 Configuración de Entorno
+## 🔧 Environment Configuration
 
-### **Variables de Entorno**
+### **Environment Variables**
 
-Copia `env.example` a `.env` y configura las variables:
+Copy `env.example` to `.env` and configure the variables:
 
 ```bash
 cp env.example .env
 ```
 
-#### **Variables Principales**
+#### **Main Variables**
 ```env
-# Base de Datos
+# Database
 POSTGRES_DB=CleanArchitectureDB
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
@@ -255,155 +255,155 @@ SMTP_USERNAME=your-email@gmail.com
 SMTP_PASSWORD=your-app-password
 ```
 
-## 🚀 Flujos de Trabajo Recomendados
+## 🚀 Recommended Workflows
 
-### **Configuración Inicial**
+### **Initial Setup**
 ```bash
-# Opción 1: npm (Recomendado)
+# Option 1: npm (Recommended)
 npm run setup
 
-# Opción 2: Script de Bash
+# Option 2: Bash script
 ./scripts/setup.sh
 
-# Opción 3: Makefile
+# Option 3: Makefile
 make setup
 
-# Opción 4: PowerShell (Windows)
+# Option 4: PowerShell (Windows)
 .\scripts\setup.ps1
 ```
 
-### **Desarrollo Diario**
+### **Daily Development**
 ```bash
-# Iniciar desarrollo
+# Start development
 npm run dev
 
-# En otra terminal: ver logs
+# In another terminal: view logs
 npm run logs
 
-# Abrir Swagger
+# Open Swagger
 npm run swagger
 ```
 
-### **Gestión de Base de Datos**
+### **Database Management**
 ```bash
-# Agregar migración
+# Add migration
 npm run db:add-migration AddNewFeature
 
-# Ejecutar migraciones
+# Run migrations
 npm run db:migrate
 
-# Resetear base de datos
+# Reset database
 npm run reset
 ```
 
-### **Antes de Commit**
+### **Before Commit**
 ```bash
-# Verificar calidad de código
+# Check code quality
 npm run lint
 
-# Ejecutar pruebas
+# Run tests
 npm run test
 
-# Formatear código
+# Format code
 npm run format
 ```
 
-## 🐳 Comandos Docker Útiles
+## 🐳 Useful Docker Commands
 
-### **Gestión de Contenedores**
+### **Container Management**
 ```bash
-# Ver estado de contenedores
+# View container status
 docker compose ps
 
-# Ver logs en tiempo real
+# View logs in real time
 docker compose logs -f
 
-# Reiniciar un contenedor específico
+# Restart specific container
 docker compose restart cleanarch-postgres
 
-# Ejecutar comandos en contenedor
+# Execute commands in container
 docker exec -it cleanarch-postgres psql -U postgres -d CleanArchitectureDB
 ```
 
-### **Limpieza de Docker**
+### **Docker Cleanup**
 ```bash
-# Limpiar contenedores parados
+# Clean stopped containers
 docker container prune
 
-# Limpiar imágenes no utilizadas
+# Clean unused images
 docker image prune
 
-# Limpiar volúmenes no utilizados
+# Clean unused volumes
 docker volume prune
 
-# Limpieza completa
+# Complete cleanup
 docker system prune -a
 ```
 
 ## 🔍 Troubleshooting
 
-### **Problemas Comunes**
+### **Common Problems**
 
-#### **Docker no está ejecutándose**
+#### **Docker is not running**
 ```bash
-# Verificar estado
+# Check status
 docker info
 
-# Iniciar Docker Desktop (macOS/Windows)
-# O iniciar servicio (Linux)
+# Start Docker Desktop (macOS/Windows)
+# Or start service (Linux)
 sudo systemctl start docker
 ```
 
-#### **PostgreSQL no responde**
+#### **PostgreSQL not responding**
 ```bash
-# Verificar logs
+# Check logs
 docker compose logs cleanarch-postgres
 
-# Reiniciar contenedor
+# Restart container
 docker compose restart cleanarch-postgres
 
-# Verificar conectividad
+# Check connectivity
 docker exec cleanarch-postgres pg_isready -U postgres
 ```
 
-#### **Migraciones fallan**
+#### **Migrations failing**
 ```bash
-# Verificar conexión a base de datos
+# Check database connection
 npm run health
 
-# Resetear base de datos
+# Reset database
 npm run reset
 
-# Verificar migraciones pendientes
+# Check pending migrations
 dotnet ef migrations list --project CleanArchitecture.Infrastructure
 ```
 
-#### **Puertos ocupados**
+#### **Ports occupied**
 ```bash
-# Verificar puertos en uso
+# Check ports in use
 lsof -i :7000  # API
 lsof -i :5432  # PostgreSQL
 lsof -i :5050  # pgAdmin
 
-# Cambiar puertos en docker-compose.yml si es necesario
+# Change ports in docker-compose.yml if necessary
 ```
 
-## 📚 Recursos Adicionales
+## 📚 Additional Resources
 
 - [Docker Compose Documentation](https://docs.docker.com/compose/)
 - [Entity Framework Core CLI](https://docs.microsoft.com/en-us/ef/core/cli/dotnet)
 - [ASP.NET Core Development](https://docs.microsoft.com/en-us/aspnet/core/)
 - [VS Code Tasks](https://code.visualstudio.com/docs/editor/tasks)
 
-## 🎉 Conclusión
+## 🎉 Conclusion
 
-Con estos scripts y herramientas, puedes:
+With these scripts and tools, you can:
 
-- ✅ **Configurar** el proyecto en segundos
-- ✅ **Desarrollar** con comandos simples
-- ✅ **Gestionar** la base de datos fácilmente
-- ✅ **Automatizar** tareas repetitivas
-- ✅ **Mantener** la calidad del código
-- ✅ **Desplegar** la aplicación
+- ✅ **Configure** the project in seconds
+- ✅ **Develop** with simple commands
+- ✅ **Manage** the database easily
+- ✅ **Automate** repetitive tasks
+- ✅ **Maintain** code quality
+- ✅ **Deploy** the application
 
-**¡Elige la opción que más te guste y comienza a desarrollar!** 🚀
+**Choose the option you like best and start developing!** 🚀

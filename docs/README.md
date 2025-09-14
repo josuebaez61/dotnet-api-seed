@@ -1,205 +1,205 @@
-# 📚 Documentación del Proyecto Clean Architecture
+# 📚 Clean Architecture Project Documentation
 
-Bienvenido a la documentación completa del proyecto Clean Architecture ASP.NET Core. Esta documentación te guiará a través de todas las funcionalidades implementadas y cómo utilizarlas.
+Welcome to the complete documentation of the Clean Architecture ASP.NET Core project. This documentation will guide you through all the implemented features and how to use them.
 
-## 📋 Documentos Disponibles
+## 📋 Available Documents
 
 ### 🔐 [AUTHENTICATION.md](AUTHENTICATION.md)
-**Sistema de Autenticación Completo**
-- ✅ Autenticación JWT con tokens de acceso y renovación
-- ✅ Login con email o username
-- ✅ Registro de usuarios con validaciones
-- ✅ Cambio de contraseña
-- ✅ Endpoints protegidos con autorización
-- ✅ Validaciones robustas con FluentValidation
+**Complete Authentication System**
+- ✅ JWT authentication with access and renewal tokens
+- ✅ Login with email or username
+- ✅ User registration with validations
+- ✅ Password change
+- ✅ Protected endpoints with authorization
+- ✅ Robust validations with FluentValidation
 
 ### 🔄 [PASSWORD_RECOVERY.md](PASSWORD_RECOVERY.md)
-**Sistema de Recuperación de Contraseña**
-- ✅ Solicitud de reset por email
-- ✅ Códigos de 6 dígitos seguros con expiración
-- ✅ Correos HTML con diseño profesional
-- ✅ Validaciones robustas de códigos y contraseñas
-- ✅ Confirmación por email del cambio exitoso
+**Password Recovery System**
+- ✅ Reset request via email
+- ✅ Secure 6-digit codes with expiration
+- ✅ Professional HTML emails
+- ✅ Robust code and password validations
+- ✅ Email confirmation of successful change
 
 ### 🛡️ [PERMISSIONS_AND_ROLES.md](PERMISSIONS_AND_ROLES.md)
-**Sistema de Permisos y Roles**
-- ✅ Gestión completa de permisos (CRUD)
-- ✅ Gestión de roles con asignación de permisos
-- ✅ Autorización granular por endpoint
-- ✅ Tokens JWT con permisos incluidos
-- ✅ Políticas de autorización configuradas
-- ✅ Roles predefinidos (Admin, User) con permisos
+**Permissions and Roles System**
+- ✅ Complete permission management (CRUD)
+- ✅ Role management with permission assignment
+- ✅ Granular authorization per endpoint
+- ✅ JWT tokens with included permissions
+- ✅ Configured authorization policies
+- ✅ Predefined roles (Admin, User) with permissions
 
 ### 🌍 [LOCALIZATION_AND_EMAIL.md](LOCALIZATION_AND_EMAIL.md)
-**Localización y Servicio de Correos**
-- ✅ Soporte para Español e Inglés
-- ✅ Mensajes localizados en todas las respuestas
-- ✅ Configuración automática de idiomas
-- ✅ Cambio dinámico de idioma por header/query
-- ✅ Templates HTML con CSS moderno
-- ✅ Correos de bienvenida, recuperación y confirmación
+**Localization and Email Service**
+- ✅ Spanish and English support
+- ✅ Localized messages in all responses
+- ✅ Automatic language configuration
+- ✅ Dynamic language change via header/query
+- ✅ HTML templates with modern CSS
+- ✅ Welcome, recovery and confirmation emails
 
 ### 🚨 [ERROR_HANDLING.md](ERROR_HANDLING.md)
-**Sistema de Manejo de Errores**
-- ✅ Excepciones específicas con códigos únicos
-- ✅ Localización automática de mensajes de error
-- ✅ Middleware centralizado para manejo de excepciones
-- ✅ Códigos HTTP apropiados mapeados automáticamente
-- ✅ Respuestas estructuradas con metadatos consistentes
-- ✅ Logging estructurado para debugging
+**Error Handling System**
+- ✅ Specific exceptions with unique codes
+- ✅ Automatic error message localization
+- ✅ Centralized middleware for exception handling
+- ✅ Appropriate HTTP codes automatically mapped
+- ✅ Structured responses with consistent metadata
+- ✅ Structured logging for debugging
 
 ### 🔍 [ERROR_HANDLING_EXAMPLES.md](ERROR_HANDLING_EXAMPLES.md)
-**Ejemplos Prácticos de Manejo de Errores**
-- ✅ Ejemplos de API con requests y responses
-- ✅ Ejemplos de código en diferentes capas
-- ✅ Casos de uso comunes paso a paso
-- ✅ Testing de errores con unit tests e integration tests
-- ✅ Configuración de testing y mocking
+**Practical Error Handling Examples**
+- ✅ API examples with requests and responses
+- ✅ Code examples in different layers
+- ✅ Common use cases step by step
+- ✅ Error testing with unit tests and integration tests
+- ✅ Testing configuration and mocking
 
 ### 🛠️ [SCRIPTS_AND_AUTOMATION.md](SCRIPTS_AND_AUTOMATION.md)
-**Scripts y Automatización**
-- ✅ Scripts npm para tareas comunes
-- ✅ Scripts de Bash y PowerShell
-- ✅ Makefile con comandos útiles
-- ✅ Configuración de VS Code tasks
-- ✅ Automatización de Docker y base de datos
+**Scripts and Automation**
+- ✅ npm scripts for common tasks
+- ✅ Bash and PowerShell scripts
+- ✅ Makefile with useful commands
+- ✅ VS Code tasks configuration
+- ✅ Docker and database automation
 
-## 🚀 Inicio Rápido
+## 🚀 Quick Start
 
-### 1. Configuración Inicial
+### 1. Initial Setup
 ```bash
-# Clonar y configurar
+# Clone and configure
 git clone <repository>
 cd CleanArchitecture
 
-# Configuración completa
+# Complete setup
 npm run setup
 
-# Iniciar base de datos
+# Start database
 npm run docker:up
 
-# Aplicar migraciones
+# Apply migrations
 npm run db:migrate
 
-# Iniciar aplicación
+# Start application
 npm run dev
 ```
 
-### 2. Usuario Admin por Defecto
+### 2. Default Admin User
 ```
 Username: admin
 Email: admin@example.com
 Password: Admin123!
 ```
 
-### 3. Endpoints Principales
+### 3. Main Endpoints
 - **Swagger UI**: `https://localhost:7000/swagger`
-- **API Base**: `https://localhost:7000/api`
+- **API Base**: `https://localhost:7000/api/v1`
 - **pgAdmin**: `http://localhost:5050` (admin@admin.com / admin)
 
-## 🏗️ Arquitectura del Proyecto
+## 🏗️ Project Architecture
 
 ```
 CleanArchitecture/
-├── docs/                    # 📚 Documentación completa
-├── src/                     # 💻 Código fuente
-│   ├── Domain/             # 🎯 Capa de Dominio
-│   ├── Application/        # 🔄 Capa de Aplicación
-│   ├── Infrastructure/     # 🔧 Capa de Infraestructura
-│   └── API/               # 🌐 Capa de Presentación
-├── scripts/               # 🤖 Scripts de automatización
-└── .vscode/              # ⚙️ Configuración de VS Code
+├── docs/                    # 📚 Complete documentation
+├── src/                     # 💻 Source code
+│   ├── Domain/             # 🎯 Domain Layer
+│   ├── Application/        # 🔄 Application Layer
+│   ├── Infrastructure/     # 🔧 Infrastructure Layer
+│   └── API/               # 🌐 Presentation Layer
+├── scripts/               # 🤖 Automation scripts
+└── .vscode/              # ⚙️ VS Code configuration
 ```
 
-## 🎯 Características Principales
+## 🎯 Main Features
 
-### ✅ **Autenticación y Autorización**
-- JWT con refresh tokens
-- Login con email/username
-- Sistema de permisos granular
-- Roles predefinidos (Admin, User)
+### ✅ **Authentication and Authorization**
+- JWT with refresh tokens
+- Login with email/username
+- Granular permission system
+- Predefined roles (Admin, User)
 
-### ✅ **Validación y Manejo de Errores**
-- FluentValidation para validaciones
-- Sistema de errores controlados
-- Localización de mensajes
-- Respuestas API consistentes
+### ✅ **Validation and Error Handling**
+- FluentValidation for validations
+- Controlled error system
+- Message localization
+- Consistent API responses
 
-### ✅ **Base de Datos**
-- PostgreSQL con Entity Framework Core
-- Migraciones automáticas
-- Seeding de datos iniciales
-- Configuración Docker
+### ✅ **Database**
+- PostgreSQL with Entity Framework Core
+- Automatic migrations
+- Initial data seeding
+- Docker configuration
 
-### ✅ **Desarrollo y Testing**
-- Scripts de automatización
-- Configuración VS Code
+### ✅ **Development and Testing**
+- Automation scripts
+- VS Code configuration
 - Swagger/OpenAPI
-- Logging estructurado
+- Structured logging
 
-## 🔧 Tecnologías Utilizadas
+## 🔧 Technologies Used
 
-- **.NET 9.0** - Framework principal
-- **ASP.NET Core Web API** - API REST
+- **.NET 9.0** - Main framework
+- **ASP.NET Core Web API** - REST API
 - **Entity Framework Core 9.0** - ORM
-- **PostgreSQL** - Base de datos
-- **ASP.NET Core Identity** - Autenticación
-- **FluentValidation** - Validaciones
+- **PostgreSQL** - Database
+- **ASP.NET Core Identity** - Authentication
+- **FluentValidation** - Validations
 - **MediatR** - CQRS Pattern
-- **Swagger/OpenAPI** - Documentación API
+- **Swagger/OpenAPI** - API documentation
 
-## 📖 Guías de Uso
+## 📖 Usage Guides
 
-### Para Desarrolladores
-1. Lee [AUTHENTICATION.md](AUTHENTICATION.md) para entender el sistema de auth
-2. Revisa [ERROR_HANDLING.md](ERROR_HANDLING.md) para manejo de errores
-3. Consulta [SCRIPTS_AND_AUTOMATION.md](SCRIPTS_AND_AUTOMATION.md) para desarrollo
+### For Developers
+1. Read [AUTHENTICATION.md](AUTHENTICATION.md) to understand the auth system
+2. Review [ERROR_HANDLING.md](ERROR_HANDLING.md) for error handling
+3. Consult [SCRIPTS_AND_AUTOMATION.md](SCRIPTS_AND_AUTOMATION.md) for development
 
-### Para DevOps
-1. Usa [SCRIPTS_AND_AUTOMATION.md](SCRIPTS_AND_AUTOMATION.md) para deployment
-2. Configura Docker con `docker-compose.yml`
-3. Aplica migraciones con scripts automatizados
+### For DevOps
+1. Use [SCRIPTS_AND_AUTOMATION.md](SCRIPTS_AND_AUTOMATION.md) for deployment
+2. Configure Docker with `docker-compose.yml`
+3. Apply migrations with automated scripts
 
-### Para Testing
-1. Revisa [ERROR_HANDLING_EXAMPLES.md](ERROR_HANDLING_EXAMPLES.md) para ejemplos
-2. Usa los scripts de testing en `scripts/`
-3. Configura VS Code tasks para debugging
+### For Testing
+1. Review [ERROR_HANDLING_EXAMPLES.md](ERROR_HANDLING_EXAMPLES.md) for examples
+2. Use testing scripts in `scripts/`
+3. Configure VS Code tasks for debugging
 
-## 🆘 Soporte y Contribución
+## 🆘 Support and Contribution
 
-### Reportar Issues
-- Usa los templates de GitHub Issues
-- Incluye logs y pasos para reproducir
-- Especifica versión y entorno
+### Reporting Issues
+- Use GitHub Issues templates
+- Include logs and reproduction steps
+- Specify version and environment
 
-### Contribuir
-1. Fork el proyecto
-2. Crea una rama para tu feature
-3. Sigue las convenciones de código
-4. Agrega tests si es necesario
-5. Crea un Pull Request
+### Contributing
+1. Fork the project
+2. Create a branch for your feature
+3. Follow code conventions
+4. Add tests if necessary
+5. Create a Pull Request
 
-### Contacto
-- **Email**: [tu-email@example.com]
-- **Issues**: [GitHub Issues](https://github.com/tu-usuario/tu-repo/issues)
+### Contact
+- **Email**: [your-email@example.com]
+- **Issues**: [GitHub Issues](https://github.com/your-username/your-repo/issues)
 
 ## 📝 Changelog
 
-### v1.0.0 (13 Enero, 2025)
-- ✅ Sistema de autenticación completo
-- ✅ Recuperación de contraseña
-- ✅ Sistema de permisos y roles
-- ✅ Localización (es/en)
-- ✅ Manejo de errores robusto
-- ✅ Scripts de automatización
-- ✅ Documentación completa
+### v1.0.0 (January 13, 2025)
+- ✅ Complete authentication system
+- ✅ Password recovery
+- ✅ Permissions and roles system
+- ✅ Localization (es/en)
+- ✅ Robust error handling
+- ✅ Automation scripts
+- ✅ Complete documentation
 
-## 📄 Licencia
+## 📄 License
 
-Este proyecto está bajo la Licencia MIT. Ver [LICENSE](LICENSE) para más detalles.
+This project is under the MIT License. See [LICENSE](LICENSE) for more details.
 
 ---
 
-**Última actualización:** 13 de Enero, 2025  
-**Versión:** 1.0.0  
-**Mantenido por:** [Tu Nombre]
+**Last updated:** January 13, 2025  
+**Version:** 1.0.0  
+**Maintained by:** [Your Name]

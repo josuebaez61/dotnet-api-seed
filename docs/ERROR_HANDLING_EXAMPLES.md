@@ -1,30 +1,30 @@
-# 🔍 Ejemplos Prácticos del Sistema de Manejo de Errores
+# 🔍 Practical Error Handling System Examples
 
-Este documento contiene ejemplos prácticos de cómo funciona el sistema de manejo de errores en diferentes escenarios.
+This document contains practical examples of how the error handling system works in different scenarios.
 
-## 📋 Tabla de Contenidos
+## 📋 Table of Contents
 
-- [Ejemplos de API](#ejemplos-de-api)
-- [Ejemplos de Código](#ejemplos-de-código)
-- [Casos de Uso Comunes](#casos-de-uso-comunes)
-- [Testing de Errores](#testing-de-errores)
+- [API Examples](#api-examples)
+- [Code Examples](#code-examples)
+- [Common Use Cases](#common-use-cases)
+- [Error Testing](#error-testing)
 
-## 🌐 Ejemplos de API
+## 🌐 API Examples
 
-### 1. Login con Usuario Inexistente
+### 1. Login with Non-existent User
 
 **Request:**
 ```bash
-POST /api/auth/login
+POST /api/v1/auth/login
 Content-Type: application/json
 
 {
-  "emailOrUsername": "usuario.inexistente@example.com",
+  "emailOrUsername": "nonexistent.user@example.com",
   "password": "Password123!"
 }
 ```
 
-**Response (Español):**
+**Response (Spanish):**
 ```json
 {
   "success": false,
@@ -46,18 +46,18 @@ Content-Type: application/json
 
 **HTTP Status:** `404 Not Found`
 
-### 2. Registro con Email Duplicado
+### 2. Registration with Duplicate Email
 
 **Request:**
 ```bash
-POST /api/auth/register
+POST /api/v1/auth/register
 Content-Type: application/json
 
 {
-  "firstName": "Juan",
-  "lastName": "Pérez",
+  "firstName": "John",
+  "lastName": "Doe",
   "email": "admin@example.com",
-  "userName": "jperez",
+  "userName": "jdoe",
   "password": "Password123!",
   "dateOfBirth": "1990-01-01T00:00:00Z"
 }
@@ -67,7 +67,7 @@ Content-Type: application/json
 ```json
 {
   "success": false,
-  "message": "El usuario ya existe",
+  "message": "User already exists",
   "errorCode": "USER_ALREADY_EXISTS",
   "timestamp": "2025-01-13T12:00:00.000Z"
 }
@@ -75,16 +75,16 @@ Content-Type: application/json
 
 **HTTP Status:** `409 Conflict`
 
-### 3. Contraseña Incorrecta
+### 3. Incorrect Password
 
 **Request:**
 ```bash
-POST /api/auth/login
+POST /api/v1/auth/login
 Content-Type: application/json
 
 {
   "emailOrUsername": "admin",
-  "password": "contraseña_incorrecta"
+  "password": "wrong_password"
 }
 ```
 
@@ -92,7 +92,7 @@ Content-Type: application/json
 ```json
 {
   "success": false,
-  "message": "Credenciales inválidas",
+  "message": "Invalid credentials",
   "errorCode": "INVALID_CREDENTIALS",
   "timestamp": "2025-01-13T12:00:00.000Z"
 }
@@ -100,15 +100,15 @@ Content-Type: application/json
 
 **HTTP Status:** `401 Unauthorized`
 
-### 4. Token de Renovación Inválido
+### 4. Invalid Refresh Token
 
 **Request:**
 ```bash
-POST /api/auth/refresh-token
+POST /api/v1/auth/refresh-token
 Content-Type: application/json
 
 {
-  "refreshToken": "token_invalido_o_expirado"
+  "refreshToken": "invalid_or_expired_token"
 }
 ```
 
@@ -116,7 +116,7 @@ Content-Type: application/json
 ```json
 {
   "success": false,
-  "message": "Token de renovación inválido",
+  "message": "Invalid refresh token",
   "errorCode": "INVALID_REFRESH_TOKEN",
   "timestamp": "2025-01-13T12:00:00.000Z"
 }
@@ -124,11 +124,11 @@ Content-Type: application/json
 
 **HTTP Status:** `401 Unauthorized`
 
-### 5. Código de Reset Inválido
+### 5. Invalid Reset Code
 
 **Request:**
 ```bash
-POST /api/auth/reset-password
+POST /api/v1/auth/reset-password
 Content-Type: application/json
 
 {
@@ -142,7 +142,7 @@ Content-Type: application/json
 ```json
 {
   "success": false,
-  "message": "Código de restablecimiento inválido",
+  "message": "Invalid reset code",
   "errorCode": "PASSWORD_RESET_CODE_INVALID",
   "timestamp": "2025-01-13T12:00:00.000Z"
 }
@@ -150,19 +150,19 @@ Content-Type: application/json
 
 **HTTP Status:** `400 Bad Request`
 
-### 6. Permisos Insuficientes
+### 6. Insufficient Permissions
 
 **Request:**
 ```bash
-GET /api/users
-Authorization: Bearer token_con_permisos_insuficientes
+GET /api/v1/users
+Authorization: Bearer token_with_insufficient_permissions
 ```
 
 **Response:**
 ```json
 {
   "success": false,
-  "message": "Permisos insuficientes. Requerido: Users.Read",
+  "message": "Insufficient permissions. Required: Users.Read",
   "errorCode": "INSUFFICIENT_PERMISSIONS",
   "timestamp": "2025-01-13T12:00:00.000Z"
 }
@@ -170,17 +170,17 @@ Authorization: Bearer token_con_permisos_insuficientes
 
 **HTTP Status:** `403 Forbidden`
 
-### 7. Validación de Datos
+### 7. Data Validation
 
 **Request:**
 ```bash
-POST /api/auth/register
+POST /api/v1/auth/register
 Content-Type: application/json
 
 {
   "firstName": "",
-  "lastName": "Pérez",
-  "email": "email_invalido",
+  "lastName": "Doe",
+  "email": "invalid_email",
   "userName": "a",
   "password": "123",
   "dateOfBirth": "2030-01-01T00:00:00Z"
@@ -191,13 +191,13 @@ Content-Type: application/json
 ```json
 {
   "success": false,
-  "message": "Error de validación",
+  "message": "Validation error",
   "errorCode": "VALIDATION_ERROR",
   "errors": {
-    "FirstName": ["El campo 'FirstName' es requerido"],
-    "Email": ["Formato de correo electrónico inválido"],
-    "UserName": ["El nombre de usuario debe tener al menos 3 caracteres"],
-    "Password": ["La contraseña debe tener al menos 8 caracteres"]
+    "FirstName": ["The 'FirstName' field is required"],
+    "Email": ["Invalid email format"],
+    "UserName": ["Username must be at least 3 characters long"],
+    "Password": ["Password must be at least 8 characters long"]
   },
   "timestamp": "2025-01-13T12:00:00.000Z"
 }
@@ -205,9 +205,9 @@ Content-Type: application/json
 
 **HTTP Status:** `400 Bad Request`
 
-## 💻 Ejemplos de Código
+## 💻 Code Examples
 
-### 1. Command Handler con Manejo de Errores
+### 1. Command Handler with Error Handling
 
 ```csharp
 public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, ApiResponse<UserDto>>
@@ -217,28 +217,28 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, ApiRe
 
     public async Task<ApiResponse<UserDto>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        // Verificar si el email ya existe
+        // Check if email already exists
         var existingUserByEmail = await _userManager.FindByEmailAsync(request.Email);
         if (existingUserByEmail != null)
         {
             throw new UserAlreadyExistsError("email", request.Email);
         }
 
-        // Verificar si el username ya existe
+        // Check if username already exists
         var existingUserByUsername = await _userManager.FindByNameAsync(request.UserName);
         if (existingUserByUsername != null)
         {
             throw new UserAlreadyExistsError("username", request.UserName);
         }
 
-        // Validar fecha de nacimiento
+        // Validate date of birth
         var age = DateTime.UtcNow.Year - request.DateOfBirth.Year;
         if (age < 13 || age > 120)
         {
             throw new InvalidAgeError(age);
         }
 
-        // Crear usuario
+        // Create user
         var user = new User
         {
             FirstName = request.FirstName,
@@ -264,14 +264,14 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, ApiRe
 }
 ```
 
-### 2. Service con Validaciones
+### 2. Service with Validations
 
 ```csharp
 public class AuthService : IAuthService
 {
     public async Task<AuthResponseDto> LoginAsync(LoginRequestDto request)
     {
-        // Validar entrada
+        // Validate input
         if (string.IsNullOrWhiteSpace(request.EmailOrUsername))
         {
             throw new RequiredFieldError("EmailOrUsername");
@@ -282,27 +282,27 @@ public class AuthService : IAuthService
             throw new RequiredFieldError("Password");
         }
 
-        // Buscar usuario
+        // Find user
         var user = await GetUserByEmailOrUsernameAsync(request.EmailOrUsername);
         if (user == null)
         {
             throw new UserNotFoundError(request.EmailOrUsername);
         }
 
-        // Verificar estado de la cuenta
+        // Check account status
         if (!user.IsActive)
         {
             throw new AccountDeactivatedError(user.Id.ToString());
         }
 
-        // Verificar contraseña
+        // Verify password
         var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
         if (!result.Succeeded)
         {
             throw new InvalidCredentialsError();
         }
 
-        // Generar tokens
+        // Generate tokens
         var token = await GenerateJwtTokenAsync(user);
         var refreshToken = GenerateRefreshToken();
 
@@ -317,7 +317,7 @@ public class AuthService : IAuthService
 }
 ```
 
-### 3. Controller Simplificado
+### 3. Simplified Controller
 
 ```csharp
 [ApiController]
@@ -329,7 +329,7 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<ApiResponse<AuthResponseDto>>> Login([FromBody] LoginRequestDto request)
     {
-        // No necesitamos try-catch, el middleware maneja todo
+        // No try-catch needed, middleware handles everything
         var command = new LoginCommand { Request = request };
         var result = await _mediator.Send(command);
         return Ok(ApiResponse<AuthResponseDto>.SuccessResponse(result));
@@ -345,105 +345,105 @@ public class AuthController : ControllerBase
 }
 ```
 
-## 🎯 Casos de Uso Comunes
+## 🎯 Common Use Cases
 
-### 1. Flujo de Login Completo
+### 1. Complete Login Flow
 
 ```csharp
-// 1. Usuario intenta login con credenciales incorrectas
+// 1. User attempts login with incorrect credentials
 var loginRequest = new LoginRequestDto 
 { 
     EmailOrUsername = "admin@example.com", 
-    Password = "password_incorrecta" 
+    Password = "wrong_password" 
 };
 
-// 2. AuthService valida y lanza excepción
+// 2. AuthService validates and throws exception
 try
 {
     var result = await _authService.LoginAsync(loginRequest);
 }
 catch (InvalidCredentialsError ex)
 {
-    // 3. Middleware captura la excepción
-    // 4. Localiza el mensaje según el idioma del usuario
-    // 5. Retorna respuesta estructurada
+    // 3. Middleware captures the exception
+    // 4. Localizes the message according to user's language
+    // 5. Returns structured response
 }
 ```
 
-**Resultado:**
+**Result:**
 ```json
 {
   "success": false,
-  "message": "Credenciales inválidas",
+  "message": "Invalid credentials",
   "errorCode": "INVALID_CREDENTIALS",
   "timestamp": "2025-01-13T12:00:00.000Z"
 }
 ```
 
-### 2. Flujo de Registro con Validaciones
+### 2. Registration Flow with Validations
 
 ```csharp
-// 1. Usuario intenta registrarse con datos inválidos
+// 1. User attempts registration with invalid data
 var registerRequest = new RegisterRequestDto
 {
-    FirstName = "", // Inválido
-    Email = "email_invalido", // Inválido
-    Password = "123" // Inválido
+    FirstName = "", // Invalid
+    Email = "invalid_email", // Invalid
+    Password = "123" // Invalid
 };
 
-// 2. FluentValidation valida y lanza excepción
-// 3. Middleware captura y localiza
-// 4. Retorna respuesta con errores detallados
+// 2. FluentValidation validates and throws exception
+// 3. Middleware captures and localizes
+// 4. Returns response with detailed errors
 ```
 
-**Resultado:**
+**Result:**
 ```json
 {
   "success": false,
-  "message": "Error de validación",
+  "message": "Validation error",
   "errorCode": "VALIDATION_ERROR",
   "errors": {
-    "FirstName": ["El campo 'FirstName' es requerido"],
-    "Email": ["Formato de correo electrónico inválido"],
-    "Password": ["La contraseña debe tener al menos 8 caracteres"]
+    "FirstName": ["The 'FirstName' field is required"],
+    "Email": ["Invalid email format"],
+    "Password": ["Password must be at least 8 characters long"]
   },
   "timestamp": "2025-01-13T12:00:00.000Z"
 }
 ```
 
-### 3. Flujo de Recuperación de Contraseña
+### 3. Password Recovery Flow
 
 ```csharp
-// 1. Usuario solicita reset con email inexistente
+// 1. User requests reset with non-existent email
 var resetRequest = new RequestPasswordResetDto
 {
-    Email = "usuario.inexistente@example.com"
+    Email = "nonexistent.user@example.com"
 };
 
-// 2. AuthService busca usuario
+// 2. AuthService searches for user
 var user = await _userManager.FindByEmailAsync(resetRequest.Email);
 if (user == null)
 {
     throw new UserNotFoundError(resetRequest.Email);
 }
 
-// 3. Middleware maneja y localiza
-// 4. Retorna error 404 con mensaje localizado
+// 3. Middleware handles and localizes
+// 4. Returns 404 error with localized message
 ```
 
-**Resultado:**
+**Result:**
 ```json
 {
   "success": false,
-  "message": "Usuario no encontrado",
+  "message": "User not found",
   "errorCode": "USER_NOT_FOUND",
   "timestamp": "2025-01-13T12:00:00.000Z"
 }
 ```
 
-## 🧪 Testing de Errores
+## 🧪 Error Testing
 
-### 1. Test Unitario de Excepciones
+### 1. Unit Test for Exceptions
 
 ```csharp
 [Test]
@@ -488,7 +488,7 @@ public async Task Register_WithExistingEmail_ThrowsUserAlreadyExistsError()
 }
 ```
 
-### 2. Test de Integración de API
+### 2. API Integration Test
 
 ```csharp
 [Test]
@@ -502,7 +502,7 @@ public async Task Login_WithInvalidCredentials_ReturnsUnauthorized()
     };
 
     // Act
-    var response = await _client.PostAsJsonAsync("/api/auth/login", request);
+    var response = await _client.PostAsJsonAsync("/api/v1/auth/login", request);
 
     // Assert
     Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
@@ -512,7 +512,7 @@ public async Task Login_WithInvalidCredentials_ReturnsUnauthorized()
     
     Assert.False(apiResponse.Success);
     Assert.Equal("INVALID_CREDENTIALS", apiResponse.ErrorCode);
-    Assert.Equal("Credenciales inválidas", apiResponse.Message);
+    Assert.Equal("Invalid credentials", apiResponse.Message);
 }
 
 [Test]
@@ -521,13 +521,13 @@ public async Task Register_WithInvalidData_ReturnsBadRequest()
     // Arrange
     var request = new RegisterRequestDto
     {
-        FirstName = "", // Inválido
-        Email = "invalid_email", // Inválido
-        Password = "123" // Inválido
+        FirstName = "", // Invalid
+        Email = "invalid_email", // Invalid
+        Password = "123" // Invalid
     };
 
     // Act
-    var response = await _client.PostAsJsonAsync("/api/auth/register", request);
+    var response = await _client.PostAsJsonAsync("/api/v1/auth/register", request);
 
     // Assert
     Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -540,7 +540,7 @@ public async Task Register_WithInvalidData_ReturnsBadRequest()
 }
 ```
 
-### 3. Test de Localización
+### 3. Localization Test
 
 ```csharp
 [Test]
@@ -556,7 +556,7 @@ public async Task Login_WithSpanishLanguage_ReturnsSpanishError()
     _client.DefaultRequestHeaders.Add("Accept-Language", "es");
 
     // Act
-    var response = await _client.PostAsJsonAsync("/api/auth/login", request);
+    var response = await _client.PostAsJsonAsync("/api/v1/auth/login", request);
 
     // Assert
     var content = await response.Content.ReadAsStringAsync();
@@ -578,7 +578,7 @@ public async Task Login_WithEnglishLanguage_ReturnsEnglishError()
     _client.DefaultRequestHeaders.Add("Accept-Language", "en");
 
     // Act
-    var response = await _client.PostAsJsonAsync("/api/auth/login", request);
+    var response = await _client.PostAsJsonAsync("/api/v1/auth/login", request);
 
     // Assert
     var content = await response.Content.ReadAsStringAsync();
@@ -588,9 +588,9 @@ public async Task Login_WithEnglishLanguage_ReturnsEnglishError()
 }
 ```
 
-## 🔧 Configuración de Testing
+## 🔧 Testing Configuration
 
-### 1. Setup de Test Base
+### 1. Test Base Setup
 
 ```csharp
 public class ErrorHandlingTestBase
@@ -616,7 +616,7 @@ public class ErrorHandlingTestBase
 }
 ```
 
-### 2. Mock de Servicios
+### 2. Service Mocking
 
 ```csharp
 public class MockAuthService : IAuthService
@@ -638,9 +638,9 @@ public class MockAuthService : IAuthService
 }
 ```
 
-## 📊 Monitoreo y Logging
+## 📊 Monitoring and Logging
 
-### 1. Logging Estructurado
+### 1. Structured Logging
 
 ```csharp
 public class ExceptionHandlingMiddleware
@@ -653,7 +653,7 @@ public class ExceptionHandlingMiddleware
         }
         catch (Exception ex)
         {
-            // Log estructurado con contexto
+            // Structured logging with context
             _logger.LogError(ex, 
                 "Error occurred for user {UserId} on endpoint {Endpoint} with error code {ErrorCode}",
                 context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "Anonymous",
@@ -666,7 +666,7 @@ public class ExceptionHandlingMiddleware
 }
 ```
 
-### 2. Métricas de Errores
+### 2. Error Metrics
 
 ```csharp
 public class ErrorMetricsService
@@ -686,5 +686,5 @@ public class ErrorMetricsService
 
 ---
 
-**Última actualización:** 13 de Enero, 2025  
-**Versión:** 1.0.0
+**Last updated:** January 13, 2025  
+**Version:** 1.0.0

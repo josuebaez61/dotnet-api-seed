@@ -1,23 +1,23 @@
-# Sistema de Permisos y Roles
+# Permissions and Roles System
 
-Este documento describe el sistema completo de permisos y roles implementado en la aplicación Clean Architecture.
+This document describes the complete permissions and roles system implemented in the Clean Architecture application.
 
-## 🔐 Funcionalidades Implementadas
+## 🔐 Implemented Features
 
-### ✅ **Sistema Completo de Permisos y Roles**
+### ✅ **Complete Permissions and Roles System**
 
-La funcionalidad de permisos y roles está **completamente implementada** e incluye:
+The permissions and roles functionality is **fully implemented** and includes:
 
-1. **Gestión de Permisos**
-2. **Gestión de Roles**
-3. **Asignación de Permisos a Roles**
-4. **Autorización Basada en Permisos**
-5. **Tokens JWT con Permisos**
-6. **Políticas de Autorización**
+1. **Permission Management**
+2. **Role Management**
+3. **Permission Assignment to Roles**
+4. **Permission-based Authorization**
+5. **JWT Tokens with Permissions**
+6. **Authorization Policies**
 
-## 🏗️ Arquitectura del Sistema
+## 🏗️ System Architecture
 
-### **Entidades Principales**
+### **Main Entities**
 
 #### **Permission**
 ```csharp
@@ -43,7 +43,7 @@ public class RolePermission : BaseEntity
 }
 ```
 
-#### **Role (Actualizada)**
+#### **Role (Updated)**
 ```csharp
 public class Role : IdentityRole<Guid>
 {
@@ -58,17 +58,17 @@ public class Role : IdentityRole<Guid>
 }
 ```
 
-## 🚀 Endpoints Disponibles
+## 🚀 Available Endpoints
 
-### **Gestión de Permisos**
+### **Permission Management**
 
-#### 1. Obtener Todos los Permisos
+#### 1. Get All Permissions
 ```http
-GET /api/permissions
+GET /api/v1/permissions
 Authorization: Bearer {token}
 ```
 
-**Respuesta:**
+**Response:**
 ```json
 {
   "success": true,
@@ -89,9 +89,9 @@ Authorization: Bearer {token}
 }
 ```
 
-#### 2. Crear Permiso
+#### 2. Create Permission
 ```http
-POST /api/permissions
+POST /api/v1/permissions
 Authorization: Bearer {token}
 Content-Type: application/json
 
@@ -104,15 +104,15 @@ Content-Type: application/json
 }
 ```
 
-### **Gestión de Roles**
+### **Role Management**
 
-#### 1. Obtener Todos los Roles
+#### 1. Get All Roles
 ```http
-GET /api/roles
+GET /api/v1/roles
 Authorization: Bearer {token}
 ```
 
-**Respuesta:**
+**Response:**
 ```json
 {
   "success": true,
@@ -140,9 +140,9 @@ Authorization: Bearer {token}
 }
 ```
 
-#### 2. Crear Rol
+#### 2. Create Role
 ```http
-POST /api/roles
+POST /api/v1/roles
 Authorization: Bearer {token}
 Content-Type: application/json
 
@@ -153,17 +153,28 @@ Content-Type: application/json
 }
 ```
 
-### **Gestión de Usuarios (Actualizada)**
-
-#### 1. Obtener Usuarios (Requiere Permiso)
+#### 3. Update Role Permissions
 ```http
-GET /api/users
+PATCH /api/v1/roles/{id}/permissions
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "permissionIds": ["permission-guid-1", "permission-guid-2", "permission-guid-3"]
+}
+```
+
+### **User Management (Updated)**
+
+#### 1. Get Users (Requires Permission)
+```http
+GET /api/v1/users
 Authorization: Bearer {token}
 ```
 
-#### 2. Crear Usuario (Requiere Permiso)
+#### 2. Create User (Requires Permission)
 ```http
-POST /api/users
+POST /api/v1/users
 Authorization: Bearer {token}
 Content-Type: application/json
 
@@ -177,9 +188,15 @@ Content-Type: application/json
 }
 ```
 
-## 🔒 Sistema de Autorización
+#### 3. Get Paginated Users (Requires Permission)
+```http
+GET /api/v1/users/paginated?page=1&limit=10
+Authorization: Bearer {token}
+```
 
-### **Políticas de Autorización Configuradas**
+## 🔒 Authorization System
+
+### **Configured Authorization Policies**
 
 ```csharp
 // User Management Policies
@@ -196,29 +213,29 @@ options.AddPolicy("Permissions.Read", policy => policy.RequireClaim("permission"
 options.AddPolicy("Permissions.Write", policy => policy.RequireClaim("permission", "Permissions.Write"));
 ```
 
-### **Uso en Controladores**
+### **Usage in Controllers**
 
 ```csharp
 [HttpGet]
 [Authorize(Policy = "Users.Read")]
 public async Task<ActionResult<ApiResponse<List<UserDto>>>> GetAllUsers()
 {
-    // Solo usuarios con permiso "Users.Read" pueden acceder
+    // Only users with "Users.Read" permission can access
 }
 
 [HttpPost]
 [Authorize(Policy = "Users.Write")]
 public async Task<ActionResult<ApiResponse<UserDto>>> CreateUser([FromBody] CreateUserDto userDto)
 {
-    // Solo usuarios con permiso "Users.Write" pueden acceder
+    // Only users with "Users.Write" permission can access
 }
 ```
 
-## 🎫 Tokens JWT con Permisos
+## 🎫 JWT Tokens with Permissions
 
-### **Generación de Tokens**
+### **Token Generation**
 
-Los tokens JWT ahora incluyen los permisos del usuario:
+JWT tokens now include user permissions:
 
 ```csharp
 public async Task<string> GenerateJwtTokenAsync(User user)
@@ -246,7 +263,7 @@ public async Task<string> GenerateJwtTokenAsync(User user)
 }
 ```
 
-### **Estructura del Token**
+### **Token Structure**
 
 ```json
 {
@@ -264,9 +281,9 @@ public async Task<string> GenerateJwtTokenAsync(User user)
 }
 ```
 
-## 🗄️ Base de Datos
+## 🗄️ Database
 
-### **Tablas Creadas**
+### **Created Tables**
 
 #### **Permissions**
 ```sql
@@ -303,26 +320,27 @@ CREATE UNIQUE INDEX "IX_RolePermissions_RoleId_PermissionId"
     ON "RolePermissions" ("RoleId", "PermissionId");
 ```
 
-### **Datos Iniciales (Seed Data)**
+### **Initial Data (Seed Data)**
 
-#### **Permisos Predefinidos**
-- ✅ **Users.Read** - Lectura de usuarios
-- ✅ **Users.Write** - Escritura de usuarios
-- ✅ **Users.Delete** - Eliminación de usuarios
-- ✅ **Roles.Read** - Lectura de roles
-- ✅ **Roles.Write** - Escritura de roles
-- ✅ **Permissions.Read** - Lectura de permisos
-- ✅ **Permissions.Write** - Escritura de permisos
+#### **Predefined Permissions**
+- ✅ **Users.Read** - User reading
+- ✅ **Users.Write** - User writing
+- ✅ **Users.Delete** - User deletion
+- ✅ **Roles.Read** - Role reading
+- ✅ **Roles.Write** - Role writing
+- ✅ **Permissions.Read** - Permission reading
+- ✅ **Permissions.Write** - Permission writing
+- ✅ **System.Admin** - System administration
 
-#### **Roles Predefinidos**
-- ✅ **Admin** - Todos los permisos
-- ✅ **User** - Solo lectura de usuarios
+#### **Predefined Roles**
+- ✅ **Admin** - All permissions
+- ✅ **User** - Only user reading
 
-#### **Asignaciones Predefinidas**
-- ✅ **Admin** → Todos los permisos
-- ✅ **User** → Solo Users.Read
+#### **Predefined Assignments**
+- ✅ **Admin** → All permissions
+- ✅ **User** → Only Users.Read
 
-## 🔧 Servicios Implementados
+## 🔧 Implemented Services
 
 ### **IPermissionService**
 
@@ -344,40 +362,40 @@ public interface IPermissionService
 }
 ```
 
-### **Funcionalidades del Servicio**
+### **Service Features**
 
-- ✅ **Verificación de permisos** por usuario
-- ✅ **Gestión de permisos** de roles
-- ✅ **Asignación/remoción** de permisos
-- ✅ **CRUD completo** de permisos
-- ✅ **Búsqueda** por nombre y ID
+- ✅ **Permission verification** by user
+- ✅ **Permission management** for roles
+- ✅ **Permission assignment/removal**
+- ✅ **Full CRUD** for permissions
+- ✅ **Search** by name and ID
 
-## 🧪 Ejemplos de Uso
+## 🧪 Usage Examples
 
-### **Verificar Permisos en Código**
+### **Check Permissions in Code**
 
 ```csharp
-// Verificar si usuario tiene permiso específico
+// Check if user has specific permission
 var hasPermission = await _permissionService.HasPermissionAsync(userId, "Users", "Read");
 
-// Verificar por nombre de permiso
+// Check by permission name
 var hasPermission = await _permissionService.HasPermissionAsync(userId, "Users.Read");
 
-// Obtener todos los permisos del usuario
+// Get all user permissions
 var userPermissions = await _permissionService.GetUserPermissionsAsync(userId);
 ```
 
-### **Asignar Permisos a Rol**
+### **Assign Permissions to Role**
 
 ```csharp
-// Asignar permiso a rol
+// Assign permission to role
 await _permissionService.AssignPermissionToRoleAsync(roleId, permissionId);
 
-// Remover permiso de rol
+// Remove permission from role
 await _permissionService.RemovePermissionFromRoleAsync(roleId, permissionId);
 ```
 
-### **Crear Nuevo Permiso**
+### **Create New Permission**
 
 ```csharp
 var permission = new Permission
@@ -392,30 +410,30 @@ var permission = new Permission
 var createdPermission = await _permissionService.CreatePermissionAsync(permission);
 ```
 
-## 🔍 Validaciones Implementadas
+## 🔍 Implemented Validations
 
 ### **CreatePermissionValidator**
-- ✅ Nombre requerido (máximo 100 caracteres)
-- ✅ Descripción requerida (máximo 500 caracteres)
-- ✅ Recurso requerido (máximo 50 caracteres)
-- ✅ Acción requerida (máximo 50 caracteres, valores válidos: Read, Write, Delete, Execute)
-- ✅ Módulo requerido (máximo 50 caracteres)
+- ✅ Name required (maximum 100 characters)
+- ✅ Description required (maximum 500 characters)
+- ✅ Resource required (maximum 50 characters)
+- ✅ Action required (maximum 50 characters, valid values: Read, Write, Delete, Execute)
+- ✅ Module required (maximum 50 characters)
 
 ### **CreateRoleValidator**
-- ✅ Nombre requerido (máximo 50 caracteres, solo letras, números, guiones y guiones bajos)
-- ✅ Descripción opcional (máximo 500 caracteres)
-- ✅ Lista de IDs de permisos no nula
+- ✅ Name required (maximum 50 characters, only letters, numbers, hyphens and underscores)
+- ✅ Description optional (maximum 500 characters)
+- ✅ Permission ID list not null
 
-## 🚨 Manejo de Errores
+## 🚨 Error Handling
 
-### **Errores Comunes**
-- **400 Bad Request**: Datos de entrada inválidos
-- **401 Unauthorized**: Token inválido o expirado
-- **403 Forbidden**: Usuario no tiene permisos suficientes
-- **404 Not Found**: Recurso no encontrado
-- **500 Internal Server Error**: Error del servidor
+### **Common Errors**
+- **400 Bad Request**: Invalid input data
+- **401 Unauthorized**: Invalid or expired token
+- **403 Forbidden**: User has insufficient permissions
+- **404 Not Found**: Resource not found
+- **500 Internal Server Error**: Server error
 
-### **Respuestas de Error Estandarizadas**
+### **Standardized Error Responses**
 ```json
 {
   "success": false,
@@ -424,7 +442,7 @@ var createdPermission = await _permissionService.CreatePermissionAsync(permissio
 }
 ```
 
-## 📊 Flujo de Autorización
+## 📊 Authorization Flow
 
 ```mermaid
 sequenceDiagram
@@ -446,61 +464,65 @@ sequenceDiagram
     API->>Client: Authorized Response
 ```
 
-## 🔄 Migración de Base de Datos
+## 🔄 Database Migration
 
-Para aplicar los cambios de base de datos:
+To apply database changes:
 
 ```bash
-# Aplicar migración
+# Apply migration
 dotnet ef database update --project CleanArchitecture.Infrastructure --startup-project CleanArchitecture.API
 
-# O si PostgreSQL está ejecutándose
+# Or if PostgreSQL is running
 dotnet ef database update
 ```
 
-## ✅ Estado de Implementación
+## ✅ Implementation Status
 
-### **Completamente Implementado**
-- ✅ **Entidades** de permisos y roles
-- ✅ **Servicios** de gestión de permisos
-- ✅ **Endpoints** para CRUD de permisos y roles
-- ✅ **Autorización** basada en permisos
-- ✅ **Tokens JWT** con permisos incluidos
-- ✅ **Políticas** de autorización configuradas
-- ✅ **Validaciones** con FluentValidation
-- ✅ **Base de datos** con migración y seed data
-- ✅ **Controladores** protegidos con permisos
-- ✅ **Documentación** completa
+### **Fully Implemented**
+- ✅ **Entities** for permissions and roles
+- ✅ **Services** for permission management
+- ✅ **Endpoints** for CRUD of permissions and roles
+- ✅ **Permission-based authorization**
+- ✅ **JWT tokens** with included permissions
+- ✅ **Authorization policies** configured
+- ✅ **Validations** with FluentValidation
+- ✅ **Database** with migration and seed data
+- ✅ **Controllers** protected with permissions
+- ✅ **Permission constants** for type safety
+- ✅ **Complete documentation**
 
-### **Listo para Usar**
-El sistema de permisos y roles está **100% funcional** y listo para:
+### **Ready to Use**
+The permissions and roles system is **100% functional** and ready for:
 
-- ✅ **Desarrollo local** - Solo configurar base de datos
-- ✅ **Testing** - Ejemplos incluidos
-- ✅ **Producción** - Con configuración de base de datos
+- ✅ **Local development** - Just configure database
+- ✅ **Testing** - Examples included
+- ✅ **Production** - With database configuration
 
-## 🎯 Permisos Disponibles
+## 🎯 Available Permissions
 
-### **Gestión de Usuarios**
-- `Users.Read` - Leer usuarios
-- `Users.Write` - Crear/editar usuarios
-- `Users.Delete` - Eliminar usuarios
+### **User Management**
+- `Users.Read` - Read users
+- `Users.Write` - Create/edit users
+- `Users.Delete` - Delete users
 
-### **Gestión de Roles**
-- `Roles.Read` - Leer roles
-- `Roles.Write` - Crear/editar roles
+### **Role Management**
+- `Roles.Read` - Read roles
+- `Roles.Write` - Create/edit roles
 
-### **Gestión de Permisos**
-- `Permissions.Read` - Leer permisos
-- `Permissions.Write` - Crear/editar permisos
+### **Permission Management**
+- `Permissions.Read` - Read permissions
+- `Permissions.Write` - Create/edit permissions
 
-## 🔮 Extensibilidad
+### **System Administration**
+- `System.Admin` - System administration
 
-El sistema está diseñado para ser fácilmente extensible:
+## 🔮 Extensibility
 
-### **Agregar Nuevos Permisos**
+The system is designed to be easily extensible:
+
+### **Add New Permissions**
 ```csharp
-// Crear nuevo permiso
+// Create new permission
 var newPermission = new Permission
 {
     Name = "Products.Read",
@@ -511,34 +533,35 @@ var newPermission = new Permission
 };
 ```
 
-### **Agregar Nuevas Políticas**
+### **Add New Policies**
 ```csharp
-// En Program.cs
+// In Program.cs
 options.AddPolicy("Products.Read", policy => policy.RequireClaim("permission", "Products.Read"));
 ```
 
-### **Agregar Nuevos Módulos**
-- Crear entidades del módulo
-- Definir permisos específicos
-- Configurar políticas de autorización
-- Proteger endpoints con permisos
+### **Add New Modules**
+- Create module entities
+- Define specific permissions
+- Configure authorization policies
+- Protect endpoints with permissions
 
-## 📚 Recursos Adicionales
+## 📚 Additional Resources
 
-- [AUTHENTICATION.md](AUTHENTICATION.md) - Sistema de autenticación
-- [PASSWORD_RECOVERY.md](PASSWORD_RECOVERY.md) - Recuperación de contraseña
-- [LOCALIZATION_AND_EMAIL.md](LOCALIZATION_AND_EMAIL.md) - Localización y correos
-- [API_EXAMPLES.http](API_EXAMPLES.http) - Ejemplos de uso de la API
-- [README.md](README.md) - Documentación general del proyecto
+- [AUTHENTICATION.md](AUTHENTICATION.md) - Authentication system
+- [PASSWORD_RECOVERY.md](PASSWORD_RECOVERY.md) - Password recovery
+- [LOCALIZATION_AND_EMAIL.md](LOCALIZATION_AND_EMAIL.md) - Localization and emails
+- [API_EXAMPLES.http](API_EXAMPLES.http) - API usage examples
+- [README.md](README.md) - General project documentation
 
-## 🎉 Conclusión
+## 🎉 Conclusion
 
-El sistema de permisos y roles está **completamente implementado** y proporciona:
+The permissions and roles system is **fully implemented** and provides:
 
-- ✅ **Seguridad robusta** con autorización granular
-- ✅ **Flexibilidad** para agregar nuevos permisos
-- ✅ **Escalabilidad** para múltiples módulos
-- ✅ **Facilidad de uso** con APIs claras
-- ✅ **Documentación completa** para desarrolladores
+- ✅ **Robust security** with granular authorization
+- ✅ **Flexibility** to add new permissions
+- ✅ **Scalability** for multiple modules
+- ✅ **Ease of use** with clear APIs
+- ✅ **Type safety** with permission constants
+- ✅ **Complete documentation** for developers
 
-**¡El sistema de permisos y roles está listo para usar en producción!** 🚀
+**The permissions and roles system is ready for production use!** 🚀

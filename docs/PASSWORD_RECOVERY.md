@@ -1,105 +1,105 @@
-# Sistema de Recuperación de Contraseña
+# Password Recovery System
 
-Este documento describe el sistema completo de recuperación de contraseña implementado en la aplicación Clean Architecture.
+This document describes the complete password recovery system implemented in the Clean Architecture application.
 
-## 🔐 Funcionalidades Implementadas
+## 🔐 Implemented Features
 
-### ✅ **Sistema Completo de Recuperación de Contraseña**
+### ✅ **Complete Password Recovery System**
 
-La funcionalidad de recuperación de contraseña está **completamente implementada** e incluye:
+The password recovery functionality is **fully implemented** and includes:
 
-1. **Solicitud de Reset de Contraseña**
-2. **Generación de Códigos de 6 Dígitos**
-3. **Envío de Correos Electrónicos**
-4. **Validación de Códigos**
-5. **Reset de Contraseña Seguro**
-6. **Confirmación por Email**
+1. **Password Reset Request**
+2. **6-Digit Code Generation**
+3. **Email Sending**
+4. **Code Validation**
+5. **Secure Password Reset**
+6. **Email Confirmation**
 
-## 🚀 Endpoints Disponibles
+## 🚀 Available Endpoints
 
-### 1. Solicitar Reset de Contraseña
+### 1. Request Password Reset
 ```http
-POST /api/auth/request-password-reset
+POST /api/v1/auth/request-password-reset
 Content-Type: application/json
 
 {
-  "email": "usuario@example.com"
+  "email": "user@example.com"
 }
 ```
 
-**Respuesta:**
+**Response:**
 ```json
 {
   "success": true,
-  "message": "Código de restablecimiento de contraseña enviado",
+  "message": "Password reset code sent",
   "data": {
-    "message": "Código de restablecimiento de contraseña enviado",
+    "message": "Password reset code sent",
     "expiresAt": "2024-01-01T12:15:00Z"
   },
   "timestamp": "2024-01-01T12:00:00Z"
 }
 ```
 
-### 2. Resetear Contraseña con Código
+### 2. Reset Password with Code
 ```http
-POST /api/auth/reset-password
+POST /api/v1/auth/reset-password
 Content-Type: application/json
 
 {
-  "email": "usuario@example.com",
+  "email": "user@example.com",
   "code": "123456",
-  "newPassword": "NuevaPassword123!"
+  "newPassword": "NewPassword123!"
 }
 ```
 
-**Respuesta:**
+**Response:**
 ```json
 {
   "success": true,
-  "message": "Contraseña restablecida exitosamente",
+  "message": "Password reset successfully",
   "timestamp": "2024-01-01T12:00:00Z"
 }
 ```
 
-## 🔒 Características de Seguridad
+## 🔒 Security Features
 
-### **Códigos de Reset Seguros**
-- ✅ **Códigos de 6 dígitos** generados aleatoriamente
-- ✅ **Expiración en 15 minutos** por seguridad
-- ✅ **Un solo uso** - los códigos se marcan como usados
-- ✅ **Limpieza automática** de códigos expirados
-- ✅ **No revelación** de existencia de emails (por seguridad)
+### **Secure Reset Codes**
+- ✅ **6-digit codes** randomly generated
+- ✅ **15-minute expiration** for security
+- ✅ **Single use** - codes are marked as used
+- ✅ **Automatic cleanup** of expired codes
+- ✅ **No email existence revelation** (for security)
 
-### **Validaciones Robustas**
-- ✅ **Validación de email** con FluentValidation
-- ✅ **Validación de código** de 6 dígitos exactos
-- ✅ **Validación de contraseña** con reglas de complejidad
-- ✅ **Verificación de usuario activo**
-- ✅ **Mensajes localizados** en español e inglés
+### **Robust Validations**
+- ✅ **Email validation** with FluentValidation
+- ✅ **Code validation** of exactly 6 digits
+- ✅ **Password validation** with complexity rules
+- ✅ **Active user verification**
+- ✅ **Localized messages** in Spanish and English
 
-## 📧 Sistema de Correos
+## 📧 Email System
 
-### **Templates HTML Profesionales**
-- ✅ **Diseño responsivo** con CSS moderno
-- ✅ **Colores corporativos** (azul para reset)
-- ✅ **Información de seguridad** y advertencias
-- ✅ **Código destacado** en caja azul
-- ✅ **Footer** con información de la empresa
+### **Professional HTML Templates**
+- ✅ **Responsive design** with modern CSS
+- ✅ **Corporate colors** (blue for reset)
+- ✅ **Security information** and warnings
+- ✅ **Highlighted code** in blue box
+- ✅ **Footer** with company information
 
-### **Tipos de Correos**
-1. **Correo de Reset de Contraseña**
-   - Código de 6 dígitos destacado
-   - Advertencia de expiración en 15 minutos
-   - Instrucciones de seguridad
+### **Email Types**
+1. **Password Reset Email**
+   - Highlighted 6-digit code
+   - 15-minute expiration warning
+   - Security instructions
 
-2. **Correo de Confirmación**
-   - Confirmación de cambio exitoso
-   - Recomendaciones de seguridad
-   - Advertencia si no fue el usuario
+2. **Confirmation Email**
+   - Successful change confirmation
+   - Security recommendations
+   - Warning if user didn't make the change
 
-## 🗄️ Base de Datos
+## 🗄️ Database
 
-### **Entidad PasswordResetCode**
+### **PasswordResetCode Entity**
 ```csharp
 public class PasswordResetCode : BaseEntity
 {
@@ -112,15 +112,15 @@ public class PasswordResetCode : BaseEntity
 }
 ```
 
-### **Migración Creada**
-- ✅ **Migración AddPasswordResetCodes** creada
-- ✅ **Tabla PasswordResetCodes** configurada
-- ✅ **Relaciones** con tabla Users
-- ✅ **Índices** para optimización
+### **Created Migration**
+- ✅ **AddPasswordResetCodes migration** created
+- ✅ **PasswordResetCodes table** configured
+- ✅ **Relationships** with Users table
+- ✅ **Indexes** for optimization
 
-## 🌍 Localización
+## 🌍 Localization
 
-### **Mensajes en Español**
+### **Spanish Messages**
 ```json
 {
   "Messages": {
@@ -136,7 +136,7 @@ public class PasswordResetCode : BaseEntity
 }
 ```
 
-### **Mensajes en Inglés**
+### **English Messages**
 ```json
 {
   "Messages": {
@@ -152,9 +152,9 @@ public class PasswordResetCode : BaseEntity
 }
 ```
 
-## 🔧 Configuración
+## 🔧 Configuration
 
-### **Configuración de Correos (appsettings.json)**
+### **Email Configuration (appsettings.json)**
 ```json
 {
   "EmailSettings": {
@@ -168,9 +168,9 @@ public class PasswordResetCode : BaseEntity
 }
 ```
 
-### **Configuración de Localización**
+### **Localization Configuration**
 ```csharp
-// En Program.cs
+// In Program.cs
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
@@ -181,7 +181,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 });
 ```
 
-## 📋 Flujo Completo de Recuperación
+## 📋 Complete Recovery Flow
 
 ```mermaid
 sequenceDiagram
@@ -191,14 +191,14 @@ sequenceDiagram
     participant EmailService
     participant Database
 
-    User->>API: POST /api/auth/request-password-reset
+    User->>API: POST /api/v1/auth/request-password-reset
     API->>AuthService: GeneratePasswordResetCodeAsync()
     AuthService->>Database: Store reset code
     AuthService->>EmailService: SendPasswordResetEmailAsync()
     EmailService->>User: Email with 6-digit code
     API->>User: Success response
 
-    User->>API: POST /api/auth/reset-password
+    User->>API: POST /api/v1/auth/reset-password
     API->>AuthService: ValidatePasswordResetCodeAsync()
     AuthService->>Database: Validate code
     AuthService->>Database: Update password
@@ -208,120 +208,120 @@ sequenceDiagram
     API->>User: Success response
 ```
 
-## 🧪 Ejemplos de Uso
+## 🧪 Usage Examples
 
-### **Ejemplo 1: Solicitar Reset**
+### **Example 1: Request Reset**
 ```bash
-curl -X POST "https://localhost:7000/api/auth/request-password-reset" \
+curl -X POST "https://localhost:7000/api/v1/auth/request-password-reset" \
   -H "Content-Type: application/json" \
   -H "Accept-Language: es" \
-  -d '{"email": "usuario@example.com"}'
+  -d '{"email": "user@example.com"}'
 ```
 
-### **Ejemplo 2: Resetear Contraseña**
+### **Example 2: Reset Password**
 ```bash
-curl -X POST "https://localhost:7000/api/auth/reset-password" \
+curl -X POST "https://localhost:7000/api/v1/auth/reset-password" \
   -H "Content-Type: application/json" \
   -H "Accept-Language: es" \
   -d '{
-    "email": "usuario@example.com",
+    "email": "user@example.com",
     "code": "123456",
-    "newPassword": "NuevaPassword123!"
+    "newPassword": "NewPassword123!"
   }'
 ```
 
-## 🔍 Validaciones Implementadas
+## 🔍 Implemented Validations
 
 ### **RequestPasswordResetDto**
-- ✅ Email requerido
-- ✅ Formato de email válido
-- ✅ Máximo 256 caracteres
+- ✅ Email required
+- ✅ Valid email format
+- ✅ Maximum 256 characters
 
 ### **ResetPasswordDto**
-- ✅ Email requerido y válido
-- ✅ Código requerido (exactamente 6 dígitos)
-- ✅ Nueva contraseña con reglas de complejidad:
-  - Mínimo 8 caracteres
-  - Al menos una letra minúscula
-  - Al menos una letra mayúscula
-  - Al menos un dígito
-  - Al menos un carácter especial
+- ✅ Email required and valid
+- ✅ Code required (exactly 6 digits)
+- ✅ New password with complexity rules:
+  - Minimum 8 characters
+  - At least one lowercase letter
+  - At least one uppercase letter
+  - At least one digit
+  - At least one special character
 
-## 🚨 Manejo de Errores
+## 🚨 Error Handling
 
-### **Errores Comunes**
-- **400 Bad Request**: Datos de entrada inválidos
-- **401 Unauthorized**: Código expirado o inválido
-- **404 Not Found**: Usuario no encontrado (no revelado por seguridad)
-- **500 Internal Server Error**: Error del servidor
+### **Common Errors**
+- **400 Bad Request**: Invalid input data
+- **401 Unauthorized**: Expired or invalid code
+- **404 Not Found**: User not found (not revealed for security)
+- **500 Internal Server Error**: Server error
 
-### **Respuestas de Error Estandarizadas**
+### **Standardized Error Responses**
 ```json
 {
   "success": false,
-  "message": "Código de restablecimiento inválido",
+  "message": "Invalid password reset code",
   "timestamp": "2024-01-01T12:00:00Z"
 }
 ```
 
-## 📊 Monitoreo y Logs
+## 📊 Monitoring and Logs
 
-### **Logs Implementados**
+### **Implemented Logs**
 ```csharp
 _logger.LogInformation("Password reset code generated for user {UserId}", userId);
 _logger.LogInformation("Email sent successfully to {Email}", email);
 _logger.LogError(ex, "Failed to send password reset email to {Email}", email);
 ```
 
-### **Métricas Recomendadas**
-- Tasa de solicitudes de reset
-- Tasa de códigos utilizados vs expirados
-- Tiempo promedio de uso de códigos
-- Errores de validación por tipo
+### **Recommended Metrics**
+- Password reset request rate
+- Code usage vs expiration rate
+- Average code usage time
+- Validation errors by type
 
-## 🔄 Migración de Base de Datos
+## 🔄 Database Migration
 
-Para aplicar los cambios de base de datos:
+To apply database changes:
 
 ```bash
-# Aplicar migración
+# Apply migration
 dotnet ef database update --project CleanArchitecture.Infrastructure --startup-project CleanArchitecture.API
 
-# O si PostgreSQL está ejecutándose
+# Or if PostgreSQL is running
 dotnet ef database update
 ```
 
-## ✅ Estado de Implementación
+## ✅ Implementation Status
 
-### **Completamente Implementado**
-- ✅ **Endpoints** de recuperación de contraseña
-- ✅ **Validaciones** con FluentValidation
-- ✅ **Servicio de correos** con templates HTML
-- ✅ **Códigos de reset** seguros
-- ✅ **Base de datos** con migración
-- ✅ **Localización** en español e inglés
-- ✅ **Respuestas estandarizadas** de API
-- ✅ **Manejo de errores** robusto
-- ✅ **Logging** y monitoreo
-- ✅ **Documentación** completa
+### **Fully Implemented**
+- ✅ **Password recovery endpoints**
+- ✅ **Validations** with FluentValidation
+- ✅ **Email service** with HTML templates
+- ✅ **Secure reset codes**
+- ✅ **Database** with migration
+- ✅ **Localization** in Spanish and English
+- ✅ **Standardized API responses**
+- ✅ **Robust error handling**
+- ✅ **Logging** and monitoring
+- ✅ **Complete documentation**
 
-### **Listo para Usar**
-El sistema de recuperación de contraseña está **100% funcional** y listo para:
-- ✅ Desarrollo local
+### **Ready to Use**
+The password recovery system is **100% functional** and ready for:
+- ✅ Local development
 - ✅ Testing
-- ✅ Producción (con configuración SMTP)
+- ✅ Production (with SMTP configuration)
 
-## 🎯 Próximos Pasos Opcionales
+## 🎯 Optional Next Steps
 
-- [ ] Implementar rate limiting para reset de contraseñas
-- [ ] Agregar captcha para prevenir abuso
-- [ ] Implementar notificaciones push
-- [ ] Agregar métricas de uso
-- [ ] Implementar auditoría de cambios de contraseña
+- [ ] Implement rate limiting for password resets
+- [ ] Add captcha to prevent abuse
+- [ ] Implement push notifications
+- [ ] Add usage metrics
+- [ ] Implement password change auditing
 
-## 📚 Recursos Adicionales
+## 📚 Additional Resources
 
-- [AUTHENTICATION.md](AUTHENTICATION.md) - Sistema de autenticación completo
-- [LOCALIZATION_AND_EMAIL.md](LOCALIZATION_AND_EMAIL.md) - Localización y correos
-- [API_EXAMPLES.http](API_EXAMPLES.http) - Ejemplos de uso de la API
-- [README.md](README.md) - Documentación general del proyecto
+- [AUTHENTICATION.md](AUTHENTICATION.md) - Complete authentication system
+- [LOCALIZATION_AND_EMAIL.md](LOCALIZATION_AND_EMAIL.md) - Localization and emails
+- [API_EXAMPLES.http](API_EXAMPLES.http) - API usage examples
+- [README.md](README.md) - General project documentation
