@@ -23,10 +23,10 @@ namespace CleanArchitecture.Domain.Entities
     [MaxLength(255)]
     public string? Iso2 { get; set; }
 
-    [MaxLength(10)]
+    [MaxLength(255)]
     public string? Iso31662 { get; set; }
 
-    [MaxLength(191)]
+    [MaxLength(255)]
     public string? Type { get; set; }
 
     public int? Level { get; set; }

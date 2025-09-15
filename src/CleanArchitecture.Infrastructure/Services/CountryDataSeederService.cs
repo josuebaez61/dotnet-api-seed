@@ -208,7 +208,7 @@ namespace CleanArchitecture.Infrastructure.Services
                         // The states.sql has 18 columns:
                         // id, name, country_id, country_code, fips_code, iso2, type, latitude, longitude, timezone, created_at, updated_at, flag, wikiDataId, iso3166_2, level, parent_id, native
                         // We need to skip wikiDataId (index 13)
-                        
+
                         if (record.Count >= 18) // Ensure we have enough fields
                         {
                             var state = new State
