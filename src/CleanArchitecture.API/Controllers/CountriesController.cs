@@ -40,7 +40,7 @@ namespace CleanArchitecture.API.Controllers
         /// <param name="id">Country ID</param>
         /// <returns>Country details</returns>
         [HttpGet("id/{id}")]
-        public async Task<ActionResult<ApiResponse<CountryDto>>> GetCountryById(int id)
+        public async Task<ActionResult<ApiResponse<CountryDto>>> GetCountryById(Guid id)
         {
             var query = new GetCountryByIdQuery(id);
             var result = await _mediator.Send(query);
@@ -59,7 +59,7 @@ namespace CleanArchitecture.API.Controllers
         /// <param name="countryId">Country ID</param>
         /// <returns>List of states for the country</returns>
         [HttpGet("{countryId}/states")]
-        public async Task<ActionResult<ApiResponse<List<StateDto>>>> GetStatesByCountryId(int countryId)
+        public async Task<ActionResult<ApiResponse<List<StateDto>>>> GetStatesByCountryId(Guid countryId)
         {
             var query = new GetStatesByCountryIdQuery(countryId);
             var result = await _mediator.Send(query);

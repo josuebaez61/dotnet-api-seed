@@ -14,6 +14,7 @@ namespace CleanArchitecture.Infrastructure.Services
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<Role> _roleManager;
     private readonly CountryDataSeederService _countryDataSeeder;
+    private readonly CityDataSeederService _cityDataSeeder;
 
     // Static GUIDs for consistent seeding
     private static readonly Guid AdminRoleId = new Guid("11734856-f5ac-4ee1-b28d-e35ef9fc0d4f");
@@ -45,12 +46,14 @@ namespace CleanArchitecture.Infrastructure.Services
         ApplicationDbContext context,
         UserManager<User> userManager,
         RoleManager<Role> roleManager,
-        CountryDataSeederService countryDataSeeder)
+        CountryDataSeederService countryDataSeeder,
+        CityDataSeederService cityDataSeeder)
     {
       _context = context;
       _userManager = userManager;
       _roleManager = roleManager;
       _countryDataSeeder = countryDataSeeder;
+      _cityDataSeeder = cityDataSeeder;
     }
 
     public async Task InitializeAsync()
@@ -73,6 +76,9 @@ namespace CleanArchitecture.Infrastructure.Services
 
       // Seed countries and states
       await _countryDataSeeder.SeedCountriesAndStatesAsync();
+
+      // Seed cities
+      await _cityDataSeeder.SeedCitiesAsync();
 
       // Create admin user if it doesn't exist
       await CreateAdminUserAsync();

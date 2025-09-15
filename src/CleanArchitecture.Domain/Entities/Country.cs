@@ -1,63 +1,28 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System;
 
 namespace CleanArchitecture.Domain.Entities
 {
   public class Country
   {
-    public int Id { get; set; }
-
-    [Required]
-    [MaxLength(255)]
+    public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
-
-    [MaxLength(50)]
     public string? Iso3 { get; set; }
-
-    [MaxLength(50)]
     public string? NumericCode { get; set; }
-
-    [MaxLength(50)]
     public string? Iso2 { get; set; }
-
-    [MaxLength(255)]
     public string? Phonecode { get; set; }
-
-    [MaxLength(255)]
     public string? Capital { get; set; }
-
-    [MaxLength(255)]
     public string? Currency { get; set; }
-
-    [MaxLength(255)]
     public string? CurrencyName { get; set; }
-
-    [MaxLength(255)]
     public string? CurrencySymbol { get; set; }
-
-    [MaxLength(255)]
     public string? Tld { get; set; }
-
-    [MaxLength(255)]
     public string? Native { get; set; }
-
-    [MaxLength(255)]
     public string? Nationality { get; set; }
-
     public string? Timezones { get; set; }
-
     public string? Translations { get; set; }
-
-    [Column(TypeName = "decimal(10,8)")]
     public decimal? Latitude { get; set; }
-
-    [Column(TypeName = "decimal(11,8)")]
     public decimal? Longitude { get; set; }
-
     public DateTime? CreatedAt { get; set; }
-
     public DateTime UpdatedAt { get; set; }
-
     public bool Flag { get; set; } = true;
 
     // Navigation properties

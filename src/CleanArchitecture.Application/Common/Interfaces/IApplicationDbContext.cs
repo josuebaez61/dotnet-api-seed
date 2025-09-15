@@ -13,6 +13,7 @@ namespace CleanArchitecture.Application.Common.Interfaces
     DbSet<EmailVerificationCode> EmailVerificationCodes { get; }
     DbSet<Country> Countries { get; }
     DbSet<State> States { get; }
+    DbSet<City> Cities { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
   }

@@ -17,6 +17,9 @@ namespace CleanArchitecture.Application.Common.Mappings
             // State mappings
             CreateMap<State, StateDto>();
 
+            // City mappings
+            CreateMap<City, CityDto>();
+
             // Role mappings
             CreateMap<Role, RoleDto>();
 

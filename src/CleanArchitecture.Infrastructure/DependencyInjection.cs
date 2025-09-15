@@ -51,6 +51,7 @@ namespace CleanArchitecture.Infrastructure
       // Database initialization
       services.AddScoped<DatabaseInitializationService>();
       services.AddScoped<CountryDataSeederService>();
+      services.AddScoped<CityDataSeederService>();
 
       // Cleanup services
       services.AddHostedService<CleanupService>();

@@ -11,6 +11,11 @@ namespace CleanArchitecture.Infrastructure.Data.Configurations
             // Primary Key
             builder.HasKey(c => c.Id);
 
+            // Configure GUID as primary key
+            builder.Property(c => c.Id)
+                .ValueGeneratedOnAdd()
+                .HasColumnType("uuid");
+
             // Properties
             builder.Property(c => c.Name)
                 .IsRequired()

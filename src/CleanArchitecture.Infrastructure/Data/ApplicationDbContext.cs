@@ -22,6 +22,7 @@ namespace CleanArchitecture.Infrastructure.Data
     public DbSet<RolePermission> RolePermissions { get; set; }
     public DbSet<Country> Countries { get; set; }
     public DbSet<State> States { get; set; }
+    public DbSet<City> Cities { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -33,6 +34,7 @@ namespace CleanArchitecture.Infrastructure.Data
       // Apply entity configurations
       builder.ApplyConfiguration(new CountryConfiguration());
       builder.ApplyConfiguration(new StateConfiguration());
+      builder.ApplyConfiguration(new CityConfiguration());
       builder.ApplyConfiguration(new PermissionConfiguration());
       builder.ApplyConfiguration(new RolePermissionConfiguration());
       builder.ApplyConfiguration(new PasswordResetCodeConfiguration());

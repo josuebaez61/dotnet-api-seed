@@ -47,7 +47,7 @@ namespace CleanArchitecture.Infrastructure.Services
             try
             {
                 var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-                var resourceName = "CleanArchitecture.Infrastructure.Data.Seeds.countries.sql";
+                var resourceName = "CleanArchitecture.Infrastructure.Data.Seeds.Countries.sql";
 
                 using var stream = assembly.GetManifestResourceStream(resourceName);
                 if (stream == null)
@@ -75,7 +75,7 @@ namespace CleanArchitecture.Infrastructure.Services
             try
             {
                 var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-                var resourceName = "CleanArchitecture.Infrastructure.Data.Seeds.states.sql";
+                var resourceName = "CleanArchitecture.Infrastructure.Data.Seeds.States.sql";
 
                 using var stream = assembly.GetManifestResourceStream(resourceName);
                 if (stream == null)

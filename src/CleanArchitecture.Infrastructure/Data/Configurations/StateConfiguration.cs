@@ -4,82 +4,89 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CleanArchitecture.Infrastructure.Data.Configurations
 {
-    public class StateConfiguration : IEntityTypeConfiguration<State>
+  public class StateConfiguration : IEntityTypeConfiguration<State>
+  {
+    public void Configure(EntityTypeBuilder<State> builder)
     {
-        public void Configure(EntityTypeBuilder<State> builder)
-        {
-            // Primary Key
-            builder.HasKey(s => s.Id);
+      // Primary Key
+      builder.HasKey(s => s.Id);
 
-            // Properties
-            builder.Property(s => s.Name)
-                .IsRequired()
-                .HasMaxLength(255);
+      // Configure GUID as primary key
+      builder.Property(s => s.Id)
+          .ValueGeneratedOnAdd()
+          .HasColumnType("uuid");
 
-            builder.Property(s => s.CountryId)
-                .IsRequired();
+      // Properties
+      builder.Property(s => s.Name)
+          .IsRequired()
+          .HasMaxLength(255);
 
-            builder.Property(s => s.CountryCode)
-                .IsRequired()
-                .HasMaxLength(50);
+      builder.Property(s => s.CountryId)
+          .IsRequired()
+          .HasColumnType("uuid");
 
-            builder.Property(s => s.FipsCode)
-                .HasMaxLength(255);
+      builder.Property(s => s.CountryCode)
+          .IsRequired()
+          .HasMaxLength(50);
 
-            builder.Property(s => s.Iso2)
-                .HasMaxLength(255);
+      builder.Property(s => s.FipsCode)
+          .HasMaxLength(255);
 
-            builder.Property(s => s.Iso31662)
-                .HasMaxLength(255);
+      builder.Property(s => s.Iso2)
+          .HasMaxLength(255);
 
-            builder.Property(s => s.Type)
-                .HasMaxLength(255);
+      builder.Property(s => s.Iso31662)
+          .HasMaxLength(255);
 
-            builder.Property(s => s.Level);
+      builder.Property(s => s.Type)
+          .HasMaxLength(255);
 
-            builder.Property(s => s.ParentId);
+      builder.Property(s => s.Level);
 
-            builder.Property(s => s.Native)
-                .HasMaxLength(255);
+      builder.Property(s => s.ParentId)
+          .HasColumnType("uuid");
 
-            builder.Property(s => s.Latitude)
-                .HasColumnType("decimal(10,8)");
+      builder.Property(s => s.Native)
+          .HasMaxLength(255);
 
-            builder.Property(s => s.Longitude)
-                .HasColumnType("decimal(11,8)");
+      builder.Property(s => s.Latitude)
+          .HasColumnType("decimal(10,8)");
 
-            builder.Property(s => s.Timezone)
-                .HasMaxLength(255);
+      builder.Property(s => s.Longitude)
+          .HasColumnType("decimal(11,8)");
 
-            builder.Property(s => s.CreatedAt)
-                .HasColumnType("timestamp with time zone");
+      builder.Property(s => s.Timezone)
+          .HasMaxLength(255);
 
-            builder.Property(s => s.UpdatedAt)
-                .IsRequired()
-                .HasColumnType("timestamp with time zone");
+      builder.Property(s => s.CreatedAt)
+          .HasColumnType("timestamp with time zone");
 
-            builder.Property(s => s.Flag)
-                .IsRequired()
-                .HasDefaultValue(true);
+      builder.Property(s => s.UpdatedAt)
+          .IsRequired()
+          .HasColumnType("timestamp with time zone");
 
-            // Relationships
-            builder.HasOne(s => s.Country)
-                .WithMany(c => c.States)
-                .HasForeignKey(s => s.CountryId)
-                .OnDelete(DeleteBehavior.Cascade);
+      builder.Property(s => s.Flag)
+          .IsRequired()
+          .HasDefaultValue(true);
 
-            // Indexes
-            builder.HasIndex(s => s.CountryId)
-                .HasDatabaseName("ix_states_country_id");
+      // Relationships
+      builder.HasOne(s => s.Country)
+          .WithMany(c => c.States)
+          .HasForeignKey(s => s.CountryId)
+          .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasIndex(s => s.CountryCode)
-                .HasDatabaseName("ix_states_country_code");
+      // Indexes
+      builder.HasIndex(s => s.CountryId)
+          .HasDatabaseName("ix_states_country_id");
 
-            builder.HasIndex(s => s.Name)
-                .HasDatabaseName("ix_states_name");
+      builder.HasIndex(s => s.CountryCode)
+          .HasDatabaseName("ix_states_country_code");
 
-            // Table name (already handled by snake_case convention)
-            builder.ToTable("states");
-        }
+      builder.HasIndex(s => s.Name)
+          .HasDatabaseName("ix_states_name");
+
+      // Table name (already handled by snake_case convention)
+      builder.ToTable("states");
     }
+  }
 }
