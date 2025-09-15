@@ -19,11 +19,13 @@ namespace CleanArchitecture.Infrastructure.Data
     public DbSet<EmailVerificationCode> EmailVerificationCodes { get; set; }
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
+    public DbSet<Country> Countries { get; set; }
+    public DbSet<State> States { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
       base.OnModelCreating(builder);
-      
+
       // Apply snake_case naming convention to all entities
       ApplySnakeCaseNaming(builder);
 
@@ -159,6 +161,50 @@ namespace CleanArchitecture.Infrastructure.Data
             .WithMany()
             .HasForeignKey(e => e.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+      });
+
+      // Configure Country entity
+      builder.Entity<Country>(entity =>
+      {
+        entity.HasKey(e => e.Id);
+        entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+        entity.Property(e => e.Iso3).HasMaxLength(3);
+        entity.Property(e => e.NumericCode).HasMaxLength(3);
+        entity.Property(e => e.Iso2).HasMaxLength(2);
+        entity.Property(e => e.Phonecode).HasMaxLength(255);
+        entity.Property(e => e.Capital).HasMaxLength(255);
+        entity.Property(e => e.Currency).HasMaxLength(255);
+        entity.Property(e => e.CurrencyName).HasMaxLength(255);
+        entity.Property(e => e.CurrencySymbol).HasMaxLength(255);
+        entity.Property(e => e.Tld).HasMaxLength(255);
+        entity.Property(e => e.Native).HasMaxLength(255);
+        entity.Property(e => e.Nationality).HasMaxLength(255);
+        entity.Property(e => e.Flag).IsRequired();
+        entity.HasIndex(e => e.Iso2).IsUnique();
+        entity.HasIndex(e => e.Iso3).IsUnique();
+      });
+
+      // Configure State entity
+      builder.Entity<State>(entity =>
+      {
+        entity.HasKey(e => e.Id);
+        entity.Property(e => e.Name).IsRequired().HasMaxLength(255);
+        entity.Property(e => e.CountryCode).IsRequired().HasMaxLength(2);
+        entity.Property(e => e.FipsCode).HasMaxLength(255);
+        entity.Property(e => e.Iso2).HasMaxLength(255);
+        entity.Property(e => e.Iso31662).HasMaxLength(10);
+        entity.Property(e => e.Type).HasMaxLength(191);
+        entity.Property(e => e.Native).HasMaxLength(255);
+        entity.Property(e => e.Timezone).HasMaxLength(255);
+        entity.Property(e => e.Flag).IsRequired();
+
+        entity.HasOne(e => e.Country)
+            .WithMany(e => e.States)
+            .HasForeignKey(e => e.CountryId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        entity.HasIndex(e => e.CountryId);
+        entity.HasIndex(e => e.CountryCode);
       });
 
       // Seed data logic moved to DatabaseInitializationService
