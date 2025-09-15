@@ -168,9 +168,9 @@ namespace CleanArchitecture.Infrastructure.Data
       {
         entity.HasKey(e => e.Id);
         entity.Property(e => e.Name).IsRequired().HasMaxLength(255);
-        entity.Property(e => e.Iso3).HasMaxLength(3);
-        entity.Property(e => e.NumericCode).HasMaxLength(3);
-        entity.Property(e => e.Iso2).HasMaxLength(2);
+        entity.Property(e => e.Iso3).HasMaxLength(50);
+        entity.Property(e => e.NumericCode).HasMaxLength(50);
+        entity.Property(e => e.Iso2).HasMaxLength(50);
         entity.Property(e => e.Phonecode).HasMaxLength(255);
         entity.Property(e => e.Capital).HasMaxLength(255);
         entity.Property(e => e.Currency).HasMaxLength(255);
@@ -189,7 +189,7 @@ namespace CleanArchitecture.Infrastructure.Data
       {
         entity.HasKey(e => e.Id);
         entity.Property(e => e.Name).IsRequired().HasMaxLength(255);
-        entity.Property(e => e.CountryCode).IsRequired().HasMaxLength(2);
+        entity.Property(e => e.CountryCode).IsRequired().HasMaxLength(50);
         entity.Property(e => e.FipsCode).HasMaxLength(255);
         entity.Property(e => e.Iso2).HasMaxLength(255);
         entity.Property(e => e.Iso31662).HasMaxLength(10);

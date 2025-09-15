@@ -14,7 +14,7 @@ namespace CleanArchitecture.Domain.Entities
     public int CountryId { get; set; }
 
     [Required]
-    [MaxLength(2)]
+    [MaxLength(50)]
     public string CountryCode { get; set; } = string.Empty;
 
     [MaxLength(255)]

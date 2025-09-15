@@ -7,17 +7,17 @@ namespace CleanArchitecture.Domain.Entities
   {
     public int Id { get; set; }
 
-        [Required]
-        [MaxLength(255)]
-        public string Name { get; set; } = string.Empty;
+    [Required]
+    [MaxLength(255)]
+    public string Name { get; set; } = string.Empty;
 
-    [MaxLength(3)]
+    [MaxLength(50)]
     public string? Iso3 { get; set; }
 
-    [MaxLength(3)]
+    [MaxLength(50)]
     public string? NumericCode { get; set; }
 
-    [MaxLength(2)]
+    [MaxLength(50)]
     public string? Iso2 { get; set; }
 
     [MaxLength(255)]

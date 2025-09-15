@@ -48,7 +48,7 @@ namespace CleanArchitecture.Infrastructure.Services
             {
                 var assembly = System.Reflection.Assembly.GetExecutingAssembly();
                 var resourceName = "CleanArchitecture.Infrastructure.Data.Seeds.countries.sql";
-                
+
                 using var stream = assembly.GetManifestResourceStream(resourceName);
                 if (stream == null)
                 {
@@ -58,10 +58,10 @@ namespace CleanArchitecture.Infrastructure.Services
 
                 using var reader = new StreamReader(stream);
                 var sqlContent = await reader.ReadToEndAsync();
-                
+
                 // Parse and insert countries using Entity Framework
                 var countries = ParseCountriesFromSql(sqlContent);
-                
+
                 // Insert in batches to avoid memory issues
                 const int batchSize = 100;
                 for (int i = 0; i < countries.Count; i += batchSize)
@@ -86,7 +86,7 @@ namespace CleanArchitecture.Infrastructure.Services
             {
                 var assembly = System.Reflection.Assembly.GetExecutingAssembly();
                 var resourceName = "CleanArchitecture.Infrastructure.Data.Seeds.states.sql";
-                
+
                 using var stream = assembly.GetManifestResourceStream(resourceName);
                 if (stream == null)
                 {
@@ -96,10 +96,10 @@ namespace CleanArchitecture.Infrastructure.Services
 
                 using var reader = new StreamReader(stream);
                 var sqlContent = await reader.ReadToEndAsync();
-                
+
                 // Parse and insert states using Entity Framework
                 var states = ParseStatesFromSql(sqlContent);
-                
+
                 // Insert in batches to avoid memory issues
                 const int batchSize = 100;
                 for (int i = 0; i < states.Count; i += batchSize)
@@ -121,27 +121,27 @@ namespace CleanArchitecture.Infrastructure.Services
         private List<Country> ParseCountriesFromSql(string sqlContent)
         {
             var countries = new List<Country>();
-            
+
             // Find all INSERT statements for countries
             var insertPattern = @"INSERT INTO `countries` VALUES\s*";
             var insertMatches = System.Text.RegularExpressions.Regex.Matches(sqlContent, insertPattern, System.Text.RegularExpressions.RegexOptions.Multiline);
-            
+
             foreach (System.Text.RegularExpressions.Match insertMatch in insertMatches)
             {
                 var startIndex = insertMatch.Index;
                 var endIndex = sqlContent.IndexOf(";", startIndex);
-                
+
                 if (endIndex > startIndex)
                 {
                     var statement = sqlContent.Substring(startIndex, endIndex - startIndex);
-                    
+
                     // Extract VALUES part
                     var valuesStart = statement.IndexOf("VALUES") + 6;
                     var valuesPart = statement.Substring(valuesStart).Trim();
-                    
+
                     // Parse individual records
                     var records = ParseSqlRecords(valuesPart);
-                    
+
                     foreach (var record in records)
                     {
                         if (record.Count >= 20) // Ensure we have enough fields
@@ -169,40 +169,40 @@ namespace CleanArchitecture.Infrastructure.Services
                                 UpdatedAt = ParseDateTime(record[18]) ?? DateTime.UtcNow,
                                 Flag = ParseBool(record[19])
                             };
-                            
+
                             countries.Add(country);
                         }
                     }
                 }
             }
-            
+
             return countries;
         }
 
         private List<State> ParseStatesFromSql(string sqlContent)
         {
             var states = new List<State>();
-            
+
             // Find all INSERT statements for states
             var insertPattern = @"INSERT INTO `states` VALUES\s*";
             var insertMatches = System.Text.RegularExpressions.Regex.Matches(sqlContent, insertPattern, System.Text.RegularExpressions.RegexOptions.Multiline);
-            
+
             foreach (System.Text.RegularExpressions.Match insertMatch in insertMatches)
             {
                 var startIndex = insertMatch.Index;
                 var endIndex = sqlContent.IndexOf(";", startIndex);
-                
+
                 if (endIndex > startIndex)
                 {
                     var statement = sqlContent.Substring(startIndex, endIndex - startIndex);
-                    
+
                     // Extract VALUES part
                     var valuesStart = statement.IndexOf("VALUES") + 6;
                     var valuesPart = statement.Substring(valuesStart).Trim();
-                    
+
                     // Parse individual records
                     var records = ParseSqlRecords(valuesPart);
-                    
+
                     foreach (var record in records)
                     {
                         if (record.Count >= 16) // Ensure we have enough fields
@@ -227,20 +227,20 @@ namespace CleanArchitecture.Infrastructure.Services
                                 UpdatedAt = ParseDateTime(record[15]) ?? DateTime.UtcNow,
                                 Flag = ParseBool(record.Count > 16 ? record[16] : "1")
                             };
-                            
+
                             states.Add(state);
                         }
                     }
                 }
             }
-            
+
             return states;
         }
 
         private List<List<string>> ParseSqlRecords(string valuesPart)
         {
             var records = new List<List<string>>();
-            
+
             // Remove outer parentheses
             valuesPart = valuesPart.Trim();
             if (valuesPart.StartsWith("("))
@@ -251,10 +251,10 @@ namespace CleanArchitecture.Infrastructure.Services
             {
                 valuesPart = valuesPart.Substring(0, valuesPart.Length - 1);
             }
-            
+
             // Split by ),( to separate records
             var recordStrings = valuesPart.Split(new[] { "),(" }, StringSplitOptions.None);
-            
+
             foreach (var recordString in recordStrings)
             {
                 var fields = ParseSqlFields(recordString);
@@ -263,7 +263,7 @@ namespace CleanArchitecture.Infrastructure.Services
                     records.Add(fields);
                 }
             }
-            
+
             return records;
         }
 
@@ -273,11 +273,11 @@ namespace CleanArchitecture.Infrastructure.Services
             var currentField = "";
             var inQuotes = false;
             var quoteChar = '\0';
-            
+
             for (int i = 0; i < recordString.Length; i++)
             {
                 var currentChar = recordString[i];
-                
+
                 if ((currentChar == '\'' || currentChar == '"') && !inQuotes)
                 {
                     inQuotes = true;
@@ -300,12 +300,12 @@ namespace CleanArchitecture.Infrastructure.Services
                     currentField += currentChar;
                 }
             }
-            
+
             if (!string.IsNullOrEmpty(currentField))
             {
                 fields.Add(currentField.Trim());
             }
-            
+
             return fields;
         }
 
@@ -313,10 +313,10 @@ namespace CleanArchitecture.Infrastructure.Services
         {
             if (string.IsNullOrEmpty(value) || value.ToUpper() == "NULL")
                 return 0;
-            
+
             if (int.TryParse(value.Trim('\'', '"'), out var result))
                 return result;
-            
+
             return 0;
         }
 
@@ -324,7 +324,7 @@ namespace CleanArchitecture.Infrastructure.Services
         {
             if (string.IsNullOrEmpty(value) || value.ToUpper() == "NULL")
                 return null;
-            
+
             return value.Trim('\'', '"');
         }
 
@@ -332,10 +332,10 @@ namespace CleanArchitecture.Infrastructure.Services
         {
             if (string.IsNullOrEmpty(value) || value.ToUpper() == "NULL")
                 return null;
-            
+
             if (decimal.TryParse(value.Trim('\'', '"'), out var result))
                 return result;
-            
+
             return null;
         }
 
@@ -343,10 +343,10 @@ namespace CleanArchitecture.Infrastructure.Services
         {
             if (string.IsNullOrEmpty(value) || value.ToUpper() == "NULL")
                 return null;
-            
+
             if (DateTime.TryParse(value.Trim('\'', '"'), out var result))
                 return result;
-            
+
             return null;
         }
 
@@ -354,7 +354,7 @@ namespace CleanArchitecture.Infrastructure.Services
         {
             if (string.IsNullOrEmpty(value) || value.ToUpper() == "NULL")
                 return false;
-            
+
             var cleanValue = value.Trim('\'', '"');
             return cleanValue == "1" || cleanValue.ToLower() == "true";
         }
