@@ -32,10 +32,13 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 // Inject the localization service
 private readonly ILocalizationService _localizationService;
 
-// Get messages
-var successMessage = _localizationService.GetSuccessMessage("UserCreated");
-var errorMessage = _localizationService.GetErrorMessage("UserNotFound");
-var validationMessage = _localizationService.GetValidationMessage("Required", "Email");
+// Get messages using clean error codes (prefixes added automatically)
+var successMessage = _localizationService.GetSuccessMessage("USER_CREATED");
+var errorMessage = _localizationService.GetErrorMessage("USER_NOT_FOUND");
+var validationMessage = _localizationService.GetValidationMessage("REQUIRED_FIELD", "Email");
+
+// Direct string access (for custom keys)
+var customMessage = _localizationService.GetString("CUSTOM_MESSAGE_KEY");
 ```
 
 ## 📧 Email Service
@@ -277,34 +280,68 @@ Messages are organized in `.resx` files with the following structure:
 
 #### Messages.resx (English)
 ```xml
-<data name="Error_USER_NOT_FOUND" xml:space="preserve">
+<data name="ERROR_USER_NOT_FOUND" xml:space="preserve">
   <value>User not found</value>
 </data>
-<data name="Error_INVALID_CREDENTIALS" xml:space="preserve">
+<data name="ERROR_INVALID_CREDENTIALS" xml:space="preserve">
   <value>Invalid credentials</value>
 </data>
-<data name="Success_LoginSuccessful" xml:space="preserve">
+<data name="SUCCESS_LOGIN_SUCCESSFUL" xml:space="preserve">
   <value>Login successful</value>
+</data>
+<data name="VALIDATION_REQUIRED_FIELD" xml:space="preserve">
+  <value>This field is required</value>
 </data>
 ```
 
 #### Messages.es.resx (Spanish)
 ```xml
-<data name="Error_USER_NOT_FOUND" xml:space="preserve">
+<data name="ERROR_USER_NOT_FOUND" xml:space="preserve">
   <value>Usuario no encontrado</value>
 </data>
-<data name="Error_INVALID_CREDENTIALS" xml:space="preserve">
+<data name="ERROR_INVALID_CREDENTIALS" xml:space="preserve">
   <value>Credenciales inválidas</value>
 </data>
-<data name="Success_LoginSuccessful" xml:space="preserve">
+<data name="SUCCESS_LOGIN_SUCCESSFUL" xml:space="preserve">
   <value>Inicio de sesión exitoso</value>
+</data>
+<data name="VALIDATION_REQUIRED_FIELD" xml:space="preserve">
+  <value>Este campo es obligatorio</value>
 </data>
 ```
 
 ### Naming Convention
-- **Error_** - Error messages: `Error_USER_NOT_FOUND`
-- **Success_** - Success messages: `Success_LoginSuccessful`
-- **Validation_** - Validation messages: `Validation_Required`
+
+The system uses **UPPER_SNAKE_CASE** convention for all translation keys:
+
+- **ERROR_** - Error messages: `ERROR_USER_NOT_FOUND`, `ERROR_INVALID_CREDENTIALS`
+- **SUCCESS_** - Success messages: `SUCCESS_LOGIN_SUCCESSFUL`, `SUCCESS_USER_CREATED`
+- **VALIDATION_** - Validation messages: `VALIDATION_REQUIRED_FIELD`, `VALIDATION_INVALID_EMAIL_FORMAT`
+- **EMAIL_** - Email subjects: `EMAIL_WELCOME_SUBJECT`, `EMAIL_PASSWORD_RESET_SUBJECT`
+
+### Separation of Concerns
+
+The system implements a clean separation between exception error codes and localization keys:
+
+#### Exception Error Codes (Clean Format)
+```csharp
+// Exceptions use clean error codes without prefixes
+throw new InvalidCredentialsError(); // ErrorCode = "INVALID_CREDENTIALS"
+throw new UserNotFoundError("admin"); // ErrorCode = "USER_NOT_FOUND"
+```
+
+#### LocalizationService (Automatic Prefixes)
+```csharp
+// LocalizationService automatically adds appropriate prefixes
+localizationService.GetErrorMessage("INVALID_CREDENTIALS"); 
+// → Looks for "ERROR_INVALID_CREDENTIALS" in .resx files
+
+localizationService.GetSuccessMessage("LOGIN_SUCCESSFUL"); 
+// → Looks for "SUCCESS_LOGIN_SUCCESSFUL" in .resx files
+
+localizationService.GetValidationMessage("REQUIRED_FIELD"); 
+// → Looks for "VALIDATION_REQUIRED_FIELD" in .resx files
+```
 
 ### Localized Error Handling
 
@@ -338,13 +375,90 @@ The system includes centralized middleware that handles all exceptions and trans
 }
 ```
 
+**Invalid credentials (Spanish):**
+```json
+{
+  "success": false,
+  "message": "Credenciales inválidas",
+  "data": null,
+  "errors": null,
+  "errorCode": "INVALID_CREDENTIALS",
+  "timestamp": "2025-09-13T14:48:20.161813Z",
+  "requestId": null
+}
+```
+
 #### Error Localization Flow
 
-1. **Exception thrown** in the application layer
+1. **Exception thrown** in the application layer with clean error code (e.g., `INVALID_CREDENTIALS`)
 2. **Middleware captures** the exception
 3. **Detects language** from request (query param or header)
-4. **Translates message** using .resx files
-5. **Returns localized** standardized response
+4. **LocalizationService** automatically adds appropriate prefix (`ERROR_`) and looks up translation
+5. **Returns localized** standardized response with translated message
+
+#### Example Flow:
+```csharp
+// 1. Exception thrown with clean error code
+throw new InvalidCredentialsError(); // ErrorCode = "INVALID_CREDENTIALS"
+
+// 2. Middleware calls LocalizationService
+localizationService.GetErrorMessage("INVALID_CREDENTIALS");
+
+// 3. LocalizationService adds prefix and looks up translation
+// Searches for "ERROR_INVALID_CREDENTIALS" in .resx files
+
+// 4. Returns localized message based on culture
+// Spanish: "Credenciales inválidas"
+// English: "Invalid credentials"
+```
+
+### Best Practices
+
+#### 1. Exception Error Codes
+- Use **clean, descriptive error codes** without prefixes
+- Follow **UPPER_SNAKE_CASE** convention
+- Examples: `INVALID_CREDENTIALS`, `USER_NOT_FOUND`, `PASSWORD_TOO_WEAK`
+
+#### 2. Adding New Translations
+When adding new error messages:
+
+1. **Add to exception class:**
+```csharp
+public class NewError : ApplicationException
+{
+    public NewError()
+        : base("NEW_ERROR_CODE", "Default message")
+    {
+    }
+}
+```
+
+2. **Add to resource files:**
+```xml
+<!-- Messages.resx (English) -->
+<data name="ERROR_NEW_ERROR_CODE" xml:space="preserve">
+  <value>New error message</value>
+</data>
+
+<!-- Messages.es.resx (Spanish) -->
+<data name="ERROR_NEW_ERROR_CODE" xml:space="preserve">
+  <value>Mensaje de nuevo error</value>
+</data>
+```
+
+3. **Use in code:**
+```csharp
+throw new NewError(); // Clean error code
+// LocalizationService automatically handles prefix and translation
+```
+
+#### 3. Benefits of This Approach
+
+- **Separation of Concerns**: Exceptions focus on business logic, localization handles presentation
+- **Consistency**: All translation keys follow the same UPPER_SNAKE_CASE convention
+- **Maintainability**: Easy to add new translations following the established pattern
+- **Flexibility**: LocalizationService can handle different message types (error, success, validation)
+- **Clean Code**: Exception error codes are readable and don't include implementation details
 
 ## 🚀 New Endpoints
 
