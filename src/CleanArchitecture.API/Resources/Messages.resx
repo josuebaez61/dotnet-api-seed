@@ -60,200 +60,197 @@
   </resheader>
   
   <!-- Success Messages -->
-  <data name="Success_UserCreated" xml:space="preserve">
+  <data name="SUCCESS_USER_CREATED" xml:space="preserve">
     <value>User created successfully</value>
   </data>
-  <data name="Success_UserUpdated" xml:space="preserve">
+  <data name="SUCCESS_USER_UPDATED" xml:space="preserve">
     <value>User updated successfully</value>
   </data>
-  <data name="Success_UserDeleted" xml:space="preserve">
+  <data name="SUCCESS_USER_DELETED" xml:space="preserve">
     <value>User deleted successfully</value>
   </data>
-  <data name="Success_LoginSuccessful" xml:space="preserve">
+  <data name="SUCCESS_LOGIN_SUCCESSFUL" xml:space="preserve">
     <value>Login successful</value>
   </data>
-  <data name="Success_LogoutSuccessful" xml:space="preserve">
+  <data name="SUCCESS_LOGOUT_SUCCESSFUL" xml:space="preserve">
     <value>Logout successful</value>
   </data>
-  <data name="Success_PasswordChanged" xml:space="preserve">
+  <data name="SUCCESS_PASSWORD_CHANGED" xml:space="preserve">
     <value>Password changed successfully</value>
   </data>
-  <data name="Success_PasswordResetCodeSent" xml:space="preserve">
+  <data name="SUCCESS_PASSWORD_RESET_CODE_SENT" xml:space="preserve">
     <value>Password reset code sent</value>
   </data>
-  <data name="Success_PasswordResetSuccessful" xml:space="preserve">
+  <data name="SUCCESS_PASSWORD_RESET_SUCCESSFUL" xml:space="preserve">
     <value>Password reset successfully</value>
   </data>
-  <data name="Success_EmailSent" xml:space="preserve">
+  <data name="SUCCESS_EMAIL_SENT" xml:space="preserve">
     <value>Email sent successfully</value>
   </data>
-  <data name="Success_EmailChangeVerificationSent" xml:space="preserve">
+  <data name="SUCCESS_EMAIL_CHANGE_VERIFICATION_SENT" xml:space="preserve">
     <value>Email change verification sent</value>
   </data>
-  <data name="Success_EmailChanged" xml:space="preserve">
+  <data name="SUCCESS_EMAIL_CHANGED" xml:space="preserve">
     <value>Email changed successfully</value>
   </data>
-  <data name="Success_TokenRefreshed" xml:space="preserve">
+  <data name="SUCCESS_TOKEN_REFRESHED" xml:space="preserve">
     <value>Token refreshed successfully</value>
   </data>
   
   <!-- Error Messages -->
-  <data name="Error_UserNotFound" xml:space="preserve">
+  <data name="ERROR_USER_NOT_FOUND" xml:space="preserve">
     <value>User not found</value>
   </data>
-  <data name="Error_INVALID_CREDENTIALS" xml:space="preserve">
-    <value>Invalid email/username or password</value>
-  </data>
-  <data name="Error_InvalidCredentials" xml:space="preserve">
+  <data name="ERROR_INVALID_CREDENTIALS" xml:space="preserve">
     <value>Invalid credentials</value>
   </data>
-  <data name="Error_AccountDeactivated" xml:space="preserve">
+  <data name="ERROR_ACCOUNT_DEACTIVATED" xml:space="preserve">
     <value>Account is deactivated</value>
   </data>
-  <data name="Error_UserAlreadyExists" xml:space="preserve">
+  <data name="ERROR_USER_ALREADY_EXISTS" xml:space="preserve">
     <value>User already exists</value>
   </data>
-  <data name="Error_InvalidPassword" xml:space="preserve">
+  <data name="ERROR_INVALID_PASSWORD" xml:space="preserve">
     <value>Invalid password</value>
   </data>
-  <data name="Error_InvalidRefreshToken" xml:space="preserve">
+  <data name="ERROR_INVALID_REFRESH_TOKEN" xml:space="preserve">
     <value>Invalid refresh token</value>
   </data>
-  <data name="Error_PasswordResetCodeInvalid" xml:space="preserve">
+  <data name="ERROR_PASSWORD_RESET_CODE_INVALID" xml:space="preserve">
     <value>Invalid password reset code</value>
   </data>
-  <data name="Error_PasswordResetCodeExpired" xml:space="preserve">
+  <data name="ERROR_PASSWORD_RESET_CODE_EXPIRED" xml:space="preserve">
     <value>Password reset code has expired</value>
   </data>
-  <data name="Error_PasswordResetCodeAlreadyUsed" xml:space="preserve">
+  <data name="ERROR_PASSWORD_RESET_CODE_ALREADY_USED" xml:space="preserve">
     <value>Password reset code has already been used</value>
   </data>
-  <data name="Error_CurrentPasswordIncorrect" xml:space="preserve">
+  <data name="ERROR_CURRENT_PASSWORD_INCORRECT" xml:space="preserve">
     <value>Current password is incorrect</value>
   </data>
-  <data name="Error_PasswordChangeFailed" xml:space="preserve">
+  <data name="ERROR_PASSWORD_CHANGE_FAILED" xml:space="preserve">
     <value>Failed to change password</value>
   </data>
-  <data name="Validation_RequiredField" xml:space="preserve">
+  <data name="VALIDATION_REQUIRED_FIELD" xml:space="preserve">
     <value>The field '{0}' is required</value>
   </data>
-  <data name="Validation_InvalidEmailFormat" xml:space="preserve">
+  <data name="VALIDATION_INVALID_EMAIL_FORMAT" xml:space="preserve">
     <value>Invalid email format</value>
   </data>
-  <data name="Validation_PasswordTooWeak" xml:space="preserve">
+  <data name="VALIDATION_PASSWORD_TOO_WEAK" xml:space="preserve">
     <value>Password does not meet security requirements</value>
   </data>
-  <data name="Validation_InvalidDateOfBirth" xml:space="preserve">
+  <data name="VALIDATION_INVALID_DATE_OF_BIRTH" xml:space="preserve">
     <value>Invalid date of birth</value>
   </data>
-  <data name="Validation_InvalidAge" xml:space="preserve">
+  <data name="VALIDATION_INVALID_AGE" xml:space="preserve">
     <value>Invalid age. Must be between 13 and 120 years old</value>
   </data>
-  <data name="Validation_UsernameTooShort" xml:space="preserve">
+  <data name="VALIDATION_USERNAME_TOO_SHORT" xml:space="preserve">
     <value>Username must be at least {0} characters long</value>
   </data>
-  <data name="Validation_UsernameTooLong" xml:space="preserve">
+  <data name="VALIDATION_USERNAME_TOO_LONG" xml:space="preserve">
     <value>Username must be at most {0} characters long</value>
   </data>
-  <data name="Validation_InvalidUsernameFormat" xml:space="preserve">
+  <data name="VALIDATION_INVALID_USERNAME_FORMAT" xml:space="preserve">
     <value>Invalid username format. Only letters, numbers, and underscores are allowed</value>
   </data>
-  <data name="Error_InsufficientPermissions" xml:space="preserve">
+  <data name="ERROR_INSUFFICIENT_PERMISSIONS" xml:space="preserve">
     <value>Insufficient permissions. Required: {0}</value>
   </data>
-  <data name="Error_RoleNotFound" xml:space="preserve">
+  <data name="ERROR_ROLE_NOT_FOUND" xml:space="preserve">
     <value>Role not found: {0}</value>
   </data>
-  <data name="Error_RoleNotFoundById" xml:space="preserve">
+  <data name="ERROR_ROLE_NOT_FOUND_BY_ID" xml:space="preserve">
     <value>Role not found with ID: {0}</value>
   </data>
-  <data name="Error_RoleAlreadyExists" xml:space="preserve">
+  <data name="ERROR_ROLE_ALREADY_EXISTS" xml:space="preserve">
     <value>Role already exists: {0}</value>
   </data>
-  <data name="Error_PermissionNotFound" xml:space="preserve">
+  <data name="ERROR_PERMISSION_NOT_FOUND" xml:space="preserve">
     <value>Permission not found: {0}</value>
   </data>
-  <data name="Error_PermissionNotFoundById" xml:space="preserve">
+  <data name="ERROR_PERMISSION_NOT_FOUND_BY_ID" xml:space="preserve">
     <value>Permission not found with ID: {0}</value>
   </data>
-  <data name="Error_PermissionAlreadyExists" xml:space="preserve">
+  <data name="ERROR_PERMISSION_ALREADY_EXISTS" xml:space="preserve">
     <value>Permission already exists: {0}</value>
   </data>
-  <data name="Error_UserNotInRole" xml:space="preserve">
+  <data name="ERROR_USER_NOT_IN_ROLE" xml:space="preserve">
     <value>User {0} is not in role {1}</value>
   </data>
-  <data name="Error_RolePermissionNotFound" xml:space="preserve">
+  <data name="ERROR_ROLE_PERMISSION_NOT_FOUND" xml:space="preserve">
     <value>Role {0} does not have permission {1}</value>
   </data>
-  <data name="Error_InvalidToken" xml:space="preserve">
+  <data name="ERROR_INVALID_TOKEN" xml:space="preserve">
     <value>Invalid or expired token</value>
   </data>
-  <data name="Error_EmailNotConfirmed" xml:space="preserve">
+  <data name="ERROR_EMAIL_NOT_CONFIRMED" xml:space="preserve">
     <value>Email not confirmed</value>
   </data>
-  <data name="Error_ValidationFailed" xml:space="preserve">
+  <data name="ERROR_VALIDATION_FAILED" xml:space="preserve">
     <value>Validation error</value>
   </data>
-  <data name="Error_Unauthorized" xml:space="preserve">
+  <data name="ERROR_UNAUTHORIZED" xml:space="preserve">
     <value>Unauthorized</value>
   </data>
-  <data name="Error_Forbidden" xml:space="preserve">
+  <data name="ERROR_FORBIDDEN" xml:space="preserve">
     <value>Access denied</value>
   </data>
-  <data name="Error_InternalServerError" xml:space="preserve">
+  <data name="ERROR_INTERNAL_SERVER_ERROR" xml:space="preserve">
     <value>Internal server error</value>
   </data>
-  <data name="Error_DatabaseError" xml:space="preserve">
+  <data name="ERROR_DATABASE_ERROR" xml:space="preserve">
     <value>Database error</value>
   </data>
-  <data name="Error_EmailSendingFailed" xml:space="preserve">
+  <data name="ERROR_EMAIL_SENDING_FAILED" xml:space="preserve">
     <value>Failed to send email</value>
   </data>
-  <data name="Error_TestEmailFailed" xml:space="preserve">
+  <data name="ERROR_TEST_EMAIL_FAILED" xml:space="preserve">
     <value>Failed to send test email: {0}</value>
   </data>
-  <data name="Error_EmailAlreadyExists" xml:space="preserve">
+  <data name="ERROR_EMAIL_ALREADY_EXISTS" xml:space="preserve">
     <value>Email already exists</value>
   </data>
-  <data name="Error_EmailChangeVerificationCodeInvalid" xml:space="preserve">
+  <data name="ERROR_EMAIL_CHANGE_VERIFICATION_CODE_INVALID" xml:space="preserve">
     <value>Invalid email change verification code</value>
   </data>
-  <data name="Error_EmailChangeVerificationCodeExpired" xml:space="preserve">
+  <data name="ERROR_EMAIL_CHANGE_VERIFICATION_CODE_EXPIRED" xml:space="preserve">
     <value>Email change verification code has expired</value>
   </data>
-  <data name="Error_EmailChangeVerificationCodeAlreadyUsed" xml:space="preserve">
+  <data name="ERROR_EMAIL_CHANGE_VERIFICATION_CODE_ALREADY_USED" xml:space="preserve">
     <value>Email change verification code has already been used</value>
   </data>
-  <data name="Error_InvalidOperation" xml:space="preserve">
+  <data name="ERROR_INVALID_OPERATION" xml:space="preserve">
     <value>Invalid operation</value>
   </data>
-  <data name="Success_TestEmailSent" xml:space="preserve">
+  <data name="SUCCESS_TEST_EMAIL_SENT" xml:space="preserve">
     <value>Test {0} email sent successfully</value>
   </data>
-  <data name="Success_UsersRetrieved" xml:space="preserve">
+  <data name="SUCCESS_USERS_RETRIEVED" xml:space="preserve">
     <value>Users retrieved successfully</value>
   </data>
-  <data name="Success_RolePermissionsUpdated" xml:space="preserve">
+  <data name="SUCCESS_ROLE_PERMISSIONS_UPDATED" xml:space="preserve">
     <value>Role permissions updated successfully</value>
   </data>
-  <data name="Validation_InvalidPaginationParameters" xml:space="preserve">
+  <data name="VALIDATION_INVALID_PAGINATION_PARAMETERS" xml:space="preserve">
     <value>Invalid pagination parameters</value>
   </data>
   
   <!-- Email Subject Messages -->
-  <data name="Email_EmailChangeVerificationSubject" xml:space="preserve">
+  <data name="EMAIL_EMAIL_CHANGE_VERIFICATION_SUBJECT" xml:space="preserve">
     <value>Verify Your Email Change</value>
   </data>
-  <data name="Email_EmailChangeConfirmationSubject" xml:space="preserve">
+  <data name="EMAIL_EMAIL_CHANGE_CONFIRMATION_SUBJECT" xml:space="preserve">
     <value>Email Successfully Changed</value>
   </data>
-  <data name="Email_PasswordResetSubject" xml:space="preserve">
+  <data name="EMAIL_PASSWORD_RESET_SUBJECT" xml:space="preserve">
     <value>Password Reset Code</value>
   </data>
-  <data name="Email_WelcomeSubject" xml:space="preserve">
+  <data name="EMAIL_WELCOME_SUBJECT" xml:space="preserve">
     <value>Welcome to Clean Architecture</value>
   </data>
-  <data name="Email_PasswordChangedSubject" xml:space="preserve">
+  <data name="EMAIL_PASSWORD_CHANGED_SUBJECT" xml:space="preserve">
     <value>Password Changed Successfully</value>
   </data>
   

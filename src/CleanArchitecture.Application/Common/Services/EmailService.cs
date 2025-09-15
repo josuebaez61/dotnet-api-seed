@@ -63,27 +63,27 @@ namespace CleanArchitecture.Application.Common.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to send email to {Email}", to);
-                throw new InvalidOperationException(_localizationService.GetErrorMessage("EmailSendingFailed"));
+                throw new InvalidOperationException(_localizationService.GetErrorMessage("EMAIL_SENDING_FAILED"));
             }
         }
 
         public async Task SendPasswordResetEmailAsync(string to, string userName, string resetCode)
         {
-            var subject = _localizationService.GetString("Email_PasswordResetSubject");
+            var subject = _localizationService.GetString("PASSWORD_RESET_SUBJECT");
             var body = GetPasswordResetEmailTemplate(userName, resetCode);
             await SendEmailAsync(to, subject, body);
         }
 
         public async Task SendWelcomeEmailAsync(string to, string userName)
         {
-            var subject = _localizationService.GetString("Email_WelcomeSubject");
+            var subject = _localizationService.GetString("WELCOME_SUBJECT");
             var body = GetWelcomeEmailTemplate(userName);
             await SendEmailAsync(to, subject, body);
         }
 
         public async Task SendPasswordChangedEmailAsync(string to, string userName)
         {
-            var subject = _localizationService.GetString("Email_PasswordChangedSubject");
+            var subject = _localizationService.GetString("PASSWORD_CHANGED_SUBJECT");
             var body = GetPasswordChangedEmailTemplate(userName);
             await SendEmailAsync(to, subject, body);
         }
@@ -361,14 +361,14 @@ namespace CleanArchitecture.Application.Common.Services
 
         public async Task SendEmailChangeVerificationEmailAsync(string to, string userName, string verificationCode)
         {
-            var subject = _localizationService.GetString("Email_EmailChangeVerificationSubject");
+            var subject = _localizationService.GetString("EMAIL_CHANGE_VERIFICATION_SUBJECT");
             var body = GetEmailChangeVerificationEmailTemplate(userName, verificationCode);
             await SendEmailAsync(to, subject, body);
         }
 
         public async Task SendEmailChangeConfirmationEmailAsync(string to, string userName, string oldEmail)
         {
-            var subject = _localizationService.GetString("Email_EmailChangeConfirmationSubject");
+            var subject = _localizationService.GetString("EMAIL_CHANGE_CONFIRMATION_SUBJECT");
             var body = GetEmailChangeConfirmationEmailTemplate(userName, oldEmail);
             await SendEmailAsync(to, subject, body);
         }

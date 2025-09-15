@@ -73,8 +73,8 @@ namespace CleanArchitecture.API.Controllers
       var testMessages = new
       {
         InvalidCredentials = _localizationService.GetErrorMessage("INVALID_CREDENTIALS"),
-        UserNotFound = _localizationService.GetErrorMessage("UserNotFound"),
-        LoginSuccessful = _localizationService.GetSuccessMessage("LoginSuccessful")
+        UserNotFound = _localizationService.GetErrorMessage("USER_NOT_FOUND"),
+        LoginSuccessful = _localizationService.GetSuccessMessage("LOGIN_SUCCESSFUL")
       };
 
       return Ok(ApiResponse<object>.SuccessResponse(testMessages, "Localization test"));

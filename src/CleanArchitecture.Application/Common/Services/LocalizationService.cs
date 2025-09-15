@@ -30,6 +30,11 @@ namespace CleanArchitecture.Application.Common.Services
       {
         var localizedString = GetLocalizedValue(key, _culture);
 
+        if (localizedString == key) // If we got the key back, it means the translation wasn't found
+        {
+          Console.WriteLine($"DEBUG: Key '{key}' not found in culture '{_culture}'");
+        }
+
         if (args.Length > 0)
         {
           return string.Format(localizedString, args);
@@ -46,17 +51,17 @@ namespace CleanArchitecture.Application.Common.Services
 
     public string GetSuccessMessage(string key, params object[] args)
     {
-      return GetString($"Success_{key}", args);
+      return GetString($"SUCCESS_{key}", args);
     }
 
     public string GetErrorMessage(string key, params object[] args)
     {
-      return GetString($"Error_{key}", args);
+      return GetString($"ERROR_{key}", args);
     }
 
     public string GetValidationMessage(string key, params object[] args)
     {
-      return GetString($"Validation_{key}", args);
+      return GetString($"VALIDATION_{key}", args);
     }
 
     private string GetLocalizedValue(string key, string culture)
@@ -138,13 +143,15 @@ namespace CleanArchitecture.Application.Common.Services
           var dictionary = new Dictionary<string, string>();
           if (culture == "es")
           {
-            dictionary["Error_UserNotFound"] = "Usuario no encontrado";
-            dictionary["Error_InvalidCredentials"] = "Credenciales inválidas";
+            dictionary["ERROR_USER_NOT_FOUND"] = "Usuario no encontrado";
+            dictionary["ERROR_INVALID_CREDENTIALS"] = "Credenciales inválidas";
+            dictionary["SUCCESS_LOGIN_SUCCESSFUL"] = "Inicio de sesión exitoso";
           }
           else
           {
-            dictionary["Error_UserNotFound"] = "User not found";
-            dictionary["Error_InvalidCredentials"] = "Invalid credentials";
+            dictionary["ERROR_USER_NOT_FOUND"] = "User not found";
+            dictionary["ERROR_INVALID_CREDENTIALS"] = "Invalid credentials";
+            dictionary["SUCCESS_LOGIN_SUCCESSFUL"] = "Login successful";
           }
           _cache[culture] = dictionary;
         }

@@ -47,7 +47,7 @@ namespace CleanArchitecture.API.Middleware
       {
         apiResponse = ApiResponse.ErrorResponse(
             GetLocalizedMessage(context, appEx.ErrorCode, appEx.Parameters),
-            errorCode: appEx.ErrorCode
+            errorCode: appEx.ErrorCode.Replace("ERROR_", "") // Remove ERROR_ prefix from errorCode for API response
         );
         response.StatusCode = GetStatusCodeForApplicationException(appEx);
       }
@@ -117,8 +117,8 @@ namespace CleanArchitecture.API.Middleware
           // Create a new LocalizationService with the current culture
           var culture = GetCurrentCulture(context);
           var localizedService = new CleanArchitecture.Application.Common.Services.LocalizationService(culture);
-          
-          // GetErrorMessage already adds Error_ prefix, so we pass the key as is
+
+          // Use GetErrorMessage which will add ERROR_ prefix and look up the translation
           var localizedMessage = localizedService.GetErrorMessage(key);
 
           // Log for debugging
