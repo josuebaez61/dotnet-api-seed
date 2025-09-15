@@ -97,4 +97,12 @@ namespace CleanArchitecture.Application.Common.Exceptions
     {
     }
   }
+
+  public class MustChangePasswordError : ApplicationException
+  {
+    public MustChangePasswordError(string userId)
+        : base("MUST_CHANGE_PASSWORD", $"User must change password on first login", new { UserId = userId })
+    {
+    }
+  }
 }

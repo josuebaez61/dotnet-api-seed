@@ -15,6 +15,7 @@ namespace CleanArchitecture.Application.DTOs
     public DateTime? UpdatedAt { get; set; }
     public bool IsActive { get; set; }
     public bool EmailConfirmed { get; set; }
+    public bool MustChangePassword { get; set; }
   }
 
   public class CreateUserDto
@@ -22,7 +23,6 @@ namespace CleanArchitecture.Application.DTOs
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
     public DateTime DateOfBirth { get; set; }
     public string? ProfilePicture { get; set; }
   }

@@ -17,13 +17,19 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CleanArchitecture.Application.Common.Services
 {
+  public class RefreshTokenInfo
+  {
+    public Guid UserId { get; set; }
+    public DateTime ExpiresAt { get; set; }
+  }
+
   public class AuthService : IAuthService
   {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     private readonly IConfiguration _configuration;
     private readonly IPermissionService _permissionService;
-    private readonly Dictionary<string, string> _refreshTokens = new();
+    private readonly Dictionary<string, RefreshTokenInfo> _refreshTokens = new();
     private readonly Dictionary<Guid, List<PasswordResetCode>> _passwordResetCodes = new();
 
     public AuthService(
@@ -57,11 +63,21 @@ namespace CleanArchitecture.Application.Common.Services
         throw new AccountDeactivatedError(user.Id.ToString());
       }
 
+      // Check if user must change password on first login
+      if (user.MustChangePassword)
+      {
+        throw new MustChangePasswordError(user.Id.ToString());
+      }
+
       var token = await GenerateJwtTokenAsync(user);
       var refreshToken = GenerateRefreshToken();
 
       // Store refresh token (in production, store in database)
-      _refreshTokens[refreshToken] = user.Id.ToString();
+      _refreshTokens[refreshToken] = new RefreshTokenInfo
+      {
+        UserId = user.Id,
+        ExpiresAt = DateTime.UtcNow.AddDays(7)
+      };
 
       return new AuthResponseDto
       {
@@ -122,7 +138,11 @@ namespace CleanArchitecture.Application.Common.Services
       // Generate tokens for the new user
       var token = await GenerateJwtTokenAsync(user);
       var refreshToken = GenerateRefreshToken();
-      _refreshTokens[refreshToken] = user.Id.ToString();
+      _refreshTokens[refreshToken] = new RefreshTokenInfo
+      {
+        UserId = user.Id,
+        ExpiresAt = DateTime.UtcNow.AddDays(7)
+      };
 
       return new AuthResponseDto
       {
@@ -148,20 +168,23 @@ namespace CleanArchitecture.Application.Common.Services
 
     public async Task<AuthResponseDto> RefreshTokenAsync(string refreshToken)
     {
-      if (!_refreshTokens.TryGetValue(refreshToken, out var userIdString))
+      if (!_refreshTokens.TryGetValue(refreshToken, out var tokenInfo))
       {
         throw new InvalidRefreshTokenError();
       }
 
-      if (!Guid.TryParse(userIdString, out var userId))
+      if (tokenInfo.ExpiresAt < DateTime.UtcNow)
       {
+        _refreshTokens.Remove(refreshToken);
         throw new InvalidRefreshTokenError();
       }
 
-      var user = await _userManager.FindByIdAsync(userIdString);
+      var userId = tokenInfo.UserId;
+
+      var user = await _userManager.FindByIdAsync(userId.ToString());
       if (user == null || !user.IsActive)
       {
-        throw new UserNotFoundError(userIdString);
+        throw new UserNotFoundError(userId.ToString());
       }
 
       // Remove old refresh token
@@ -170,7 +193,11 @@ namespace CleanArchitecture.Application.Common.Services
       // Generate new tokens
       var newToken = await GenerateJwtTokenAsync(user);
       var newRefreshToken = GenerateRefreshToken();
-      _refreshTokens[newRefreshToken] = user.Id.ToString();
+      _refreshTokens[newRefreshToken] = new RefreshTokenInfo
+      {
+        UserId = user.Id,
+        ExpiresAt = DateTime.UtcNow.AddDays(7)
+      };
 
       return new AuthResponseDto
       {
@@ -283,6 +310,41 @@ namespace CleanArchitecture.Application.Common.Services
       using var rng = RandomNumberGenerator.Create();
       rng.GetBytes(randomNumber);
       return Convert.ToBase64String(randomNumber);
+    }
+
+    public async Task<AuthResponseDto> GenerateAuthResponseAsync(User user)
+    {
+      var token = await GenerateJwtTokenAsync(user);
+      var refreshToken = GenerateRefreshToken();
+
+      // Store refresh token (in production, store in database)
+      _refreshTokens[refreshToken] = new RefreshTokenInfo
+      {
+        UserId = user.Id,
+        ExpiresAt = DateTime.UtcNow.AddDays(7)
+      };
+
+      return new AuthResponseDto
+      {
+        Token = token,
+        RefreshToken = refreshToken,
+        ExpiresAt = DateTime.UtcNow.AddHours(1),
+        User = new UserDto
+        {
+          Id = user.Id,
+          FirstName = user.FirstName,
+          LastName = user.LastName,
+          Email = user.Email!,
+          UserName = user.UserName,
+          DateOfBirth = user.DateOfBirth,
+          ProfilePicture = user.ProfilePicture,
+          CreatedAt = user.CreatedAt,
+          UpdatedAt = user.UpdatedAt,
+          IsActive = user.IsActive,
+          EmailConfirmed = user.EmailConfirmed,
+          MustChangePassword = user.MustChangePassword
+        }
+      };
     }
 
     public async Task<string> GeneratePasswordResetCodeAsync(Guid userId)

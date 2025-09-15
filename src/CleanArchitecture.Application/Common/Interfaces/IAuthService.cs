@@ -15,6 +15,7 @@ namespace CleanArchitecture.Application.Common.Interfaces
     Task<User?> GetUserByEmailOrUsernameAsync(string emailOrUsername);
     string GenerateJwtToken(User user);
     string GenerateRefreshToken();
+    Task<AuthResponseDto> GenerateAuthResponseAsync(User user);
     Task<string> GeneratePasswordResetCodeAsync(Guid userId);
     Task<bool> ValidatePasswordResetCodeAsync(Guid userId, string code);
     Task MarkPasswordResetCodeAsUsedAsync(Guid userId, string code);

@@ -32,4 +32,10 @@ namespace CleanArchitecture.Application.DTOs
     public string CurrentPassword { get; set; } = string.Empty;
     public string NewPassword { get; set; } = string.Empty;
   }
+
+  public class FirstTimePasswordChangeRequestDto
+  {
+    public string TemporaryPassword { get; set; } = string.Empty;
+    public string NewPassword { get; set; } = string.Empty;
+  }
 }

@@ -5,10 +5,12 @@ This document describes the new features implemented: localization system (es/en
 ## 🌍 Localization System
 
 ### Supported Languages
+
 - **Spanish (es)** - Alternative language
 - **English (en)** - Default language
 
 ### Configuration
+
 Localization is automatically configured in `Program.cs`:
 
 ```csharp
@@ -23,11 +25,13 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 ```
 
 ### Resource Files
+
 - `src/CleanArchitecture.API/Resources/Messages.resx` - English resources
 - `src/CleanArchitecture.API/Resources/Messages.es.resx` - Spanish resources
 - `src/CleanArchitecture.API/Resources/Messages.cs` - Shared resource class
 
 ### Usage in Code
+
 ```csharp
 // Inject the localization service
 private readonly ILocalizationService _localizationService;
@@ -44,6 +48,7 @@ var customMessage = _localizationService.GetString("CUSTOM_MESSAGE_KEY");
 ## 📧 Email Service
 
 ### SMTP Configuration
+
 Configure in `appsettings.json`:
 
 ```json
@@ -60,6 +65,7 @@ Configure in `appsettings.json`:
 ```
 
 ### Email Types
+
 1. **Welcome Email** - Upon registration
 2. **Password Reset** - With 6-digit code
 3. **Password Changed** - Change confirmation
@@ -67,13 +73,16 @@ Configure in `appsettings.json`:
 5. **Email Change Confirmation** - Change confirmation
 
 ### HTML Templates
+
 Emails include:
+
 - **Responsive design** with modern CSS
 - **Corporate colors** (blue, green, red depending on type)
 - **Security information** and warnings
 - **Footer** with company information
 
 ### Usage Example
+
 ```csharp
 // Send welcome email
 await _emailService.SendWelcomeEmailAsync(user.Email, user.UserName);
@@ -88,11 +97,13 @@ await _emailService.SendPasswordChangedEmailAsync(user.Email, user.UserName);
 ## 🔐 Password Reset with Codes
 
 ### Reset Flow
+
 1. **Request Reset**: `POST /api/v1/auth/request-password-reset`
 2. **Receive Code**: Email with 6-digit code (expires in 15 minutes)
 3. **Reset Password**: `POST /api/v1/auth/reset-password`
 
 ### Security Features
+
 - **6-digit codes** randomly generated
 - **15-minute expiration** for security
 - **Single use** - codes are marked as used
@@ -102,6 +113,7 @@ await _emailService.SendPasswordChangedEmailAsync(user.Email, user.UserName);
 ### Endpoints
 
 #### Request Password Reset
+
 ```http
 POST /api/v1/auth/request-password-reset
 Content-Type: application/json
@@ -112,6 +124,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -125,6 +138,7 @@ Content-Type: application/json
 ```
 
 #### Reset Password
+
 ```http
 POST /api/v1/auth/reset-password
 Content-Type: application/json
@@ -137,6 +151,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -148,12 +163,17 @@ Content-Type: application/json
 ## 📋 Standardized API Responses
 
 ### Response Structure
+
 ```json
 {
   "success": true,
   "message": "Descriptive message",
-  "data": { /* Response data */ },
-  "errors": { /* Validation errors */ },
+  "data": {
+    /* Response data */
+  },
+  "errors": {
+    /* Validation errors */
+  },
   "timestamp": "2024-01-01T12:00:00Z",
   "requestId": "optional-guid"
 }
@@ -162,16 +182,19 @@ Content-Type: application/json
 ### Response Types
 
 #### Success Response
+
 ```csharp
 return Ok(ApiResponse<UserDto>.SuccessResponse(userData, "User created successfully"));
 ```
 
 #### Error Response
+
 ```csharp
 return BadRequest(ApiResponse<UserDto>.ErrorResponse("Error creating user"));
 ```
 
 #### Validation Response
+
 ```csharp
 return BadRequest(ApiResponse<UserDto>.ValidationErrorResponse("Validation error", validationErrors));
 ```
@@ -179,6 +202,7 @@ return BadRequest(ApiResponse<UserDto>.ValidationErrorResponse("Validation error
 ### Response Examples
 
 #### Successful Login
+
 ```json
 {
   "success": true,
@@ -206,6 +230,7 @@ return BadRequest(ApiResponse<UserDto>.ValidationErrorResponse("Validation error
 ```
 
 #### Validation Error
+
 ```json
 {
   "success": false,
@@ -223,18 +248,21 @@ return BadRequest(ApiResponse<UserDto>.ValidationErrorResponse("Validation error
 The system supports multiple methods for specifying the language, with the following priority order:
 
 ### 1. Query Parameter (Highest Priority)
+
 ```http
 POST /api/v1/auth/login?culture=es
 GET /api/v1/users?culture=en
 ```
 
 **Examples:**
+
 - `?culture=es` - Spanish
 - `?culture=en` - English
 - `?culture=es-ES` - Spanish (Spain)
 - `?culture=en-US` - English (United States)
 
 ### 2. Accept-Language Header
+
 ```http
 Accept-Language: es-ES
 Accept-Language: en-US
@@ -242,11 +270,13 @@ Accept-Language: es
 ```
 
 ### 3. Default Language
+
 If no language is specified, **English (en)** is used as default.
 
 ### Usage Examples
 
 #### Query Parameter Priority over Header
+
 ```bash
 # This request will return Spanish messages, even though the header says English
 curl -X POST "http://localhost:5103/api/v1/auth/login?culture=es" \
@@ -256,6 +286,7 @@ curl -X POST "http://localhost:5103/api/v1/auth/login?culture=es" \
 ```
 
 #### Header Only
+
 ```bash
 # This request will return Spanish messages
 curl -X POST "http://localhost:5103/api/v1/auth/login" \
@@ -265,6 +296,7 @@ curl -X POST "http://localhost:5103/api/v1/auth/login" \
 ```
 
 #### Default Language
+
 ```bash
 # This request will return English messages (by default)
 curl -X POST "http://localhost:5103/api/v1/auth/login" \
@@ -279,6 +311,7 @@ curl -X POST "http://localhost:5103/api/v1/auth/login" \
 Messages are organized in `.resx` files with the following structure:
 
 #### Messages.resx (English)
+
 ```xml
 <data name="ERROR_USER_NOT_FOUND" xml:space="preserve">
   <value>User not found</value>
@@ -295,6 +328,7 @@ Messages are organized in `.resx` files with the following structure:
 ```
 
 #### Messages.es.resx (Spanish)
+
 ```xml
 <data name="ERROR_USER_NOT_FOUND" xml:space="preserve">
   <value>Usuario no encontrado</value>
@@ -314,16 +348,17 @@ Messages are organized in `.resx` files with the following structure:
 
 The system uses **UPPER_SNAKE_CASE** convention for all translation keys:
 
-- **ERROR_** - Error messages: `ERROR_USER_NOT_FOUND`, `ERROR_INVALID_CREDENTIALS`
-- **SUCCESS_** - Success messages: `SUCCESS_LOGIN_SUCCESSFUL`, `SUCCESS_USER_CREATED`
-- **VALIDATION_** - Validation messages: `VALIDATION_REQUIRED_FIELD`, `VALIDATION_INVALID_EMAIL_FORMAT`
-- **EMAIL_** - Email subjects: `EMAIL_WELCOME_SUBJECT`, `EMAIL_PASSWORD_RESET_SUBJECT`
+- **ERROR\_** - Error messages: `ERROR_USER_NOT_FOUND`, `ERROR_INVALID_CREDENTIALS`
+- **SUCCESS\_** - Success messages: `SUCCESS_LOGIN_SUCCESSFUL`, `SUCCESS_USER_CREATED`
+- **VALIDATION\_** - Validation messages: `VALIDATION_REQUIRED_FIELD`, `VALIDATION_INVALID_EMAIL_FORMAT`
+- **EMAIL\_** - Email subjects: `EMAIL_WELCOME_SUBJECT`, `EMAIL_PASSWORD_RESET_SUBJECT`
 
 ### Separation of Concerns
 
 The system implements a clean separation between exception error codes and localization keys:
 
 #### Exception Error Codes (Clean Format)
+
 ```csharp
 // Exceptions use clean error codes without prefixes
 throw new InvalidCredentialsError(); // ErrorCode = "INVALID_CREDENTIALS"
@@ -331,15 +366,16 @@ throw new UserNotFoundError("admin"); // ErrorCode = "USER_NOT_FOUND"
 ```
 
 #### LocalizationService (Automatic Prefixes)
+
 ```csharp
 // LocalizationService automatically adds appropriate prefixes
-localizationService.GetErrorMessage("INVALID_CREDENTIALS"); 
+localizationService.GetErrorMessage("INVALID_CREDENTIALS");
 // → Looks for "ERROR_INVALID_CREDENTIALS" in .resx files
 
-localizationService.GetSuccessMessage("LOGIN_SUCCESSFUL"); 
+localizationService.GetSuccessMessage("LOGIN_SUCCESSFUL");
 // → Looks for "SUCCESS_LOGIN_SUCCESSFUL" in .resx files
 
-localizationService.GetValidationMessage("REQUIRED_FIELD"); 
+localizationService.GetValidationMessage("REQUIRED_FIELD");
 // → Looks for "VALIDATION_REQUIRED_FIELD" in .resx files
 ```
 
@@ -350,6 +386,7 @@ The system includes centralized middleware that handles all exceptions and trans
 #### Localized Response Examples
 
 **User not found (Spanish):**
+
 ```json
 {
   "success": false,
@@ -363,6 +400,7 @@ The system includes centralized middleware that handles all exceptions and trans
 ```
 
 **User not found (English):**
+
 ```json
 {
   "success": false,
@@ -376,6 +414,7 @@ The system includes centralized middleware that handles all exceptions and trans
 ```
 
 **Invalid credentials (Spanish):**
+
 ```json
 {
   "success": false,
@@ -397,6 +436,7 @@ The system includes centralized middleware that handles all exceptions and trans
 5. **Returns localized** standardized response with translated message
 
 #### Example Flow:
+
 ```csharp
 // 1. Exception thrown with clean error code
 throw new InvalidCredentialsError(); // ErrorCode = "INVALID_CREDENTIALS"
@@ -415,14 +455,17 @@ localizationService.GetErrorMessage("INVALID_CREDENTIALS");
 ### Best Practices
 
 #### 1. Exception Error Codes
+
 - Use **clean, descriptive error codes** without prefixes
 - Follow **UPPER_SNAKE_CASE** convention
 - Examples: `INVALID_CREDENTIALS`, `USER_NOT_FOUND`, `PASSWORD_TOO_WEAK`
 
 #### 2. Adding New Translations
+
 When adding new error messages:
 
 1. **Add to exception class:**
+
 ```csharp
 public class NewError : ApplicationException
 {
@@ -434,6 +477,7 @@ public class NewError : ApplicationException
 ```
 
 2. **Add to resource files:**
+
 ```xml
 <!-- Messages.resx (English) -->
 <data name="ERROR_NEW_ERROR_CODE" xml:space="preserve">
@@ -447,6 +491,7 @@ public class NewError : ApplicationException
 ```
 
 3. **Use in code:**
+
 ```csharp
 throw new NewError(); // Clean error code
 // LocalizationService automatically handles prefix and translation
@@ -463,13 +508,16 @@ throw new NewError(); // Clean error code
 ## 🚀 New Endpoints
 
 ### Authentication
+
 - `POST /api/v1/auth/request-password-reset` - Request password reset
 - `POST /api/v1/auth/reset-password` - Reset password with code
 - `POST /api/v1/auth/request-email-change` - Request email change
 - `POST /api/v1/auth/verify-email-change` - Verify email change
 
 ### All Updated Endpoints
+
 All endpoints now return standardized responses with:
+
 - Consistent structure
 - Localized messages
 - Timestamps
@@ -478,6 +526,7 @@ All endpoints now return standardized responses with:
 ## 🔒 Email Security
 
 ### Security Features
+
 1. **SMTP authentication** with secure credentials
 2. **TLS/SSL** for in-transit encryption
 3. **Single-use codes** with expiration
@@ -485,6 +534,7 @@ All endpoints now return standardized responses with:
 5. **Input validation** on all endpoints
 
 ### Best Practices
+
 1. **Use application passwords** for Gmail
 2. **Configure SPF/DKIM** to avoid spam
 3. **Monitor email** sending logs
@@ -494,12 +544,14 @@ All endpoints now return standardized responses with:
 ## 📊 Monitoring and Logs
 
 ### Email Logs
+
 ```csharp
 _logger.LogInformation("Email sent successfully to {Email}", to);
 _logger.LogError(ex, "Failed to send email to {Email}", to);
 ```
 
 ### Recommended Metrics
+
 - Email delivery rate
 - SMTP response time
 - Validation errors per endpoint
@@ -510,6 +562,7 @@ _logger.LogError(ex, "Failed to send email to {Email}", to);
 ### Test Examples
 
 #### Localization Test with Query Parameter
+
 ```csharp
 [Test]
 public async Task Should_Return_Spanish_Message_When_Culture_Query_Parameter_Is_ES()
@@ -517,12 +570,12 @@ public async Task Should_Return_Spanish_Message_When_Culture_Query_Parameter_Is_
     // Arrange
     var client = _factory.CreateClient();
     var request = new { emailOrUsername = "test", password = "test" };
-    
+
     // Act
     var response = await client.PostAsJsonAsync("/api/v1/auth/login?culture=es", request);
     var content = await response.Content.ReadAsStringAsync();
     var result = JsonSerializer.Deserialize<ApiResponse>(content);
-    
+
     // Assert
     Assert.AreEqual("Usuario no encontrado", result.Message);
 }
@@ -533,12 +586,12 @@ public async Task Should_Return_English_Message_When_Culture_Query_Parameter_Is_
     // Arrange
     var client = _factory.CreateClient();
     var request = new { emailOrUsername = "test", password = "test" };
-    
+
     // Act
     var response = await client.PostAsJsonAsync("/api/v1/auth/login?culture=en", request);
     var content = await response.Content.ReadAsStringAsync();
     var result = JsonSerializer.Deserialize<ApiResponse>(content);
-    
+
     // Assert
     Assert.AreEqual("User not found", result.Message);
 }
@@ -550,28 +603,29 @@ public async Task Should_Prioritize_Query_Parameter_Over_Header()
     var client = _factory.CreateClient();
     client.DefaultRequestHeaders.Add("Accept-Language", "en");
     var request = new { emailOrUsername = "test", password = "test" };
-    
+
     // Act
     var response = await client.PostAsJsonAsync("/api/v1/auth/login?culture=es", request);
     var content = await response.Content.ReadAsStringAsync();
     var result = JsonSerializer.Deserialize<ApiResponse>(content);
-    
+
     // Assert
     Assert.AreEqual("Usuario no encontrado", result.Message); // Query param should win
 }
 ```
 
 #### Password Reset Test
+
 ```csharp
 [Test]
 public async Task Should_Send_Reset_Email_When_Valid_Email()
 {
     // Arrange
     var request = new RequestPasswordResetDto { Email = "test@example.com" };
-    
+
     // Act
     var result = await _authController.RequestPasswordReset(request);
-    
+
     // Assert
     Assert.IsTrue(result.Value.Success);
     _emailService.Verify(x => x.SendPasswordResetEmailAsync(

@@ -10,5 +10,6 @@ namespace CleanArchitecture.Application.Common.Interfaces
     Task SendPasswordChangedEmailAsync(string to, string userName);
     Task SendEmailChangeVerificationEmailAsync(string to, string userName, string verificationCode);
     Task SendEmailChangeConfirmationEmailAsync(string to, string userName, string oldEmail);
+    Task SendTemporaryPasswordEmailAsync(string to, string userName, string temporaryPassword);
   }
 }

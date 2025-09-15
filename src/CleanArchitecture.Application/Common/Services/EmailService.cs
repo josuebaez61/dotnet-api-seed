@@ -584,5 +584,124 @@ namespace CleanArchitecture.Application.Common.Services
 </body>
 </html>";
         }
+
+        public async Task SendTemporaryPasswordEmailAsync(string to, string userName, string temporaryPassword)
+        {
+            var subject = _localizationService.GetString("TEMPORARY_PASSWORD_SUBJECT");
+            var body = GetTemporaryPasswordEmailTemplate(userName, temporaryPassword);
+            await SendEmailAsync(to, subject, body);
+        }
+
+        private string GetTemporaryPasswordEmailTemplate(string userName, string temporaryPassword)
+        {
+            return $@"
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Contraseña Temporal</title>
+    <style>
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }}
+        .container {{
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }}
+        .header {{
+            text-align: center;
+            margin-bottom: 30px;
+        }}
+        .logo {{
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }}
+        .password {{
+            background-color: #3498db;
+            color: white;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 5px;
+            margin: 20px 0;
+            letter-spacing: 2px;
+            font-family: monospace;
+        }}
+        .footer {{
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }}
+        .warning {{
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }}
+        .success {{
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }}
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <div class='header'>
+            <div class='logo'>Clean Architecture</div>
+            <h2>Cuenta Creada - Contraseña Temporal</h2>
+        </div>
+        
+        <p>Hola <strong>{userName}</strong>,</p>
+        
+        <div class='success'>
+            <strong>¡Bienvenido!</strong> Tu cuenta ha sido creada exitosamente.
+        </div>
+        
+        <p>Se ha generado una contraseña temporal para tu cuenta. Utiliza esta contraseña para iniciar sesión:</p>
+        
+        <div class='password'>{temporaryPassword}</div>
+        
+        <div class='warning'>
+            <strong>Importante:</strong> Por seguridad, deberás cambiar esta contraseña en tu primer inicio de sesión.
+        </div>
+        
+        <p>Instrucciones:</p>
+        <ol>
+            <li>Inicia sesión con tu email y la contraseña temporal</li>
+            <li>El sistema te pedirá cambiar la contraseña</li>
+            <li>Establece una nueva contraseña segura</li>
+        </ol>
+        
+        <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
+        
+        <div class='footer'>
+            <p>Este es un correo automático, por favor no respondas a este mensaje.</p>
+            <p>&copy; 2024 Clean Architecture. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</body>
+</html>";
+        }
     }
 }

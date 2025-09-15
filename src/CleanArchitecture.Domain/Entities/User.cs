@@ -13,6 +13,7 @@ namespace CleanArchitecture.Domain.Entities
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
     public bool IsActive { get; set; } = true;
+    public bool MustChangePassword { get; set; } = false;
 
     // Navigation properties
     public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();

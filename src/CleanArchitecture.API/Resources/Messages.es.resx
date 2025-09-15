@@ -209,6 +209,9 @@
   <data name="ERROR_INVALID_OPERATION" xml:space="preserve">
     <value>Operación inválida</value>
   </data>
+  <data name="ERROR_MUST_CHANGE_PASSWORD" xml:space="preserve">
+    <value>Debes cambiar tu contraseña antes de continuar</value>
+  </data>
   
   <!-- Validation Messages -->
   <data name="VALIDATION_REQUIRED_FIELD" xml:space="preserve">
@@ -254,5 +257,8 @@
   </data>
   <data name="EMAIL_PASSWORD_CHANGED_SUBJECT" xml:space="preserve">
     <value>Contraseña Cambiada Exitosamente</value>
+  </data>
+  <data name="TEMPORARY_PASSWORD_SUBJECT" xml:space="preserve">
+    <value>Cuenta Creada - Contraseña Temporal</value>
   </data>
 </root>

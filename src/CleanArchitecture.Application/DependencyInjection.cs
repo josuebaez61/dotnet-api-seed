@@ -22,6 +22,7 @@ namespace CleanArchitecture.Application
       // Services
       services.AddScoped<IAuthService, AuthService>();
       services.AddScoped<IEmailService, EmailService>();
+      services.AddScoped<IPasswordGeneratorService, PasswordGeneratorService>();
 
       // Permission services - HierarchicalPermissionService wraps the base PermissionService
       services.AddScoped<PermissionService>(); // Base service

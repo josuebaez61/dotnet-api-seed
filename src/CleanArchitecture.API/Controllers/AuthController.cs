@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Models;
 using CleanArchitecture.Application.DTOs;
+using CleanArchitecture.Application.Features.Auth.Commands.ChangeFirstTimePassword;
 using CleanArchitecture.Application.Features.Auth.Commands.ChangePassword;
 using CleanArchitecture.Application.Features.Auth.Commands.Login;
 using CleanArchitecture.Application.Features.Auth.Commands.RefreshToken;
@@ -147,6 +148,20 @@ namespace CleanArchitecture.API.Controllers
       var command = new VerifyEmailChangeCommand { Request = request };
       var result = await _mediator.Send(command);
       return Ok(result);
+    }
+
+    [HttpPost("change-first-time-password/{userId}")]
+    public async Task<ActionResult<ApiResponse<AuthResponseDto>>> ChangeFirstTimePassword(
+        [FromRoute] Guid userId,
+        [FromBody] FirstTimePasswordChangeRequestDto request)
+    {
+      var command = new ChangeFirstTimePasswordCommand 
+      { 
+        UserId = userId,
+        Request = request 
+      };
+      var result = await _mediator.Send(command);
+      return Ok(ApiResponse<AuthResponseDto>.SuccessResponse(result, "Password changed successfully"));
     }
   }
 }
