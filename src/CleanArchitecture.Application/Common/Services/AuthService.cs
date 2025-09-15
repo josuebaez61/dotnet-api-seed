@@ -43,7 +43,7 @@ namespace CleanArchitecture.Application.Common.Services
       var user = await GetUserByEmailOrUsernameAsync(request.EmailOrUsername);
       if (user == null)
       {
-        throw new UserNotFoundError(request.EmailOrUsername);
+        throw new InvalidCredentialsError();
       }
 
       var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
