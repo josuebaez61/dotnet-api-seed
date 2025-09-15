@@ -6,6 +6,7 @@ using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Application.Features.Roles.Commands.CreateRole;
 using CleanArchitecture.Application.Features.Roles.Commands.UpdateRolePermissions;
 using CleanArchitecture.Application.Features.Roles.Queries.GetAllRoles;
+using CleanArchitecture.Application.Features.Roles.Queries.GetRoleById;
 using CleanArchitecture.Domain.Common.Constants;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -38,6 +39,22 @@ namespace CleanArchitecture.API.Controllers
       catch (Exception ex)
       {
         return BadRequest(ApiResponse<List<RoleDto>>.ErrorResponse(ex.Message));
+      }
+    }
+
+    [HttpGet("{roleId}")]
+    [Authorize(Policy = PermissionConstants.Roles.Read)]
+    public async Task<ActionResult<ApiResponse<RoleDto>>> GetRoleById([FromRoute] Guid roleId)
+    {
+      try
+      {
+        var query = new GetRoleByIdQuery { RoleId = roleId };
+        var result = await _mediator.Send(query);
+        return Ok(ApiResponse<RoleDto>.SuccessResponse(result));
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ApiResponse<RoleDto>.ErrorResponse(ex.Message));
       }
     }
 

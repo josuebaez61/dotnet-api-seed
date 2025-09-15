@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Models;
 using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Application.Features.Users.Commands.CreateUser;
+using CleanArchitecture.Application.Features.Users.Commands.UpdateUser;
 using CleanArchitecture.Application.Features.Users.Queries.GetAllUsers;
 using CleanArchitecture.Application.Features.Users.Queries.GetUserById;
 using CleanArchitecture.Application.Features.Users.Queries.GetUsersPaginated;
@@ -63,6 +64,23 @@ namespace CleanArchitecture.API.Controllers
       var command = new CreateUserCommand { User = userDto };
       var result = await _mediator.Send(command);
       return CreatedAtAction(nameof(GetUserById), new { id = result.Id }, ApiResponse<UserDto>.SuccessResponse(result));
+    }
+
+    [HttpPut("{id}")]
+    [Authorize(Policy = PermissionConstants.Users.Write)]
+    public async Task<ActionResult<ApiResponse<UserDto>>> UpdateUser([FromRoute] Guid id, [FromBody] UpdateUserDto userDto)
+    {
+      try
+      {
+        userDto.Id = id; // Ensure the ID from the route is used
+        var command = new UpdateUserCommand { User = userDto };
+        var result = await _mediator.Send(command);
+        return Ok(ApiResponse<UserDto>.SuccessResponse(result));
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ApiResponse<UserDto>.ErrorResponse(ex.Message));
+      }
     }
   }
 }

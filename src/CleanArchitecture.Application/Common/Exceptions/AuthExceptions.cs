@@ -10,6 +10,14 @@ namespace CleanArchitecture.Application.Common.Exceptions
     }
   }
 
+  public class UserNotFoundByIdError : ApplicationException
+  {
+    public UserNotFoundByIdError(Guid userId)
+        : base("USER_NOT_FOUND", $"User not found with ID: {userId}", new { UserId = userId })
+    {
+    }
+  }
+
   public class InvalidCredentialsError : ApplicationException
   {
     public InvalidCredentialsError()
