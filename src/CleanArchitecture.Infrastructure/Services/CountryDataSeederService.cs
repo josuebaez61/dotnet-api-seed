@@ -205,27 +205,32 @@ namespace CleanArchitecture.Infrastructure.Services
 
                     foreach (var record in records)
                     {
-                        if (record.Count >= 16) // Ensure we have enough fields
+                        // The states.sql has 18 columns:
+                        // id, name, country_id, country_code, fips_code, iso2, type, latitude, longitude, timezone, created_at, updated_at, flag, wikiDataId, iso3166_2, level, parent_id, native
+                        // We need to skip wikiDataId (index 13)
+                        
+                        if (record.Count >= 18) // Ensure we have enough fields
                         {
                             var state = new State
                             {
                                 Id = ParseInt(record[0]),
-                                Name = ParseString(record[1]),
+                                Name = ParseString(record[1]) ?? "",
                                 CountryId = ParseInt(record[2]),
                                 CountryCode = ParseString(record[3]) ?? "",
                                 FipsCode = ParseString(record[4]),
                                 Iso2 = ParseString(record[5]),
-                                Iso31662 = ParseString(record[6]),
-                                Type = ParseString(record[7]),
-                                Level = ParseInt(record[8]),
-                                ParentId = ParseInt(record[9]),
-                                Native = ParseString(record[10]),
-                                Latitude = ParseDecimal(record[11]),
-                                Longitude = ParseDecimal(record[12]),
-                                Timezone = ParseString(record[13]),
-                                CreatedAt = ParseDateTime(record[14]),
-                                UpdatedAt = ParseDateTime(record[15]) ?? DateTime.UtcNow,
-                                Flag = ParseBool(record.Count > 16 ? record[16] : "1")
+                                Type = ParseString(record[6]),
+                                Latitude = ParseDecimal(record[7]),
+                                Longitude = ParseDecimal(record[8]),
+                                Timezone = ParseString(record[9]),
+                                CreatedAt = ParseDateTime(record[10]),
+                                UpdatedAt = ParseDateTime(record[11]) ?? DateTime.UtcNow,
+                                Flag = ParseBool(record[12]),
+                                // Skip record[13] (wikiDataId)
+                                Iso31662 = ParseString(record[14]),
+                                Level = ParseInt(record[15]),
+                                ParentId = ParseInt(record[16]),
+                                Native = ParseString(record[17])
                             };
 
                             states.Add(state);
