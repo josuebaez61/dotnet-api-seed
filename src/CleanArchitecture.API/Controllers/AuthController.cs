@@ -11,6 +11,7 @@ using CleanArchitecture.Application.Features.Auth.Commands.RequestEmailChange;
 using CleanArchitecture.Application.Features.Auth.Commands.RequestPasswordReset;
 using CleanArchitecture.Application.Features.Auth.Commands.ResetPassword;
 using CleanArchitecture.Application.Features.Auth.Commands.VerifyEmailChange;
+using CleanArchitecture.Application.Features.Users.Queries.GetUserById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -80,26 +81,23 @@ namespace CleanArchitecture.API.Controllers
 
     [HttpGet("me")]
     [Authorize]
-    public ActionResult<ApiResponse<object>> GetCurrentUser()
+    public async Task<ActionResult<ApiResponse<UserDto>>> GetCurrentUser()
     {
-      var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-      var userName = User.FindFirst(ClaimTypes.Name)?.Value;
-      var email = User.FindFirst(ClaimTypes.Email)?.Value;
-      var firstName = User.FindFirst("firstName")?.Value;
-      var lastName = User.FindFirst("lastName")?.Value;
-      var isActive = User.FindFirst("isActive")?.Value;
-
-      var userInfo = new
+      var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
       {
-        Id = userId,
-        UserName = userName,
-        Email = email,
-        FirstName = firstName,
-        LastName = lastName,
-        IsActive = isActive
-      };
+        return Unauthorized(ApiResponse<UserDto>.ErrorResponse("Invalid user token"));
+      }
 
-      return Ok(ApiResponse<object>.SuccessResponse(userInfo));
+      var query = new GetUserByIdQuery { Id = userId };
+      var result = await _mediator.Send(query);
+
+      if (result == null)
+      {
+        return NotFound(ApiResponse<UserDto>.ErrorResponse("User not found"));
+      }
+
+      return Ok(ApiResponse<UserDto>.SuccessResponse(result));
     }
 
     [HttpPost("request-password-reset")]
