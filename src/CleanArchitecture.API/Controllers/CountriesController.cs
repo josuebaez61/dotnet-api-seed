@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CleanArchitecture.API.Controllers
 {
     [ApiController]
-    [Route("api/v1/countries")]
+    [Route("[controller]")]
     [Authorize]
     public class CountriesController : ControllerBase
     {
