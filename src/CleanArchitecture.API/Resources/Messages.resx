@@ -244,4 +244,9 @@
   <data name="Email:EmailChangeConfirmation:Subject" xml:space="preserve">
     <value>Email Successfully Changed</value>
   </data>
+  
+  <!-- Internal Server Error -->
+  <data name="Error_InternalServerError" xml:space="preserve">
+    <value>An internal server error occurred</value>
+  </data>
 </root>

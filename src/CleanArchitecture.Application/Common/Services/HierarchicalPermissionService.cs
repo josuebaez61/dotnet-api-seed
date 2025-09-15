@@ -14,21 +14,21 @@ namespace CleanArchitecture.Application.Common.Services
   /// Service that handles hierarchical permissions logic
   /// Higher-level permissions automatically include lower-level permissions
   /// </summary>
-    public class HierarchicalPermissionService : IPermissionService
-    {
-        private readonly PermissionService _basePermissionService;
-        private readonly UserManager<User> _userManager;
-        private readonly RoleManager<Role> _roleManager;
+  public class HierarchicalPermissionService : IPermissionService
+  {
+    private readonly PermissionService _basePermissionService;
+    private readonly UserManager<User> _userManager;
+    private readonly RoleManager<Role> _roleManager;
 
-        public HierarchicalPermissionService(
-            PermissionService basePermissionService,
-            UserManager<User> userManager,
-            RoleManager<Role> roleManager)
-        {
-            _basePermissionService = basePermissionService;
-            _userManager = userManager;
-            _roleManager = roleManager;
-        }
+    public HierarchicalPermissionService(
+        PermissionService basePermissionService,
+        UserManager<User> userManager,
+        RoleManager<Role> roleManager)
+    {
+      _basePermissionService = basePermissionService;
+      _userManager = userManager;
+      _roleManager = roleManager;
+    }
 
     /// <summary>
     /// Gets user permissions including hierarchical permissions
