@@ -1,5 +1,7 @@
 using System.Reflection;
+using AutoMapper;
 using CleanArchitecture.Application.Common.Interfaces;
+using CleanArchitecture.Application.Common.Mappings;
 using CleanArchitecture.Application.Common.Services;
 using CleanArchitecture.Application.Validators;
 using FluentValidation;
@@ -13,6 +15,9 @@ namespace CleanArchitecture.Application
   {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
+      // AutoMapper
+      services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
       // MediatR
       services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 

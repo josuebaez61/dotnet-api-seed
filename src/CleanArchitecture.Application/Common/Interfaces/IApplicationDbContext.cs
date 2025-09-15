@@ -11,6 +11,8 @@ namespace CleanArchitecture.Application.Common.Interfaces
     DbSet<RolePermission> RolePermissions { get; }
     DbSet<PasswordResetCode> PasswordResetCodes { get; }
     DbSet<EmailVerificationCode> EmailVerificationCodes { get; }
+    DbSet<Country> Countries { get; }
+    DbSet<State> States { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
   }
