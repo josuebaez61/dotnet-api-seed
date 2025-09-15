@@ -13,6 +13,7 @@ namespace CleanArchitecture.Infrastructure.Data
     {
     }
 
+
     public DbSet<PasswordResetCode> PasswordResetCodes { get; set; }
     public DbSet<EmailVerificationCode> EmailVerificationCodes { get; set; }
     public DbSet<Permission> Permissions { get; set; }
@@ -25,26 +26,26 @@ namespace CleanArchitecture.Infrastructure.Data
       // Configure User entity
       builder.Entity<User>(entity =>
       {
-        entity.ToTable("Users");
         entity.Property(e => e.FirstName).HasMaxLength(100).IsRequired();
         entity.Property(e => e.LastName).HasMaxLength(100).IsRequired();
         entity.Property(e => e.ProfilePicture).HasMaxLength(500);
         entity.Property(e => e.CreatedAt).IsRequired();
+        entity.Property(e => e.UpdatedAt);
         entity.Property(e => e.IsActive).IsRequired();
+        entity.Property(e => e.MustChangePassword).IsRequired();
       });
 
       // Configure Role entity
       builder.Entity<Role>(entity =>
       {
-        entity.ToTable("Roles");
         entity.Property(e => e.Description).HasMaxLength(500);
         entity.Property(e => e.CreatedAt).IsRequired();
+        entity.Property(e => e.UpdatedAt);
       });
 
       // Configure UserRole entity
       builder.Entity<UserRole>(entity =>
       {
-        entity.ToTable("UserRoles");
         entity.HasKey(e => new { e.UserId, e.RoleId });
         entity.HasOne(e => e.User)
                   .WithMany(e => e.UserRoles)
@@ -59,7 +60,6 @@ namespace CleanArchitecture.Infrastructure.Data
       // Configure UserClaim entity
       builder.Entity<UserClaim>(entity =>
       {
-        entity.ToTable("UserClaims");
         entity.HasOne(e => e.User)
                   .WithMany(e => e.UserClaims)
                   .HasForeignKey(e => e.UserId)
@@ -69,7 +69,6 @@ namespace CleanArchitecture.Infrastructure.Data
       // Configure UserLogin entity
       builder.Entity<UserLogin>(entity =>
       {
-        entity.ToTable("UserLogins");
         entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
         entity.HasOne(e => e.User)
                   .WithMany(e => e.UserLogins)
@@ -80,7 +79,6 @@ namespace CleanArchitecture.Infrastructure.Data
       // Configure UserToken entity
       builder.Entity<UserToken>(entity =>
       {
-        entity.ToTable("UserTokens");
         entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
         entity.HasOne(e => e.User)
                   .WithMany(e => e.UserTokens)
@@ -91,7 +89,6 @@ namespace CleanArchitecture.Infrastructure.Data
       // Configure RoleClaim entity
       builder.Entity<RoleClaim>(entity =>
       {
-        entity.ToTable("RoleClaims");
         entity.HasOne(e => e.Role)
                   .WithMany(e => e.RoleClaims)
                   .HasForeignKey(e => e.RoleId)
@@ -101,7 +98,6 @@ namespace CleanArchitecture.Infrastructure.Data
       // Configure EmailVerificationCode entity
       builder.Entity<EmailVerificationCode>(entity =>
       {
-        entity.ToTable("EmailVerificationCodes");
         entity.HasKey(e => e.Id);
         entity.Property(e => e.Email).IsRequired().HasMaxLength(256);
         entity.Property(e => e.VerificationCode).IsRequired().HasMaxLength(32);
@@ -116,7 +112,6 @@ namespace CleanArchitecture.Infrastructure.Data
       // Configure Permission entity
       builder.Entity<Permission>(entity =>
       {
-        entity.ToTable("Permissions");
         entity.HasKey(e => e.Id);
         entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
         entity.Property(e => e.Description).IsRequired().HasMaxLength(500);
@@ -124,13 +119,13 @@ namespace CleanArchitecture.Infrastructure.Data
         entity.Property(e => e.Action).IsRequired().HasMaxLength(50);
         entity.Property(e => e.Module).IsRequired().HasMaxLength(50);
         entity.Property(e => e.CreatedAt).IsRequired();
+        entity.Property(e => e.IsHierarchical).IsRequired();
         entity.HasIndex(e => e.Name).IsUnique();
       });
 
       // Configure RolePermission entity
       builder.Entity<RolePermission>(entity =>
       {
-        entity.ToTable("RolePermissions");
         entity.HasKey(e => e.Id);
         entity.Property(e => e.CreatedAt).IsRequired();
 
@@ -150,7 +145,6 @@ namespace CleanArchitecture.Infrastructure.Data
       // Configure PasswordResetCode entity
       builder.Entity<PasswordResetCode>(entity =>
       {
-        entity.ToTable("PasswordResetCodes");
         entity.HasKey(e => e.Id);
         entity.Property(e => e.Code).IsRequired().HasMaxLength(6);
         entity.Property(e => e.ExpiresAt).IsRequired();
@@ -165,6 +159,7 @@ namespace CleanArchitecture.Infrastructure.Data
 
       // Seed data logic moved to DatabaseInitializationService
     }
+
 
     // SeedData logic moved to DatabaseInitializationService for better control and flexibility
   }

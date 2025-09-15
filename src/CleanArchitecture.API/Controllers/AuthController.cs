@@ -155,10 +155,10 @@ namespace CleanArchitecture.API.Controllers
         [FromRoute] Guid userId,
         [FromBody] FirstTimePasswordChangeRequestDto request)
     {
-      var command = new ChangeFirstTimePasswordCommand 
-      { 
+      var command = new ChangeFirstTimePasswordCommand
+      {
         UserId = userId,
-        Request = request 
+        Request = request
       };
       var result = await _mediator.Send(command);
       return Ok(ApiResponse<AuthResponseDto>.SuccessResponse(result, "Password changed successfully"));
