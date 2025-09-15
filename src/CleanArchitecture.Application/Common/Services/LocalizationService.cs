@@ -138,13 +138,13 @@ namespace CleanArchitecture.Application.Common.Services
           var dictionary = new Dictionary<string, string>();
           if (culture == "es")
           {
-            dictionary["Error_USER_NOT_FOUND"] = "Usuario no encontrado";
-            dictionary["Error_INVALID_CREDENTIALS"] = "Credenciales inválidas";
+            dictionary["Error_UserNotFound"] = "Usuario no encontrado";
+            dictionary["Error_InvalidCredentials"] = "Credenciales inválidas";
           }
           else
           {
-            dictionary["Error_USER_NOT_FOUND"] = "User not found";
-            dictionary["Error_INVALID_CREDENTIALS"] = "Invalid credentials";
+            dictionary["Error_UserNotFound"] = "User not found";
+            dictionary["Error_InvalidCredentials"] = "Invalid credentials";
           }
           _cache[culture] = dictionary;
         }
@@ -155,13 +155,13 @@ namespace CleanArchitecture.Application.Common.Services
         var dictionary = new Dictionary<string, string>();
         if (culture == "es")
         {
-          dictionary["Error_USER_NOT_FOUND"] = "Usuario no encontrado";
-          dictionary["Error_INVALID_CREDENTIALS"] = "Credenciales inválidas";
+          dictionary["Error_UserNotFound"] = "Usuario no encontrado";
+          dictionary["Error_InvalidCredentials"] = "Credenciales inválidas";
         }
         else
         {
-          dictionary["Error_USER_NOT_FOUND"] = "User not found";
-          dictionary["Error_INVALID_CREDENTIALS"] = "Invalid credentials";
+          dictionary["Error_UserNotFound"] = "User not found";
+          dictionary["Error_InvalidCredentials"] = "Invalid credentials";
         }
         _cache[culture] = dictionary;
       }

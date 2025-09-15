@@ -69,21 +69,21 @@ namespace CleanArchitecture.Application.Common.Services
 
         public async Task SendPasswordResetEmailAsync(string to, string userName, string resetCode)
         {
-            var subject = _localizationService.GetString("Email:PasswordReset:Subject");
+            var subject = _localizationService.GetString("Email_PasswordResetSubject");
             var body = GetPasswordResetEmailTemplate(userName, resetCode);
             await SendEmailAsync(to, subject, body);
         }
 
         public async Task SendWelcomeEmailAsync(string to, string userName)
         {
-            var subject = _localizationService.GetString("Email:Welcome:Subject");
+            var subject = _localizationService.GetString("Email_WelcomeSubject");
             var body = GetWelcomeEmailTemplate(userName);
             await SendEmailAsync(to, subject, body);
         }
 
         public async Task SendPasswordChangedEmailAsync(string to, string userName)
         {
-            var subject = _localizationService.GetString("Email:PasswordChanged:Subject");
+            var subject = _localizationService.GetString("Email_PasswordChangedSubject");
             var body = GetPasswordChangedEmailTemplate(userName);
             await SendEmailAsync(to, subject, body);
         }
@@ -361,14 +361,14 @@ namespace CleanArchitecture.Application.Common.Services
 
         public async Task SendEmailChangeVerificationEmailAsync(string to, string userName, string verificationCode)
         {
-            var subject = _localizationService.GetString("Email:EmailChangeVerification:Subject");
+            var subject = _localizationService.GetString("Email_EmailChangeVerificationSubject");
             var body = GetEmailChangeVerificationEmailTemplate(userName, verificationCode);
             await SendEmailAsync(to, subject, body);
         }
 
         public async Task SendEmailChangeConfirmationEmailAsync(string to, string userName, string oldEmail)
         {
-            var subject = _localizationService.GetString("Email:EmailChangeConfirmation:Subject");
+            var subject = _localizationService.GetString("Email_EmailChangeConfirmationSubject");
             var body = GetEmailChangeConfirmationEmailTemplate(userName, oldEmail);
             await SendEmailAsync(to, subject, body);
         }
