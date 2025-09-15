@@ -42,6 +42,11 @@ namespace CleanArchitecture.Domain.Common.Constants
       /// Permission to view sensitive user information
       /// </summary>
       public const string ViewSensitive = "Users.ViewSensitive";
+
+      /// <summary>
+      /// Permission to manage users (includes all user operations)
+      /// </summary>
+      public const string Manage = "Users.Manage";
     }
 
     #endregion
@@ -77,6 +82,11 @@ namespace CleanArchitecture.Domain.Common.Constants
       /// Permission to manage role permissions
       /// </summary>
       public const string ManagePermissions = "Roles.ManagePermissions";
+
+      /// <summary>
+      /// Permission to manage roles (includes all role operations)
+      /// </summary>
+      public const string Manage = "Roles.Manage";
     }
 
     #endregion
@@ -178,6 +188,7 @@ namespace CleanArchitecture.Domain.Common.Constants
                 Users.Delete,
                 Users.ManageRoles,
                 Users.ViewSensitive,
+                Users.Manage,
                 
                 // Roles permissions
                 Roles.Read,
@@ -185,6 +196,7 @@ namespace CleanArchitecture.Domain.Common.Constants
                 Roles.Update,
                 Roles.Delete,
                 Roles.ManagePermissions,
+                Roles.Manage,
                 
                 // Permissions permissions
                 Permissions.Read,

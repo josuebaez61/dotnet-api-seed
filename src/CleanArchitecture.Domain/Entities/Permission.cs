@@ -10,5 +10,6 @@ namespace CleanArchitecture.Domain.Entities
     public string Action { get; set; } = string.Empty; // e.g., "Read", "Write", "Delete"
     public string Module { get; set; } = string.Empty; // e.g., "UserManagement", "ProductManagement"
     public DateTime? LastModifiedAt { get; set; }
+    public bool IsHierarchical { get; set; } = false; // Indicates if this is a hierarchical permission
   }
 }

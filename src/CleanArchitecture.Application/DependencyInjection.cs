@@ -22,7 +22,11 @@ namespace CleanArchitecture.Application
       // Services
       services.AddScoped<IAuthService, AuthService>();
       services.AddScoped<IEmailService, EmailService>();
-      services.AddScoped<IPermissionService, PermissionService>();
+
+      // Permission services - HierarchicalPermissionService wraps the base PermissionService
+      services.AddScoped<PermissionService>(); // Base service
+      services.AddScoped<IPermissionService, HierarchicalPermissionService>(); // Hierarchical wrapper
+
       services.AddScoped<ILocalizationService, LocalizationService>();
       services.AddScoped<IPaginationService, PaginationService>();
 
