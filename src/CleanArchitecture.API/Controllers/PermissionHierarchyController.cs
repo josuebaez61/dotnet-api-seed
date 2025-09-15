@@ -18,7 +18,7 @@ namespace CleanArchitecture.API.Controllers
     /// </summary>
     /// <param name="permissionName">The permission to get hierarchical permissions for</param>
     /// <returns>List of permissions that are included hierarchically</returns>
-    [HttpGet("hierarchical/{permissionName}")]
+    [HttpGet("id/hierarchical/{permissionName}")]
     [Authorize(Policy = PermissionConstants.Permissions.Read)]
     public ActionResult<ApiResponse<List<string>>> GetHierarchicalPermissions(string permissionName)
     {
@@ -40,7 +40,7 @@ namespace CleanArchitecture.API.Controllers
     /// </summary>
     /// <param name="permissionName">The permission to find parents for</param>
     /// <returns>List of permissions that include this permission hierarchically</returns>
-    [HttpGet("parents/{permissionName}")]
+    [HttpGet("id/parents/{permissionName}")]
     [Authorize(Policy = PermissionConstants.Permissions.Read)]
     public ActionResult<ApiResponse<List<string>>> GetParentPermissions(string permissionName)
     {

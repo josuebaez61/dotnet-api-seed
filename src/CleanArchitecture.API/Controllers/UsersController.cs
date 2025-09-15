@@ -44,7 +44,7 @@ namespace CleanArchitecture.API.Controllers
       return Ok(ApiResponse<List<UserDto>>.SuccessResponse(result));
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("id/{id}")]
     [Authorize(Policy = PermissionConstants.Users.Read)]
     public async Task<ActionResult<ApiResponse<UserDto>>> GetUserById(Guid id)
     {
@@ -66,7 +66,7 @@ namespace CleanArchitecture.API.Controllers
       return CreatedAtAction(nameof(GetUserById), new { id = result.Id }, ApiResponse<UserDto>.SuccessResponse(result));
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("id/{id}")]
     [Authorize(Policy = PermissionConstants.Users.Write)]
     public async Task<ActionResult<ApiResponse<UserDto>>> UpdateUser([FromRoute] Guid id, [FromBody] UpdateUserDto userDto)
     {

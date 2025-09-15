@@ -7,6 +7,7 @@ using CleanArchitecture.Application.Features.Roles.Commands.CreateRole;
 using CleanArchitecture.Application.Features.Roles.Commands.UpdateRolePermissions;
 using CleanArchitecture.Application.Features.Roles.Queries.GetAllRoles;
 using CleanArchitecture.Application.Features.Roles.Queries.GetRoleById;
+using CleanArchitecture.Application.Features.Roles.Queries.GetRolePermissions;
 using CleanArchitecture.Domain.Common.Constants;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -42,7 +43,7 @@ namespace CleanArchitecture.API.Controllers
       }
     }
 
-    [HttpGet("{roleId}")]
+    [HttpGet("id/{roleId}")]
     [Authorize(Policy = PermissionConstants.Roles.Read)]
     public async Task<ActionResult<ApiResponse<RoleDto>>> GetRoleById([FromRoute] Guid roleId)
     {
@@ -55,6 +56,22 @@ namespace CleanArchitecture.API.Controllers
       catch (Exception ex)
       {
         return BadRequest(ApiResponse<RoleDto>.ErrorResponse(ex.Message));
+      }
+    }
+
+    [HttpGet("id/{roleId}/permissions")]
+    [Authorize(Policy = PermissionConstants.Roles.Read)]
+    public async Task<ActionResult<ApiResponse<RolePermissionsDto>>> GetRolePermissions([FromRoute] Guid roleId)
+    {
+      try
+      {
+        var query = new GetRolePermissionsQuery { RoleId = roleId };
+        var result = await _mediator.Send(query);
+        return Ok(ApiResponse<RolePermissionsDto>.SuccessResponse(result));
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ApiResponse<RolePermissionsDto>.ErrorResponse(ex.Message));
       }
     }
 
@@ -74,7 +91,7 @@ namespace CleanArchitecture.API.Controllers
       }
     }
 
-    [HttpPatch("{roleId}/permissions")]
+    [HttpPatch("id/{roleId}/permissions")]
     [Authorize(Policy = PermissionConstants.Roles.Write)]
     public async Task<ActionResult<ApiResponse>> UpdateRolePermissions(
         [FromRoute] Guid roleId,
