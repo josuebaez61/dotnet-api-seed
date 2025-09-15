@@ -167,7 +167,7 @@ namespace CleanArchitecture.Infrastructure.Data
       builder.Entity<Country>(entity =>
       {
         entity.HasKey(e => e.Id);
-        entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+        entity.Property(e => e.Name).IsRequired().HasMaxLength(255);
         entity.Property(e => e.Iso3).HasMaxLength(3);
         entity.Property(e => e.NumericCode).HasMaxLength(3);
         entity.Property(e => e.Iso2).HasMaxLength(2);

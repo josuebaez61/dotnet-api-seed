@@ -20,6 +20,11 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Data\Seeds\countries.sql" />
+    <EmbeddedResource Include="Data\Seeds\states.sql" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
