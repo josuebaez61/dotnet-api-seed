@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -22,8 +23,11 @@ namespace CleanArchitecture.Infrastructure.Data
     protected override void OnModelCreating(ModelBuilder builder)
     {
       base.OnModelCreating(builder);
+      
+      // Apply snake_case naming convention to all entities
+      ApplySnakeCaseNaming(builder);
 
-      // Configure User entity
+      // Configure User entity properties
       builder.Entity<User>(entity =>
       {
         entity.Property(e => e.FirstName).HasMaxLength(100).IsRequired();
@@ -35,7 +39,7 @@ namespace CleanArchitecture.Infrastructure.Data
         entity.Property(e => e.MustChangePassword).IsRequired();
       });
 
-      // Configure Role entity
+      // Configure Role entity properties
       builder.Entity<Role>(entity =>
       {
         entity.Property(e => e.Description).HasMaxLength(500);
@@ -160,6 +164,68 @@ namespace CleanArchitecture.Infrastructure.Data
       // Seed data logic moved to DatabaseInitializationService
     }
 
+    private void ApplySnakeCaseNaming(ModelBuilder builder)
+    {
+      foreach (var entity in builder.Model.GetEntityTypes())
+      {
+        // Set table name to snake_case
+        var tableName = entity.GetTableName();
+        if (!string.IsNullOrEmpty(tableName))
+        {
+          entity.SetTableName(ToSnakeCase(tableName));
+        }
+
+        // Set column names to snake_case
+        foreach (var property in entity.GetProperties())
+        {
+          var columnName = property.GetColumnName();
+          if (!string.IsNullOrEmpty(columnName))
+          {
+            property.SetColumnName(ToSnakeCase(columnName));
+          }
+        }
+
+        // Set index names to snake_case
+        foreach (var index in entity.GetIndexes())
+        {
+          var indexName = index.GetDatabaseName();
+          if (!string.IsNullOrEmpty(indexName))
+          {
+            index.SetDatabaseName(ToSnakeCase(indexName));
+          }
+        }
+
+        // Set foreign key constraint names to snake_case
+        foreach (var foreignKey in entity.GetForeignKeys())
+        {
+          var constraintName = foreignKey.GetConstraintName();
+          if (!string.IsNullOrEmpty(constraintName))
+          {
+            foreignKey.SetConstraintName(ToSnakeCase(constraintName));
+          }
+        }
+      }
+    }
+
+    private static string ToSnakeCase(string input)
+    {
+      if (string.IsNullOrEmpty(input))
+        return input;
+
+      // Remove AspNet prefix from Identity tables
+      if (input.StartsWith("AspNet"))
+      {
+        input = input.Substring(6); // Remove "AspNet" prefix
+      }
+
+      // Handle special cases for common patterns
+      input = input.Replace("Id", "ID"); // Keep ID as uppercase
+      input = input.Replace("Url", "URL"); // Keep URL as uppercase
+      input = input.Replace("Api", "API"); // Keep API as uppercase
+
+      // Convert PascalCase to snake_case
+      return Regex.Replace(input, @"([a-z0-9])([A-Z])", "$1_$2").ToLowerInvariant();
+    }
 
     // SeedData logic moved to DatabaseInitializationService for better control and flexibility
   }

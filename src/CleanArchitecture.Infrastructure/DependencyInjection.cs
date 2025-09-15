@@ -18,8 +18,7 @@ namespace CleanArchitecture.Infrastructure
     {
       // Database
       services.AddDbContext<ApplicationDbContext>(options =>
-          options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
-                 .UseSnakeCaseNamingConvention());
+          options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
       // Register IApplicationDbContext
       services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
