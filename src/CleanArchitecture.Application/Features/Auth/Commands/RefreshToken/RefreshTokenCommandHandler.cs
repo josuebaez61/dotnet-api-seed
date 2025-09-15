@@ -17,7 +17,7 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.RefreshToken
 
     public async Task<AuthResponseDto> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {
-      return await _authService.RefreshTokenAsync(request.Request.RefreshToken);
+      return await _authService.RefreshTokenAsync(request.RefreshToken);
     }
   }
 }

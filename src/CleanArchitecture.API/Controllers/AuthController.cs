@@ -46,9 +46,14 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpPost("refresh-token")]
-    public async Task<ActionResult<ApiResponse<AuthResponseDto>>> RefreshToken([FromBody] RefreshTokenRequestDto request)
+    public async Task<ActionResult<ApiResponse<AuthResponseDto>>> RefreshToken([FromHeader(Name = "X-Refresh-Token")] string? refreshToken)
     {
-      var command = new RefreshTokenCommand { Request = request };
+      if (string.IsNullOrEmpty(refreshToken))
+      {
+        return BadRequest(ApiResponse<AuthResponseDto>.ErrorResponse("Refresh token is required in X-Refresh-Token header"));
+      }
+
+      var command = new RefreshTokenCommand { RefreshToken = refreshToken };
       var result = await _mediator.Send(command);
       return Ok(ApiResponse<AuthResponseDto>.SuccessResponse(result));
     }

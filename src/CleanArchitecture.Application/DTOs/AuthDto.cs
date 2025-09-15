@@ -27,11 +27,6 @@ namespace CleanArchitecture.Application.DTOs
     public UserDto User { get; set; } = new();
   }
 
-  public class RefreshTokenRequestDto
-  {
-    public string RefreshToken { get; set; } = string.Empty;
-  }
-
   public class ChangePasswordRequestDto
   {
     public string CurrentPassword { get; set; } = string.Empty;
