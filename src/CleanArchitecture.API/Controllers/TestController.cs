@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.Common.Models;
 using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Application.Features.Test.Commands.SendTestEmail;
@@ -15,10 +16,12 @@ namespace CleanArchitecture.API.Controllers
   public class TestController : ControllerBase
   {
     private readonly IMediator _mediator;
+    private readonly ILocalizationService _localizationService;
 
-    public TestController(IMediator mediator)
+    public TestController(IMediator mediator, ILocalizationService localizationService)
     {
       _mediator = mediator;
+      _localizationService = localizationService;
     }
 
     /// <summary>
@@ -58,6 +61,23 @@ namespace CleanArchitecture.API.Controllers
       };
 
       return Ok(ApiResponse<object>.SuccessResponse(userInfo, "Authentication test successful"));
+    }
+
+    /// <summary>
+    /// Endpoint de prueba para verificar localización
+    /// </summary>
+    /// <returns>Mensajes localizados de prueba</returns>
+    [HttpGet("localization-test")]
+    public ActionResult<ApiResponse<object>> LocalizationTest()
+    {
+      var testMessages = new
+      {
+        InvalidCredentials = _localizationService.GetErrorMessage("INVALID_CREDENTIALS"),
+        UserNotFound = _localizationService.GetErrorMessage("UserNotFound"),
+        LoginSuccessful = _localizationService.GetSuccessMessage("LoginSuccessful")
+      };
+
+      return Ok(ApiResponse<object>.SuccessResponse(testMessages, "Localization test"));
     }
   }
 }

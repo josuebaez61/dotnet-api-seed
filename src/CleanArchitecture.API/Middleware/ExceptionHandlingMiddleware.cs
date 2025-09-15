@@ -117,11 +117,13 @@ namespace CleanArchitecture.API.Middleware
           // Create a new LocalizationService with the current culture
           var culture = GetCurrentCulture(context);
           var localizedService = new CleanArchitecture.Application.Common.Services.LocalizationService(culture);
+          
+          // GetErrorMessage already adds Error_ prefix, so we pass the key as is
           var localizedMessage = localizedService.GetErrorMessage(key);
 
           // Log for debugging
           var logger = context.RequestServices.GetService<ILogger<ExceptionHandlingMiddleware>>();
-          logger?.LogDebug("Localized message for key '{Key}' in culture '{Culture}': '{Message}'", key, culture, localizedMessage);
+          logger?.LogInformation("Localized message for key '{Key}' in culture '{Culture}': '{Message}'", key, culture, localizedMessage);
 
           return localizedMessage;
         }

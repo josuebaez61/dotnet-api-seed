@@ -101,6 +101,9 @@
   <data name="Error_UserNotFound" xml:space="preserve">
     <value>User not found</value>
   </data>
+  <data name="Error_INVALID_CREDENTIALS" xml:space="preserve">
+    <value>Invalid email/username or password</value>
+  </data>
   <data name="Error_InvalidCredentials" xml:space="preserve">
     <value>Invalid credentials</value>
   </data>
