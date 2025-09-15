@@ -11,10 +11,9 @@ namespace CleanArchitecture.Infrastructure.Data.Configurations
       // Primary Key
       builder.HasKey(s => s.Id);
 
-      // Configure GUID as primary key
+      // Configure int as primary key with auto-increment
       builder.Property(s => s.Id)
-          .ValueGeneratedOnAdd()
-          .HasColumnType("uuid");
+          .ValueGeneratedOnAdd();
 
       // Properties
       builder.Property(s => s.Name)
@@ -22,8 +21,7 @@ namespace CleanArchitecture.Infrastructure.Data.Configurations
           .HasMaxLength(255);
 
       builder.Property(s => s.CountryId)
-          .IsRequired()
-          .HasColumnType("uuid");
+          .IsRequired();
 
       builder.Property(s => s.CountryCode)
           .IsRequired()
@@ -36,15 +34,15 @@ namespace CleanArchitecture.Infrastructure.Data.Configurations
           .HasMaxLength(255);
 
       builder.Property(s => s.Iso31662)
-          .HasMaxLength(255);
+          .HasMaxLength(255)
+          .HasColumnName("iso3166_2");
 
       builder.Property(s => s.Type)
           .HasMaxLength(255);
 
       builder.Property(s => s.Level);
 
-      builder.Property(s => s.ParentId)
-          .HasColumnType("uuid");
+      builder.Property(s => s.ParentId);
 
       builder.Property(s => s.Native)
           .HasMaxLength(255);

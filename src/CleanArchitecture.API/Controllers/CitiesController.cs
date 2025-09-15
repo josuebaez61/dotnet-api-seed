@@ -1,8 +1,8 @@
 using CleanArchitecture.Application.Common.Models;
 using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Application.Features.Cities.Queries.GetAllCities;
-using CleanArchitecture.Application.Features.Cities.Queries.GetCityById;
 using CleanArchitecture.Application.Features.Cities.Queries.GetCitiesByStateId;
+using CleanArchitecture.Application.Features.Cities.Queries.GetCityById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -40,7 +40,7 @@ namespace CleanArchitecture.API.Controllers
         /// <param name="id">City ID</param>
         /// <returns>City details</returns>
         [HttpGet("id/{id}")]
-        public async Task<ActionResult<ApiResponse<CityDto>>> GetCityById(Guid id)
+        public async Task<ActionResult<ApiResponse<CityDto>>> GetCityById(int id)
         {
             var query = new GetCityByIdQuery(id);
             var result = await _mediator.Send(query);
@@ -59,7 +59,7 @@ namespace CleanArchitecture.API.Controllers
         /// <param name="stateId">State ID</param>
         /// <returns>List of cities for the state</returns>
         [HttpGet("{stateId}/cities")]
-        public async Task<ActionResult<ApiResponse<List<CityDto>>>> GetCitiesByStateId(Guid stateId)
+        public async Task<ActionResult<ApiResponse<List<CityDto>>>> GetCitiesByStateId(int stateId)
         {
             var query = new GetCitiesByStateIdQuery(stateId);
             var result = await _mediator.Send(query);

@@ -4,7 +4,7 @@ namespace CleanArchitecture.Application.DTOs
 {
     public class CountryDto
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Iso3 { get; set; } = string.Empty;
         public string NumericCode { get; set; } = string.Empty;

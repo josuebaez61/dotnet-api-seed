@@ -4,9 +4,9 @@ namespace CleanArchitecture.Application.DTOs
 {
     public class StateDto
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public Guid CountryId { get; set; }
+        public int CountryId { get; set; }
         public string CountryCode { get; set; } = string.Empty;
         public string FipsCode { get; set; } = string.Empty;
         public string Iso2 { get; set; } = string.Empty;

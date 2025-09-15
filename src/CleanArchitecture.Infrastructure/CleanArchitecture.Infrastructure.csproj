@@ -21,8 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Data\Seeds\countries.sql" />
-    <EmbeddedResource Include="Data\Seeds\states.sql" />
+    <EmbeddedResource Include="Data\Seeds\Countries.json" />
+    <EmbeddedResource Include="Data\Seeds\States.json" />
+    <EmbeddedResource Include="Data\Seeds\ArgentineCities.json" />
   </ItemGroup>
 
   <PropertyGroup>

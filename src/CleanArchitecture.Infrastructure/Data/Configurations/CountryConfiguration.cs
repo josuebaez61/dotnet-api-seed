@@ -11,10 +11,9 @@ namespace CleanArchitecture.Infrastructure.Data.Configurations
             // Primary Key
             builder.HasKey(c => c.Id);
 
-            // Configure GUID as primary key
+            // Configure int as primary key with auto-increment
             builder.Property(c => c.Id)
-                .ValueGeneratedOnAdd()
-                .HasColumnType("uuid");
+                .ValueGeneratedOnAdd();
 
             // Properties
             builder.Property(c => c.Name)

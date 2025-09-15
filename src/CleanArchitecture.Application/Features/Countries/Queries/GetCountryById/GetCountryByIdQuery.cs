@@ -5,9 +5,9 @@ namespace CleanArchitecture.Application.Features.Countries.Queries.GetCountryByI
 {
     public class GetCountryByIdQuery : IRequest<CountryDto?>
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
-        public GetCountryByIdQuery(Guid id)
+        public GetCountryByIdQuery(int id)
         {
             Id = id;
         }

@@ -4,7 +4,7 @@ namespace CleanArchitecture.Domain.Entities
 {
   public class Country
   {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string? Iso3 { get; set; }
     public string? NumericCode { get; set; }
