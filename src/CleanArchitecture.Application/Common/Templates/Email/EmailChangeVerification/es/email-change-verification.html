@@ -1,16 +1,21 @@
 <h2>Verifica tu Cambio de Correo</h2>
 <p>Hola {{UserName}},</p>
-<p>Recibimos una solicitud para cambiar tu dirección de correo electrónico a una nueva. Para completar este cambio, por favor usa el siguiente código de verificación:</p>
+<p>Recibimos una solicitud para cambiar tu dirección de correo electrónico a una nueva. Para completar este cambio, por favor haz clic en el botón de abajo:</p>
 
-<div class="code">{{VerificationCode}}</div>
+<div style="text-align: center; margin: 30px 0;">
+    <a href="{{VerificationLink}}" class="button">Verificar Cambio de Correo</a>
+</div>
 
-<p>Este código expirará en 15 minutos por razones de seguridad.</p>
+<p>Si el botón no funciona, copia y pega el siguiente enlace en tu navegador:</p>
+<div class="code">{{VerificationLink}}</div>
+
+<p>Este enlace expirará en 15 minutos por razones de seguridad.</p>
 
 <div class="warning">
     <strong>Importante:</strong> Si no solicitaste este cambio de correo, por favor ignora este correo y contacta a nuestro equipo de soporte inmediatamente. Tu dirección de correo permanecerá sin cambios.
 </div>
 
-<p>Por razones de seguridad, por favor no compartas este código con nadie. Nuestro equipo de soporte nunca te pedirá este código.</p>
+<p>Por razones de seguridad, por favor no compartas este enlace con nadie. Nuestro equipo de soporte nunca te pedirá este enlace.</p>
 
 <p>Si tienes alguna pregunta o necesitas asistencia, por favor contacta a nuestro equipo de soporte.</p>
 
