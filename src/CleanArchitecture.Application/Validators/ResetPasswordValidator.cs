@@ -7,14 +7,10 @@ namespace CleanArchitecture.Application.Validators
   {
     public ResetPasswordValidator()
     {
-      RuleFor(x => x.Email)
-          .NotEmpty().WithMessage("Email is required")
-          .EmailAddress().WithMessage("Email must be a valid email address")
-          .MaximumLength(256).WithMessage("Email cannot exceed 256 characters");
-
       RuleFor(x => x.Code)
           .NotEmpty().WithMessage("Reset code is required")
-          .Length(6).WithMessage("Reset code must be 6 characters long");
+          .MinimumLength(16).WithMessage("Reset code must be at least 16 characters long")
+          .MaximumLength(32).WithMessage("Reset code cannot exceed 32 characters");
 
       RuleFor(x => x.NewPassword)
           .NotEmpty().WithMessage("New password is required")

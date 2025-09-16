@@ -414,6 +414,41 @@ namespace CleanArchitecture.Application.Common.Services
       return true;
     }
 
+    public async Task<Guid> ValidatePasswordResetCodeAndGetUserIdAsync(string code)
+    {
+      // Buscar el código en todos los usuarios
+      foreach (var userCodes in _passwordResetCodes)
+      {
+        var validCode = userCodes.Value.FirstOrDefault(c =>
+            c.Code == code &&
+            c.ExpiresAt > DateTime.UtcNow &&
+            !c.IsUsed);
+
+        if (validCode != null)
+        {
+          return userCodes.Key; // Retornar el userId
+        }
+      }
+
+      // Si no se encuentra un código válido, verificar si existe pero está expirado o usado
+      foreach (var userCodes in _passwordResetCodes)
+      {
+        var expiredCode = userCodes.Value.FirstOrDefault(c => c.Code == code && c.ExpiresAt <= DateTime.UtcNow);
+        if (expiredCode != null)
+        {
+          throw new PasswordResetCodeExpiredError(userCodes.Key.ToString());
+        }
+
+        var usedCode = userCodes.Value.FirstOrDefault(c => c.Code == code && c.IsUsed);
+        if (usedCode != null)
+        {
+          throw new PasswordResetCodeAlreadyUsedError(userCodes.Key.ToString());
+        }
+      }
+
+      throw new PasswordResetCodeInvalidError("Invalid reset code");
+    }
+
     public async Task MarkPasswordResetCodeAsUsedAsync(Guid userId, string code)
     {
       if (!_passwordResetCodes.ContainsKey(userId))

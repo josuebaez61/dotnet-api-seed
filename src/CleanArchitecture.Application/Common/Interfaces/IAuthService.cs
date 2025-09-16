@@ -18,6 +18,7 @@ namespace CleanArchitecture.Application.Common.Interfaces
     Task<AuthResponseDto> GenerateAuthResponseAsync(User user);
     Task<string> GeneratePasswordResetCodeAsync(Guid userId);
     Task<bool> ValidatePasswordResetCodeAsync(Guid userId, string code);
+    Task<Guid> ValidatePasswordResetCodeAndGetUserIdAsync(string code);
     Task MarkPasswordResetCodeAsUsedAsync(Guid userId, string code);
   }
 }

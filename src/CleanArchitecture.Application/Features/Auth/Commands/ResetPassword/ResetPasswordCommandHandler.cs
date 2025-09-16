@@ -30,19 +30,19 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.ResetPassword
 
     public async Task<ApiResponse> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
     {
-      var user = await _userManager.FindByEmailAsync(request.Request.Email);
+      // Validar código de reset y obtener el userId
+      var userId = await _authService.ValidatePasswordResetCodeAndGetUserIdAsync(request.Request.Code);
+      
+      var user = await _userManager.FindByIdAsync(userId.ToString());
       if (user == null)
       {
-        throw new UserNotFoundError(request.Request.Email);
+        throw new UserNotFoundError(userId.ToString());
       }
 
       if (!user.IsActive)
       {
         throw new AccountDeactivatedError(user.Id.ToString());
       }
-
-      // Validar código de reset
-      await _authService.ValidatePasswordResetCodeAsync(user.Id, request.Request.Code);
 
       // Cambiar contraseña
       var token = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -54,7 +54,7 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.ResetPassword
       }
 
       // Marcar código como usado
-      await _authService.MarkPasswordResetCodeAsUsedAsync(user.Id, request.Request.Code);
+      await _authService.MarkPasswordResetCodeAsUsedAsync(userId, request.Request.Code);
 
       // Enviar email de confirmación
       await _emailService.SendPasswordChangedEmailAsync(user.Email!, user.UserName!);
