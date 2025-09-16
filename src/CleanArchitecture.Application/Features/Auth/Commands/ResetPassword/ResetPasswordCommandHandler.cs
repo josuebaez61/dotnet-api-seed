@@ -32,7 +32,7 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.ResetPassword
     {
       // Validar código de reset y obtener el userId
       var userId = await _authService.ValidatePasswordResetCodeAndGetUserIdAsync(request.Request.Code);
-      
+
       var user = await _userManager.FindByIdAsync(userId.ToString());
       if (user == null)
       {

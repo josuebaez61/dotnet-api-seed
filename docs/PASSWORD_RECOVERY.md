@@ -18,6 +18,7 @@ The password recovery functionality is **fully implemented** and includes:
 ## 🚀 Available Endpoints
 
 ### 1. Request Password Reset
+
 ```http
 POST /api/v1/auth/request-password-reset
 Content-Type: application/json
@@ -28,6 +29,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -41,6 +43,7 @@ Content-Type: application/json
 ```
 
 ### 2. Reset Password with Code
+
 ```http
 POST /api/v1/auth/reset-password
 Content-Type: application/json
@@ -53,6 +56,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -64,6 +68,7 @@ Content-Type: application/json
 ## 🔒 Security Features
 
 ### **Secure Reset Codes**
+
 - ✅ **6-digit codes** randomly generated
 - ✅ **15-minute expiration** for security
 - ✅ **Single use** - codes are marked as used
@@ -71,6 +76,7 @@ Content-Type: application/json
 - ✅ **No email existence revelation** (for security)
 
 ### **Robust Validations**
+
 - ✅ **Email validation** with FluentValidation
 - ✅ **Code validation** of exactly 6 digits
 - ✅ **Password validation** with complexity rules
@@ -80,6 +86,7 @@ Content-Type: application/json
 ## 📧 Email System
 
 ### **Professional HTML Templates**
+
 - ✅ **Responsive design** with modern CSS
 - ✅ **Corporate colors** (blue for reset)
 - ✅ **Security information** and warnings
@@ -87,7 +94,9 @@ Content-Type: application/json
 - ✅ **Footer** with company information
 
 ### **Email Types**
+
 1. **Password Reset Email**
+
    - Highlighted 6-digit code
    - 15-minute expiration warning
    - Security instructions
@@ -100,6 +109,7 @@ Content-Type: application/json
 ## 🗄️ Database
 
 ### **PasswordResetCode Entity**
+
 ```csharp
 public class PasswordResetCode : BaseEntity
 {
@@ -113,6 +123,7 @@ public class PasswordResetCode : BaseEntity
 ```
 
 ### **Created Migration**
+
 - ✅ **AddPasswordResetCodes migration** created
 - ✅ **PasswordResetCodes table** configured
 - ✅ **Relationships** with Users table
@@ -121,6 +132,7 @@ public class PasswordResetCode : BaseEntity
 ## 🌍 Localization
 
 ### **Spanish Messages**
+
 ```json
 {
   "Messages": {
@@ -137,6 +149,7 @@ public class PasswordResetCode : BaseEntity
 ```
 
 ### **English Messages**
+
 ```json
 {
   "Messages": {
@@ -155,6 +168,7 @@ public class PasswordResetCode : BaseEntity
 ## 🔧 Configuration
 
 ### **Email Configuration (appsettings.json)**
+
 ```json
 {
   "EmailSettings": {
@@ -169,6 +183,7 @@ public class PasswordResetCode : BaseEntity
 ```
 
 ### **Localization Configuration**
+
 ```csharp
 // In Program.cs
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
@@ -211,6 +226,7 @@ sequenceDiagram
 ## 🧪 Usage Examples
 
 ### **Example 1: Request Reset**
+
 ```bash
 curl -X POST "https://localhost:7000/api/v1/auth/request-password-reset" \
   -H "Content-Type: application/json" \
@@ -219,6 +235,7 @@ curl -X POST "https://localhost:7000/api/v1/auth/request-password-reset" \
 ```
 
 ### **Example 2: Reset Password**
+
 ```bash
 curl -X POST "https://localhost:7000/api/v1/auth/reset-password" \
   -H "Content-Type: application/json" \
@@ -233,12 +250,13 @@ curl -X POST "https://localhost:7000/api/v1/auth/reset-password" \
 ## 🔍 Implemented Validations
 
 ### **RequestPasswordResetDto**
+
 - ✅ Email required
 - ✅ Valid email format
 - ✅ Maximum 256 characters
 
 ### **ResetPasswordDto**
-- ✅ Email required and valid
+
 - ✅ Code required (exactly 6 digits)
 - ✅ New password with complexity rules:
   - Minimum 8 characters
@@ -250,12 +268,14 @@ curl -X POST "https://localhost:7000/api/v1/auth/reset-password" \
 ## 🚨 Error Handling
 
 ### **Common Errors**
+
 - **400 Bad Request**: Invalid input data
 - **401 Unauthorized**: Expired or invalid code
 - **404 Not Found**: User not found (not revealed for security)
 - **500 Internal Server Error**: Server error
 
 ### **Standardized Error Responses**
+
 ```json
 {
   "success": false,
@@ -267,6 +287,7 @@ curl -X POST "https://localhost:7000/api/v1/auth/reset-password" \
 ## 📊 Monitoring and Logs
 
 ### **Implemented Logs**
+
 ```csharp
 _logger.LogInformation("Password reset code generated for user {UserId}", userId);
 _logger.LogInformation("Email sent successfully to {Email}", email);
@@ -274,6 +295,7 @@ _logger.LogError(ex, "Failed to send password reset email to {Email}", email);
 ```
 
 ### **Recommended Metrics**
+
 - Password reset request rate
 - Code usage vs expiration rate
 - Average code usage time
@@ -294,6 +316,7 @@ dotnet ef database update
 ## ✅ Implementation Status
 
 ### **Fully Implemented**
+
 - ✅ **Password recovery endpoints**
 - ✅ **Validations** with FluentValidation
 - ✅ **Email service** with HTML templates
@@ -306,7 +329,9 @@ dotnet ef database update
 - ✅ **Complete documentation**
 
 ### **Ready to Use**
+
 The password recovery system is **100% functional** and ready for:
+
 - ✅ Local development
 - ✅ Testing
 - ✅ Production (with SMTP configuration)

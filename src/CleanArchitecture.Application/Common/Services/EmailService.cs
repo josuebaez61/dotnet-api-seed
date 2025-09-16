@@ -74,7 +74,7 @@ namespace CleanArchitecture.Application.Common.Services
         public async Task SendPasswordResetEmailAsync(string to, string userName, string resetCode)
         {
             var culture = _localizationService.GetCurrentCulture();
-            var frontendUrl = "http://localhost:4200"; // TODO: Make this configurable
+            var frontendUrl = _configuration["FrontendSettings:BaseUrl"] ?? "http://localhost:4200";
             var resetLink = $"{frontendUrl}/reset-password?code={resetCode}";
 
             var parameters = new Dictionary<string, object>
