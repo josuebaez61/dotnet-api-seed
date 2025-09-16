@@ -14,7 +14,7 @@ namespace CleanArchitecture.Infrastructure.Data.Configurations
       // Properties
       builder.Property(prc => prc.Code)
           .IsRequired()
-          .HasMaxLength(6);
+          .HasMaxLength(32);
 
       builder.Property(prc => prc.ExpiresAt)
           .IsRequired()

@@ -76,7 +76,7 @@ namespace CleanArchitecture.Application.Common.Services
             var culture = _localizationService.GetCurrentCulture();
             var frontendUrl = "http://localhost:4200"; // TODO: Make this configurable
             var resetLink = $"{frontendUrl}/reset-password?code={resetCode}";
-            
+
             var parameters = new Dictionary<string, object>
             {
                 ["UserName"] = userName,
