@@ -1,6 +1,7 @@
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.Common.Models;
 using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Application.Features.Auth.Commands.ChangeFirstTimePassword;
@@ -24,9 +25,10 @@ namespace CleanArchitecture.API.Controllers
   public class AuthController : ControllerBase
   {
     private readonly IMediator _mediator;
-
-    public AuthController(IMediator mediator)
+    private readonly ILocalizationService _localizationService;
+    public AuthController(IMediator mediator, ILocalizationService localizationService)
     {
+      _localizationService = localizationService;
       _mediator = mediator;
     }
 
@@ -111,7 +113,7 @@ namespace CleanArchitecture.API.Controllers
     {
       var command = new RequestPasswordResetCommand { Request = request };
       var result = await _mediator.Send(command);
-      return Ok(ApiResponse<PasswordResetResponseDto>.SuccessResponse(result));
+      return Ok(ApiResponse<PasswordResetResponseDto>.SuccessResponse(result, _localizationService.GetSuccessMessage("PASSWORD_RESET_CODE_SENT", [])));
     }
 
     [HttpPost("reset-password")]

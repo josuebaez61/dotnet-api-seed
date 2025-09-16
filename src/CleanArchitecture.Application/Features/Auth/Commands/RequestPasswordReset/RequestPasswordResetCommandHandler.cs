@@ -36,7 +36,6 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.RequestPasswordRe
         // Por seguridad, no revelamos si el email existe o no
         return new PasswordResetResponseDto
         {
-          Message = _localizationService.GetSuccessMessage("PasswordResetCodeSent"),
           ExpiresAt = DateTime.UtcNow.AddMinutes(15)
         };
       }
@@ -54,7 +53,6 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.RequestPasswordRe
 
       return new PasswordResetResponseDto
       {
-        Message = _localizationService.GetSuccessMessage("PasswordResetCodeSent"),
         ExpiresAt = DateTime.UtcNow.AddMinutes(15)
       };
     }

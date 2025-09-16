@@ -69,21 +69,21 @@ namespace CleanArchitecture.Application.Common.Services
 
         public async Task SendPasswordResetEmailAsync(string to, string userName, string resetCode)
         {
-            var subject = _localizationService.GetString("PASSWORD_RESET_SUBJECT");
+            var subject = _localizationService.GetSubjectMessage("PASSWORD_RESET");
             var body = GetPasswordResetEmailTemplate(userName, resetCode);
             await SendEmailAsync(to, subject, body);
         }
 
         public async Task SendWelcomeEmailAsync(string to, string userName)
         {
-            var subject = _localizationService.GetString("WELCOME_SUBJECT");
+            var subject = _localizationService.GetSubjectMessage("WELCOME");
             var body = GetWelcomeEmailTemplate(userName);
             await SendEmailAsync(to, subject, body);
         }
 
         public async Task SendPasswordChangedEmailAsync(string to, string userName)
         {
-            var subject = _localizationService.GetString("PASSWORD_CHANGED_SUBJECT");
+            var subject = _localizationService.GetSubjectMessage("PASSWORD_CHANGED");
             var body = GetPasswordChangedEmailTemplate(userName);
             await SendEmailAsync(to, subject, body);
         }
@@ -361,14 +361,14 @@ namespace CleanArchitecture.Application.Common.Services
 
         public async Task SendEmailChangeVerificationEmailAsync(string to, string userName, string verificationCode)
         {
-            var subject = _localizationService.GetString("EMAIL_CHANGE_VERIFICATION_SUBJECT");
+            var subject = _localizationService.GetSubjectMessage("EMAIL_CHANGE_VERIFICATION");
             var body = GetEmailChangeVerificationEmailTemplate(userName, verificationCode);
             await SendEmailAsync(to, subject, body);
         }
 
         public async Task SendEmailChangeConfirmationEmailAsync(string to, string userName, string oldEmail)
         {
-            var subject = _localizationService.GetString("EMAIL_CHANGE_CONFIRMATION_SUBJECT");
+            var subject = _localizationService.GetSubjectMessage("EMAIL_CHANGE_CONFIRMATION");
             var body = GetEmailChangeConfirmationEmailTemplate(userName, oldEmail);
             await SendEmailAsync(to, subject, body);
         }
@@ -587,7 +587,7 @@ namespace CleanArchitecture.Application.Common.Services
 
         public async Task SendTemporaryPasswordEmailAsync(string to, string userName, string temporaryPassword)
         {
-            var subject = _localizationService.GetString("TEMPORARY_PASSWORD_SUBJECT");
+            var subject = _localizationService.GetSubjectMessage("TEMPORARY_PASSWORD");
             var body = GetTemporaryPasswordEmailTemplate(userName, temporaryPassword);
             await SendEmailAsync(to, subject, body);
         }

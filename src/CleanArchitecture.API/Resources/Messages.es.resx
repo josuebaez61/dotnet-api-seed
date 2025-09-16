@@ -261,4 +261,24 @@
   <data name="TEMPORARY_PASSWORD_SUBJECT" xml:space="preserve">
     <value>Cuenta Creada - Contraseña Temporal</value>
   </data>
+  
+  <!-- Subject Messages -->
+  <data name="SUBJECT_PASSWORD_RESET" xml:space="preserve">
+    <value>Código de Restablecimiento de Contraseña</value>
+  </data>
+  <data name="SUBJECT_EMAIL_CHANGE_VERIFICATION" xml:space="preserve">
+    <value>Verifica tu Cambio de Correo</value>
+  </data>
+  <data name="SUBJECT_EMAIL_CHANGE_CONFIRMATION" xml:space="preserve">
+    <value>Correo Cambiado Exitosamente</value>
+  </data>
+  <data name="SUBJECT_WELCOME" xml:space="preserve">
+    <value>Bienvenido a Clean Architecture</value>
+  </data>
+  <data name="SUBJECT_PASSWORD_CHANGED" xml:space="preserve">
+    <value>Contraseña Cambiada Exitosamente</value>
+  </data>
+  <data name="SUBJECT_TEMPORARY_PASSWORD" xml:space="preserve">
+    <value>Cuenta Creada - Contraseña Temporal</value>
+  </data>
 </root>

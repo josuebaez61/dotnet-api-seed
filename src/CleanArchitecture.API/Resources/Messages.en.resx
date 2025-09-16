@@ -260,4 +260,24 @@
     <value>Account Created - Temporary Password</value>
   </data>
   
+  <!-- Subject Messages -->
+  <data name="SUBJECT_PASSWORD_RESET" xml:space="preserve">
+    <value>Password Reset Code</value>
+  </data>
+  <data name="SUBJECT_EMAIL_CHANGE_VERIFICATION" xml:space="preserve">
+    <value>Verify Your Email Change</value>
+  </data>
+  <data name="SUBJECT_EMAIL_CHANGE_CONFIRMATION" xml:space="preserve">
+    <value>Email Successfully Changed</value>
+  </data>
+  <data name="SUBJECT_WELCOME" xml:space="preserve">
+    <value>Welcome to Clean Architecture</value>
+  </data>
+  <data name="SUBJECT_PASSWORD_CHANGED" xml:space="preserve">
+    <value>Password Changed Successfully</value>
+  </data>
+  <data name="SUBJECT_TEMPORARY_PASSWORD" xml:space="preserve">
+    <value>Account Created - Temporary Password</value>
+  </data>
+  
 </root>

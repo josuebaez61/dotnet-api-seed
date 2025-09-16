@@ -64,6 +64,11 @@ namespace CleanArchitecture.Application.Common.Services
       return GetString($"VALIDATION_{key}", args);
     }
 
+    public string GetSubjectMessage(string key, params object[] args)
+    {
+      return GetString($"SUBJECT_{key}", args);
+    }
+
     private string GetLocalizedValue(string key, string culture)
     {
       try
@@ -104,7 +109,7 @@ namespace CleanArchitecture.Application.Common.Services
     {
       try
       {
-        var fileName = culture == "es" ? "Messages.es.resx" : "Messages.resx";
+        var fileName = culture == "es" ? "Messages.es.resx" : "Messages.en.resx";
         var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", fileName);
 
         // If not found in base directory, try relative path
@@ -139,38 +144,17 @@ namespace CleanArchitecture.Application.Common.Services
         }
         else
         {
-          // If file doesn't exist, create a fallback dictionary with some test values
           var dictionary = new Dictionary<string, string>();
-          if (culture == "es")
-          {
-            dictionary["ERROR_USER_NOT_FOUND"] = "Usuario no encontrado";
-            dictionary["ERROR_INVALID_CREDENTIALS"] = "Credenciales inválidas";
-            dictionary["SUCCESS_LOGIN_SUCCESSFUL"] = "Inicio de sesión exitoso";
-          }
-          else
-          {
-            dictionary["ERROR_USER_NOT_FOUND"] = "User not found";
-            dictionary["ERROR_INVALID_CREDENTIALS"] = "Invalid credentials";
-            dictionary["SUCCESS_LOGIN_SUCCESSFUL"] = "Login successful";
-          }
           _cache[culture] = dictionary;
+          Console.WriteLine($"DEBUG: Failed to load resx file for culture '{culture}'");
         }
       }
-      catch (Exception ex)
+      catch
       {
         // If loading fails, create a fallback dictionary
         var dictionary = new Dictionary<string, string>();
-        if (culture == "es")
-        {
-          dictionary["Error_UserNotFound"] = "Usuario no encontrado";
-          dictionary["Error_InvalidCredentials"] = "Credenciales inválidas";
-        }
-        else
-        {
-          dictionary["Error_UserNotFound"] = "User not found";
-          dictionary["Error_InvalidCredentials"] = "Invalid credentials";
-        }
         _cache[culture] = dictionary;
+        Console.WriteLine($"DEBUG: Failed to load resx file for culture '{culture}'");
       }
     }
 
