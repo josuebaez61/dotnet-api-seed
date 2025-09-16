@@ -140,6 +140,9 @@
   <data name="ERROR_PASSWORD_CHANGE_FAILED" xml:space="preserve">
     <value>Error al cambiar la contraseña</value>
   </data>
+  <data name="ERROR_PASSWORD_CHANGE_NOT_REQUIRED" xml:space="preserve">
+    <value>El usuario no necesita cambiar la contraseña</value>
+  </data>
   <data name="ERROR_INSUFFICIENT_PERMISSIONS" xml:space="preserve">
     <value>Permisos insuficientes. Requerido: {0}</value>
   </data>

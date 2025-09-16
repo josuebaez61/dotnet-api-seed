@@ -36,7 +36,8 @@ namespace CleanArchitecture.Application.Features.Users.Queries.GetUserById
         CreatedAt = user.CreatedAt,
         UpdatedAt = user.UpdatedAt,
         IsActive = user.IsActive,
-        EmailConfirmed = user.EmailConfirmed
+        EmailConfirmed = user.EmailConfirmed,
+        MustChangePassword = user.MustChangePassword
       };
     }
   }

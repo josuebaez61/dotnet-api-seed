@@ -63,12 +63,6 @@ namespace CleanArchitecture.Application.Common.Services
         throw new AccountDeactivatedError(user.Id.ToString());
       }
 
-      // Check if user must change password on first login
-      if (user.MustChangePassword)
-      {
-        throw new MustChangePasswordError(user.Id.ToString());
-      }
-
       var token = await GenerateJwtTokenAsync(user);
       var refreshToken = GenerateRefreshToken();
 

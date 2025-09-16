@@ -152,14 +152,20 @@ namespace CleanArchitecture.API.Controllers
       return Ok(result);
     }
 
-    [HttpPost("change-first-time-password/{userId}")]
+    [HttpPost("change-first-time-password")]
+    [Authorize]
     public async Task<ActionResult<ApiResponse<AuthResponseDto>>> ChangeFirstTimePassword(
-        [FromRoute] Guid userId,
         [FromBody] FirstTimePasswordChangeRequestDto request)
     {
+      var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userIdGuid))
+      {
+        return Unauthorized(ApiResponse.ErrorResponse("Invalid user token"));
+      }
+
       var command = new ChangeFirstTimePasswordCommand
       {
-        UserId = userId,
+        UserId = userIdGuid,
         Request = request
       };
       var result = await _mediator.Send(command);

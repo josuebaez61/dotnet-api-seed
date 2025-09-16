@@ -62,7 +62,7 @@ namespace CleanArchitecture.API.Middleware
       else if (exception is ArgumentException || exception is ArgumentNullException)
       {
         apiResponse = ApiResponse.ErrorResponse(
-            GetLocalizedMessage(context, "ValidationFailed"),
+            GetLocalizedMessage(context, "VALIDATION_FAILED"),
             errorCode: "VALIDATION_ERROR"
         );
         response.StatusCode = (int)HttpStatusCode.BadRequest;
@@ -70,7 +70,7 @@ namespace CleanArchitecture.API.Middleware
       else
       {
         apiResponse = ApiResponse.ErrorResponse(
-            GetLocalizedMessage(context, "InternalServerError"),
+            GetLocalizedMessage(context, "INTERNAL_SERVER_ERROR"),
             errorCode: "INTERNAL_SERVER_ERROR"
         );
         response.StatusCode = (int)HttpStatusCode.InternalServerError;

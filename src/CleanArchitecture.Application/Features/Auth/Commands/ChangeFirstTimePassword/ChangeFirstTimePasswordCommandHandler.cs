@@ -42,14 +42,7 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.ChangeFirstTimePa
       // Verify the user must change password
       if (!user.MustChangePassword)
       {
-        throw new InvalidOperationException("User does not need to change password");
-      }
-
-      // Verify the temporary password
-      var passwordCheck = await _signInManager.CheckPasswordSignInAsync(user, request.Request.TemporaryPassword, false);
-      if (!passwordCheck.Succeeded)
-      {
-        throw new InvalidCredentialsError();
+        throw new PasswordChangeNotRequiredError(request.UserId.ToString());
       }
 
       // Change the password

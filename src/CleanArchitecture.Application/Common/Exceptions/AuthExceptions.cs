@@ -105,4 +105,12 @@ namespace CleanArchitecture.Application.Common.Exceptions
     {
     }
   }
+
+  public class PasswordChangeNotRequiredError : ApplicationException
+  {
+    public PasswordChangeNotRequiredError(string userId)
+        : base("PASSWORD_CHANGE_NOT_REQUIRED", $"User does not need to change password", new { UserId = userId })
+    {
+    }
+  }
 }
