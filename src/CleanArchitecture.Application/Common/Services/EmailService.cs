@@ -75,7 +75,7 @@ namespace CleanArchitecture.Application.Common.Services
         {
             var culture = _localizationService.GetCurrentCulture();
             var frontendUrl = _configuration["FrontendSettings:BaseUrl"] ?? "http://localhost:4200";
-            var resetLink = $"{frontendUrl}/reset-password?code={resetCode}";
+            var resetLink = $"{frontendUrl}/auth/reset-password?code={resetCode}";
 
             var parameters = new Dictionary<string, object>
             {
@@ -121,7 +121,7 @@ namespace CleanArchitecture.Application.Common.Services
         {
             var culture = _localizationService.GetCurrentCulture();
             var frontendUrl = _configuration["FrontendSettings:BaseUrl"] ?? "http://localhost:4200";
-            var verificationLink = $"{frontendUrl}/confirm-email?code={verificationCode}";
+            var verificationLink = $"{frontendUrl}/auth/confirm-email?code={verificationCode}";
 
             var parameters = new Dictionary<string, object>
             {
