@@ -8,6 +8,7 @@ namespace CleanArchitecture.Application.Common.Services
   {
     private static readonly Dictionary<string, Dictionary<string, string>> _cache = new();
     private readonly string _culture;
+    private readonly IHttpContextAccessor? _httpContextAccessor;
 
     public LocalizationService()
     {
@@ -21,6 +22,7 @@ namespace CleanArchitecture.Application.Common.Services
 
     public LocalizationService(IHttpContextAccessor httpContextAccessor)
     {
+      _httpContextAccessor = httpContextAccessor;
       _culture = GetCurrentCulture(httpContextAccessor.HttpContext);
     }
 
@@ -185,6 +187,11 @@ namespace CleanArchitecture.Application.Common.Services
       }
 
       return "en"; // Default to English
+    }
+
+    public string GetCurrentCulture()
+    {
+      return GetCurrentCulture(_httpContextAccessor.HttpContext);
     }
   }
 }

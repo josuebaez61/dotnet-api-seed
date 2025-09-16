@@ -24,4 +24,20 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Common\Templates\Email\Base\email-template.html" />
+    <EmbeddedResource Include="Common\Templates\Email\PasswordReset\en\password-reset.html" />
+    <EmbeddedResource Include="Common\Templates\Email\PasswordReset\es\password-reset.html" />
+    <EmbeddedResource Include="Common\Templates\Email\Welcome\en\welcome.html" />
+    <EmbeddedResource Include="Common\Templates\Email\Welcome\es\welcome.html" />
+    <EmbeddedResource Include="Common\Templates\Email\PasswordChanged\en\password-changed.html" />
+    <EmbeddedResource Include="Common\Templates\Email\PasswordChanged\es\password-changed.html" />
+    <EmbeddedResource Include="Common\Templates\Email\EmailChangeVerification\en\email-change-verification.html" />
+    <EmbeddedResource Include="Common\Templates\Email\EmailChangeVerification\es\email-change-verification.html" />
+    <EmbeddedResource Include="Common\Templates\Email\EmailChangeConfirmation\en\email-change-confirmation.html" />
+    <EmbeddedResource Include="Common\Templates\Email\EmailChangeConfirmation\es\email-change-confirmation.html" />
+    <EmbeddedResource Include="Common\Templates\Email\TemporaryPassword\en\temporary-password.html" />
+    <EmbeddedResource Include="Common\Templates\Email\TemporaryPassword\es\temporary-password.html" />
+  </ItemGroup>
+
 </Project>

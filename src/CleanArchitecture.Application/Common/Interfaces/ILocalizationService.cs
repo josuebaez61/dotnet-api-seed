@@ -7,5 +7,6 @@ namespace CleanArchitecture.Application.Common.Interfaces
     string GetSubjectMessage(string key, params object[] args);
     string GetErrorMessage(string key, params object[] args);
     string GetValidationMessage(string key, params object[] args);
+    string GetCurrentCulture();
   }
 }

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="{{Culture}}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{Title}}</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f4f4f4;
+      }
+      .email-container {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px 20px;
+        text-align: center;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 300;
+      }
+      .content {
+        padding: 30px 20px;
+      }
+      .content h2 {
+        color: #667eea;
+        margin-top: 0;
+        font-size: 20px;
+      }
+      .content p {
+        margin-bottom: 15px;
+        font-size: 16px;
+      }
+      .button {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 12px 30px;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        margin: 20px 0;
+        transition: transform 0.2s;
+      }
+      .button:hover {
+        transform: translateY(-2px);
+      }
+      .code {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 4px;
+        padding: 15px;
+        font-family: "Courier New", monospace;
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+        color: #667eea;
+        margin: 20px 0;
+        letter-spacing: 2px;
+      }
+      .footer {
+        background-color: #f8f9fa;
+        padding: 20px;
+        text-align: center;
+        border-top: 1px solid #e9ecef;
+        color: #6c757d;
+        font-size: 14px;
+      }
+      .footer p {
+        margin: 5px 0;
+      }
+      .warning {
+        background-color: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-radius: 4px;
+        padding: 15px;
+        margin: 20px 0;
+        color: #856404;
+      }
+      .info {
+        background-color: #d1ecf1;
+        border: 1px solid #bee5eb;
+        border-radius: 4px;
+        padding: 15px;
+        margin: 20px 0;
+        color: #0c5460;
+      }
+      @media (max-width: 600px) {
+        body {
+          padding: 10px;
+        }
+        .header,
+        .content,
+        .footer {
+          padding: 20px 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-container">
+      <div class="header">
+        <h1>{{HeaderTitle}}</h1>
+      </div>
+      <div class="content">{{Content}}</div>
+      <div class="footer">
+        <p><strong>{{CompanyName}}</strong></p>
+        <p>{{FooterMessage}}</p>
+        <p>{{SupportEmail}}</p>
+      </div>
+    </div>
+  </body>
+</html>
