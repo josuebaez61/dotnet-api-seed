@@ -349,9 +349,8 @@ namespace CleanArchitecture.Application.Common.Services
 
     public async Task<string> GeneratePasswordResetCodeAsync(Guid userId)
     {
-      // Generar código de 6 dígitos
-      var random = new Random();
-      var code = random.Next(100000, 999999).ToString();
+      // Generar código string aleatorio (similar al de confirmación de email)
+      var code = Guid.NewGuid().ToString("N")[..16]; // 16 caracteres alfanuméricos
 
       var resetCode = new PasswordResetCode
       {

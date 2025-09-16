@@ -74,15 +74,18 @@ namespace CleanArchitecture.Application.Common.Services
         public async Task SendPasswordResetEmailAsync(string to, string userName, string resetCode)
         {
             var culture = _localizationService.GetCurrentCulture();
+            var frontendUrl = "http://localhost:4200"; // TODO: Make this configurable
+            var resetLink = $"{frontendUrl}/reset-password?code={resetCode}";
+            
             var parameters = new Dictionary<string, object>
             {
                 ["UserName"] = userName,
-                ["ResetCode"] = resetCode
+                ["ResetLink"] = resetLink
             };
-            
+
             var body = await _emailTemplateService.RenderEmailAsync("PasswordReset", culture, parameters);
             var subject = _localizationService.GetSubjectMessage("PASSWORD_RESET");
-            
+
             await SendEmailAsync(to, subject, body);
         }
 
@@ -93,10 +96,10 @@ namespace CleanArchitecture.Application.Common.Services
             {
                 ["UserName"] = userName
             };
-            
+
             var body = await _emailTemplateService.RenderEmailAsync("Welcome", culture, parameters);
             var subject = _localizationService.GetSubjectMessage("WELCOME");
-            
+
             await SendEmailAsync(to, subject, body);
         }
 
@@ -107,282 +110,11 @@ namespace CleanArchitecture.Application.Common.Services
             {
                 ["UserName"] = userName
             };
-            
+
             var body = await _emailTemplateService.RenderEmailAsync("PasswordChanged", culture, parameters);
             var subject = _localizationService.GetSubjectMessage("PASSWORD_CHANGED");
-            
+
             await SendEmailAsync(to, subject, body);
-        }
-
-        private string GetPasswordResetEmailTemplate(string userName, string resetCode)
-        {
-            return $@"
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='utf-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Restablecer Contraseña</title>
-    <style>
-        body {{
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }}
-        .container {{
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        }}
-        .header {{
-            text-align: center;
-            margin-bottom: 30px;
-        }}
-        .logo {{
-            font-size: 24px;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }}
-        .code {{
-            background-color: #3498db;
-            color: white;
-            padding: 15px 30px;
-            font-size: 24px;
-            font-weight: bold;
-            text-align: center;
-            border-radius: 5px;
-            margin: 20px 0;
-            letter-spacing: 3px;
-        }}
-        .footer {{
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            font-size: 12px;
-            color: #666;
-            text-align: center;
-        }}
-        .warning {{
-            background-color: #fff3cd;
-            border: 1px solid #ffeaa7;
-            color: #856404;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 20px 0;
-        }}
-    </style>
-</head>
-<body>
-    <div class='container'>
-        <div class='header'>
-            <div class='logo'>Clean Architecture</div>
-            <h2>Restablecer Contraseña</h2>
-        </div>
-        
-        <p>Hola <strong>{userName}</strong>,</p>
-        
-        <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta. Utiliza el siguiente código para continuar:</p>
-        
-        <div class='code'>{resetCode}</div>
-        
-        <div class='warning'>
-            <strong>Importante:</strong> Este código expirará en 15 minutos por motivos de seguridad.
-        </div>
-        
-        <p>Si no solicitaste este cambio, puedes ignorar este correo electrónico.</p>
-        
-        <div class='footer'>
-            <p>Este es un correo automático, por favor no respondas a este mensaje.</p>
-            <p>&copy; 2024 Clean Architecture. Todos los derechos reservados.</p>
-        </div>
-    </div>
-</body>
-</html>";
-        }
-
-        private string GetWelcomeEmailTemplate(string userName)
-        {
-            return $@"
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='utf-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Bienvenido</title>
-    <style>
-        body {{
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }}
-        .container {{
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        }}
-        .header {{
-            text-align: center;
-            margin-bottom: 30px;
-        }}
-        .logo {{
-            font-size: 24px;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }}
-        .welcome {{
-            background-color: #27ae60;
-            color: white;
-            padding: 20px;
-            border-radius: 5px;
-            text-align: center;
-            margin: 20px 0;
-        }}
-        .footer {{
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            font-size: 12px;
-            color: #666;
-            text-align: center;
-        }}
-    </style>
-</head>
-<body>
-    <div class='container'>
-        <div class='header'>
-            <div class='logo'>Clean Architecture</div>
-        </div>
-        
-        <div class='welcome'>
-            <h2>¡Bienvenido a Clean Architecture!</h2>
-        </div>
-        
-        <p>Hola <strong>{userName}</strong>,</p>
-        
-        <p>¡Gracias por registrarte en nuestra plataforma! Tu cuenta ha sido creada exitosamente.</p>
-        
-        <p>Ahora puedes:</p>
-        <ul>
-            <li>Iniciar sesión con tus credenciales</li>
-            <li>Explorar todas las funcionalidades disponibles</li>
-            <li>Personalizar tu perfil</li>
-        </ul>
-        
-        <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
-        
-        <div class='footer'>
-            <p>Este es un correo automático, por favor no respondas a este mensaje.</p>
-            <p>&copy; 2024 Clean Architecture. Todos los derechos reservados.</p>
-        </div>
-    </div>
-</body>
-</html>";
-        }
-
-        private string GetPasswordChangedEmailTemplate(string userName)
-        {
-            return $@"
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='utf-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Contraseña Cambiada</title>
-    <style>
-        body {{
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }}
-        .container {{
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        }}
-        .header {{
-            text-align: center;
-            margin-bottom: 30px;
-        }}
-        .logo {{
-            font-size: 24px;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }}
-        .success {{
-            background-color: #27ae60;
-            color: white;
-            padding: 20px;
-            border-radius: 5px;
-            text-align: center;
-            margin: 20px 0;
-        }}
-        .warning {{
-            background-color: #e74c3c;
-            color: white;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 20px 0;
-        }}
-        .footer {{
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            font-size: 12px;
-            color: #666;
-            text-align: center;
-        }}
-    </style>
-</head>
-<body>
-    <div class='container'>
-        <div class='header'>
-            <div class='logo'>Clean Architecture</div>
-        </div>
-        
-        <div class='success'>
-            <h2>Contraseña Actualizada</h2>
-        </div>
-        
-        <p>Hola <strong>{userName}</strong>,</p>
-        
-        <p>Tu contraseña ha sido cambiada exitosamente.</p>
-        
-        <div class='warning'>
-            <strong>Importante:</strong> Si no realizaste este cambio, contacta inmediatamente con nuestro equipo de soporte.
-        </div>
-        
-        <p>Para tu seguridad, te recomendamos:</p>
-        <ul>
-            <li>No compartir tu contraseña con nadie</li>
-            <li>Usar una contraseña única para esta cuenta</li>
-            <li>Cambiar tu contraseña regularmente</li>
-        </ul>
-        
-        <div class='footer'>
-            <p>Este es un correo automático, por favor no respondas a este mensaje.</p>
-            <p>&copy; 2024 Clean Architecture. Todos los derechos reservados.</p>
-        </div>
-    </div>
-</body>
-</html>";
         }
 
         public async Task SendEmailChangeVerificationEmailAsync(string to, string userName, string verificationCode)
@@ -393,10 +125,10 @@ namespace CleanArchitecture.Application.Common.Services
                 ["UserName"] = userName,
                 ["VerificationCode"] = verificationCode
             };
-            
+
             var body = await _emailTemplateService.RenderEmailAsync("EmailChangeVerification", culture, parameters);
             var subject = _localizationService.GetSubjectMessage("EMAIL_CHANGE_VERIFICATION");
-            
+
             await SendEmailAsync(to, subject, body);
         }
 
@@ -408,225 +140,12 @@ namespace CleanArchitecture.Application.Common.Services
                 ["UserName"] = userName,
                 ["OldEmail"] = oldEmail
             };
-            
+
             var body = await _emailTemplateService.RenderEmailAsync("EmailChangeConfirmation", culture, parameters);
             var subject = _localizationService.GetSubjectMessage("EMAIL_CHANGE_CONFIRMATION");
-            
+
             await SendEmailAsync(to, subject, body);
         }
-
-        private string GetEmailChangeVerificationEmailTemplate(string userName, string verificationCode)
-        {
-            var frontendUrl = "http://localhost:4200"; // TODO: Make this configurable
-            var verificationUrl = $"{frontendUrl}/auth/confirm-email?code={verificationCode}";
-
-            return $@"
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='utf-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Verificar Cambio de Email</title>
-    <style>
-        body {{
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }}
-        .container {{
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        }}
-        .header {{
-            text-align: center;
-            margin-bottom: 30px;
-        }}
-        .logo {{
-            font-size: 24px;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }}
-        .button {{
-            display: inline-block;
-            background-color: #3498db;
-            color: white;
-            padding: 15px 30px;
-            text-decoration: none;
-            border-radius: 5px;
-            margin: 20px 0;
-            font-weight: bold;
-        }}
-        .button:hover {{
-            background-color: #2980b9;
-        }}
-        .footer {{
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            font-size: 12px;
-            color: #666;
-            text-align: center;
-        }}
-        .warning {{
-            background-color: #fff3cd;
-            border: 1px solid #ffeaa7;
-            color: #856404;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 20px 0;
-        }}
-        .code {{
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            padding: 10px;
-            border-radius: 5px;
-            font-family: monospace;
-            word-break: break-all;
-            margin: 10px 0;
-        }}
-    </style>
-</head>
-<body>
-    <div class='container'>
-        <div class='header'>
-            <div class='logo'>Clean Architecture</div>
-            <h2>Verificar Cambio de Email</h2>
-        </div>
-        
-        <p>Hola <strong>{userName}</strong>,</p>
-        
-        <p>Hemos recibido una solicitud para cambiar tu dirección de correo electrónico. Para completar este cambio, haz clic en el siguiente enlace:</p>
-        
-        <div style='text-align: center;'>
-            <a href='{verificationUrl}' class='button'>Verificar Cambio de Email</a>
-        </div>
-        
-        <p>Si el botón no funciona, copia y pega la siguiente URL en tu navegador:</p>
-        <div class='code'>{verificationUrl}</div>
-        
-        <p>O puedes usar este código de verificación directamente en la aplicación:</p>
-        <div class='code'>{verificationCode}</div>
-        
-        <div class='warning'>
-            <strong>Importante:</strong> Este enlace expirará en 24 horas por motivos de seguridad.
-        </div>
-        
-        <p>Si no solicitaste este cambio, puedes ignorar este correo electrónico.</p>
-        
-        <div class='footer'>
-            <p>Este es un correo automático, por favor no respondas a este mensaje.</p>
-            <p>&copy; 2024 Clean Architecture. Todos los derechos reservados.</p>
-        </div>
-    </div>
-</body>
-</html>";
-        }
-
-        private string GetEmailChangeConfirmationEmailTemplate(string userName, string oldEmail)
-        {
-            return $@"
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='utf-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Email Cambiado Exitosamente</title>
-    <style>
-        body {{
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }}
-        .container {{
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        }}
-        .header {{
-            text-align: center;
-            margin-bottom: 30px;
-        }}
-        .logo {{
-            font-size: 24px;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }}
-        .success {{
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-            padding: 20px;
-            border-radius: 5px;
-            text-align: center;
-            margin: 20px 0;
-        }}
-        .footer {{
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            font-size: 12px;
-            color: #666;
-            text-align: center;
-        }}
-        .warning {{
-            background-color: #e74c3c;
-            color: white;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 20px 0;
-        }}
-    </style>
-</head>
-<body>
-    <div class='container'>
-        <div class='header'>
-            <div class='logo'>Clean Architecture</div>
-        </div>
-        
-        <div class='success'>
-            <h2>✅ Email Actualizado Exitosamente</h2>
-        </div>
-        
-        <p>Hola <strong>{userName}</strong>,</p>
-        
-        <p>Tu dirección de correo electrónico ha sido cambiada exitosamente.</p>
-        
-        <p><strong>Email anterior:</strong> {oldEmail}</p>
-        <p><strong>Email actual:</strong> {userName}</p>
-        
-        <div class='warning'>
-            <strong>Importante:</strong> Si no realizaste este cambio, contacta inmediatamente con nuestro equipo de soporte.
-        </div>
-        
-        <p>Ahora puedes usar tu nueva dirección de correo electrónico para:</p>
-        <ul>
-            <li>Iniciar sesión en tu cuenta</li>
-            <li>Recibir notificaciones importantes</li>
-            <li>Recuperar tu contraseña si es necesario</li>
-        </ul>
-        
-        <div class='footer'>
-            <p>Este es un correo automático, por favor no respondas a este mensaje.</p>
-            <p>&copy; 2024 Clean Architecture. Todos los derechos reservados.</p>
-        </div>
-    </div>
-</body>
-</html>";
-        }
-
         public async Task SendTemporaryPasswordEmailAsync(string to, string userName, string temporaryPassword)
         {
             var culture = _localizationService.GetCurrentCulture();
@@ -635,123 +154,11 @@ namespace CleanArchitecture.Application.Common.Services
                 ["UserName"] = userName,
                 ["TemporaryPassword"] = temporaryPassword
             };
-            
+
             var body = await _emailTemplateService.RenderEmailAsync("TemporaryPassword", culture, parameters);
             var subject = _localizationService.GetSubjectMessage("TEMPORARY_PASSWORD");
-            
-            await SendEmailAsync(to, subject, body);
-        }
 
-        private string GetTemporaryPasswordEmailTemplate(string userName, string temporaryPassword)
-        {
-            return $@"
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='utf-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Contraseña Temporal</title>
-    <style>
-        body {{
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }}
-        .container {{
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        }}
-        .header {{
-            text-align: center;
-            margin-bottom: 30px;
-        }}
-        .logo {{
-            font-size: 24px;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }}
-        .password {{
-            background-color: #3498db;
-            color: white;
-            padding: 15px 30px;
-            font-size: 18px;
-            font-weight: bold;
-            text-align: center;
-            border-radius: 5px;
-            margin: 20px 0;
-            letter-spacing: 2px;
-            font-family: monospace;
-        }}
-        .footer {{
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            font-size: 12px;
-            color: #666;
-            text-align: center;
-        }}
-        .warning {{
-            background-color: #fff3cd;
-            border: 1px solid #ffeaa7;
-            color: #856404;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 20px 0;
-        }}
-        .success {{
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 20px 0;
-        }}
-    </style>
-</head>
-<body>
-    <div class='container'>
-        <div class='header'>
-            <div class='logo'>Clean Architecture</div>
-            <h2>Cuenta Creada - Contraseña Temporal</h2>
-        </div>
-        
-        <p>Hola <strong>{userName}</strong>,</p>
-        
-        <div class='success'>
-            <strong>¡Bienvenido!</strong> Tu cuenta ha sido creada exitosamente.
-        </div>
-        
-        <p>Se ha generado una contraseña temporal para tu cuenta. Utiliza esta contraseña para iniciar sesión:</p>
-        
-        <div class='password'>{temporaryPassword}</div>
-        
-        <div class='warning'>
-            <strong>Importante:</strong> Por seguridad, deberás cambiar esta contraseña en tu primer inicio de sesión.
-        </div>
-        
-        <p>Instrucciones:</p>
-        <ol>
-            <li>Inicia sesión con tu email y la contraseña temporal</li>
-            <li>El sistema te pedirá cambiar la contraseña</li>
-            <li>Establece una nueva contraseña segura</li>
-        </ol>
-        
-        <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
-        
-        <div class='footer'>
-            <p>Este es un correo automático, por favor no respondas a este mensaje.</p>
-            <p>&copy; 2024 Clean Architecture. Todos los derechos reservados.</p>
-        </div>
-    </div>
-</body>
-</html>";
+            await SendEmailAsync(to, subject, body);
         }
     }
 }
