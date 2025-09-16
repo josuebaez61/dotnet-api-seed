@@ -60,26 +60,134 @@ Configure in `appsettings.json`:
     "SmtpPassword": "your-app-password",
     "FromEmail": "noreply@cleanarchitecture.com",
     "FromName": "Clean Architecture"
+  },
+  "FrontendSettings": {
+    "BaseUrl": "http://localhost:4200"
   }
 }
 ```
 
+### Frontend URL Configuration
+
+The system now supports configurable frontend URLs for email links:
+
+#### Development
+```json
+{
+  "FrontendSettings": {
+    "BaseUrl": "http://localhost:4200"
+  }
+}
+```
+
+#### Production
+```json
+{
+  "FrontendSettings": {
+    "BaseUrl": "https://yourapp.com"
+  }
+}
+```
+
+#### Docker Environment
+```json
+{
+  "FrontendSettings": {
+    "BaseUrl": "http://frontend:4200"
+  }
+}
+```
+
+#### Environment Variables
+```bash
+export FrontendSettings__BaseUrl="https://staging.yourapp.com"
+```
+
+#### Generated Links
+- **Password Reset**: `{BaseUrl}/auth/reset-password?code={CODE}`
+- **Email Verification**: `{BaseUrl}/auth/confirm-email?code={CODE}`
+
 ### Email Types
 
 1. **Welcome Email** - Upon registration
-2. **Password Reset** - With 6-digit code
+2. **Password Reset** - With reset link (string code)
 3. **Password Changed** - Change confirmation
 4. **Email Change Verification** - With verification link
 5. **Email Change Confirmation** - Change confirmation
+6. **Temporary Password** - For admin-created accounts
 
 ### HTML Templates
 
-Emails include:
+The email system now uses external HTML templates with the following structure:
 
+#### Base Template
+- **File**: `email-template.html` - Common wrapper with styles, header, and footer
+- **Features**: Responsive design, corporate branding, consistent styling
+
+#### Specific Templates
+Each email type has its own template per language:
+- **Password Reset**: `password-reset.html` (en/es)
+- **Welcome**: `welcome.html` (en/es)
+- **Password Changed**: `password-changed.html` (en/es)
+- **Email Change Verification**: `email-change-verification.html` (en/es)
+- **Email Change Confirmation**: `email-change-confirmation.html` (en/es)
+- **Temporary Password**: `temporary-password.html` (en/es)
+
+#### Template Features
 - **Responsive design** with modern CSS
 - **Corporate colors** (blue, green, red depending on type)
 - **Security information** and warnings
 - **Footer** with company information
+- **Parameter substitution** for dynamic content
+- **Multi-language support** with separate templates
+
+### Email Template Service
+
+The system uses a dedicated `IEmailTemplateService` for rendering HTML emails:
+
+#### Template Structure
+```
+Common/Templates/Email/
+├── Base/
+│   └── email-template.html          # Base template with styles
+├── PasswordReset/
+│   ├── en/password-reset.html       # English template
+│   └── es/password-reset.html       # Spanish template
+├── Welcome/
+│   ├── en/welcome.html
+│   └── es/welcome.html
+└── ... (other email types)
+```
+
+#### Template Parameters
+Templates support dynamic parameter substitution:
+
+```csharp
+var parameters = new Dictionary<string, object>
+{
+    ["UserName"] = "John Doe",
+    ["ResetLink"] = "https://app.com/auth/reset-password?code=ABC123",
+    ["VerificationLink"] = "https://app.com/auth/confirm-email?code=XYZ789"
+};
+```
+
+#### Template Rendering
+```csharp
+// The service automatically combines base template with specific content
+var html = await _emailTemplateService.RenderEmailAsync("PasswordReset", "en", parameters);
+```
+
+#### Embedded Resources
+All templates are configured as embedded resources in `CleanArchitecture.Application.csproj`:
+
+```xml
+<ItemGroup>
+  <EmbeddedResource Include="Common\Templates\Email\Base\email-template.html" />
+  <EmbeddedResource Include="Common\Templates\Email\PasswordReset\en\password-reset.html" />
+  <EmbeddedResource Include="Common\Templates\Email\PasswordReset\es\password-reset.html" />
+  <!-- ... other templates ... -->
+</ItemGroup>
+```
 
 ### Usage Example
 
@@ -87,28 +195,35 @@ Emails include:
 // Send welcome email
 await _emailService.SendWelcomeEmailAsync(user.Email, user.UserName);
 
-// Send reset code
+// Send password reset link
 await _emailService.SendPasswordResetEmailAsync(user.Email, user.UserName, resetCode);
+
+// Send email change verification link
+await _emailService.SendEmailChangeVerificationEmailAsync(user.Email, user.UserName, verificationCode);
 
 // Send change confirmation
 await _emailService.SendPasswordChangedEmailAsync(user.Email, user.UserName);
+
+// Send temporary password
+await _emailService.SendTemporaryPasswordEmailAsync(user.Email, user.UserName, temporaryPassword);
 ```
 
-## 🔐 Password Reset with Codes
+## 🔐 Password Reset with Links
 
 ### Reset Flow
 
 1. **Request Reset**: `POST /api/v1/auth/request-password-reset`
-2. **Receive Code**: Email with 6-digit code (expires in 15 minutes)
+2. **Receive Link**: Email with reset link (expires in 15 minutes)
 3. **Reset Password**: `POST /api/v1/auth/reset-password`
 
 ### Security Features
 
-- **6-digit codes** randomly generated
+- **String-based codes** (16-32 characters) randomly generated
 - **15-minute expiration** for security
 - **Single use** - codes are marked as used
 - **Automatic cleanup** of expired codes
 - **No email existence revelation** (for security)
+- **Frontend link integration** with configurable URLs
 
 ### Endpoints
 
@@ -144,11 +259,12 @@ POST /api/v1/auth/reset-password
 Content-Type: application/json
 
 {
-  "email": "user@example.com",
-  "code": "123456",
+  "code": "ABC123DEF456GHI789",
   "newPassword": "NewPassword123!"
 }
 ```
+
+**Note**: The `email` field has been removed as the user is identified by the reset code.
 
 **Response:**
 
