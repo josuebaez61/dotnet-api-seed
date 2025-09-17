@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.Common.Models;
 using CleanArchitecture.Application.DTOs;
@@ -16,12 +17,17 @@ namespace CleanArchitecture.Application.Features.Users.Queries.GetUsersPaginated
     private readonly IApplicationDbContext _context;
     private readonly IPaginationService _paginationService;
 
+    private readonly IMapper _mapper;
+
     public GetUsersPaginatedQueryHandler(
         IApplicationDbContext context,
-        IPaginationService paginationService)
+        IPaginationService paginationService,
+        IMapper mapper
+      )
     {
       _context = context;
       _paginationService = paginationService;
+      _mapper = mapper;
     }
 
     public async Task<PaginationResponse<UserDto>> Handle(
@@ -46,7 +52,13 @@ namespace CleanArchitecture.Application.Features.Users.Queries.GetUsersPaginated
         CreatedAt = user.CreatedAt,
         UpdatedAt = user.UpdatedAt,
         IsActive = user.IsActive,
-        EmailConfirmed = user.EmailConfirmed
+        EmailConfirmed = user.EmailConfirmed,
+        Roles = user.UserRoles.Select(ur => new RoleDto
+        {
+          Id = ur.Role.Id,
+          Name = ur.Role.Name!,
+          Description = ur.Role.Description,
+        }).ToList()
       });
 
       // Aplicar paginación

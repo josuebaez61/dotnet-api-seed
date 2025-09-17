@@ -56,6 +56,10 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.ChangeFirstTimePa
 
       // Clear the must change password flag
       user.MustChangePassword = false;
+
+      // User received temporary password via email, so email is confirmed
+      user.EmailConfirmed = true;
+
       await _userManager.UpdateAsync(user);
 
       // Send password changed confirmation email

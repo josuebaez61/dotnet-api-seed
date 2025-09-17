@@ -16,6 +16,7 @@ namespace CleanArchitecture.Application.DTOs
     public bool IsActive { get; set; }
     public bool EmailConfirmed { get; set; }
     public bool MustChangePassword { get; set; }
+    public List<RoleDto>? Roles { get; set; }
   }
 
   public class CreateUserDto

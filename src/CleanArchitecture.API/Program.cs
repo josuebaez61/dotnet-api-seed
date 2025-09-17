@@ -144,6 +144,9 @@ var localizationOptions = new RequestLocalizationOptions()
     .AddSupportedUICultures(supportedCultures);
 app.UseRequestLocalization(localizationOptions);
 
+// Add user timezone middleware (must be before exception handling)
+app.UseMiddleware<UserTimezoneMiddleware>();
+
 // Add exception handling middleware
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 

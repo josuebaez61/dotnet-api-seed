@@ -3,9 +3,11 @@ using System.Text.RegularExpressions;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Infrastructure.Data.Configurations;
+using CleanArchitecture.Infrastructure.Data.Converters;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CleanArchitecture.Infrastructure.Data
 {
@@ -14,7 +16,6 @@ namespace CleanArchitecture.Infrastructure.Data
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
-
 
     public DbSet<PasswordResetCode> PasswordResetCodes { get; set; }
     public DbSet<EmailVerificationCode> EmailVerificationCodes { get; set; }
@@ -28,99 +29,16 @@ namespace CleanArchitecture.Infrastructure.Data
     {
       base.OnModelCreating(builder);
 
-      // Apply snake_case naming convention to all entities
-      ApplySnakeCaseNaming(builder);
+      // Apply snake_case naming convention and UTC DateTime handling to all entities
+      ApplySnakeCaseNamingAndUtcDateTimeHandling(builder);
 
-      // Apply entity configurations
-      builder.ApplyConfiguration(new CountryConfiguration());
-      builder.ApplyConfiguration(new StateConfiguration());
-      builder.ApplyConfiguration(new CityConfiguration());
-      builder.ApplyConfiguration(new PermissionConfiguration());
-      builder.ApplyConfiguration(new RolePermissionConfiguration());
-      builder.ApplyConfiguration(new PasswordResetCodeConfiguration());
-      builder.ApplyConfiguration(new EmailVerificationCodeConfiguration());
-
-      // Configure User entity properties
-      builder.Entity<User>(entity =>
-      {
-        entity.Property(e => e.FirstName).HasMaxLength(100).IsRequired();
-        entity.Property(e => e.LastName).HasMaxLength(100).IsRequired();
-        entity.Property(e => e.ProfilePicture).HasMaxLength(500);
-        entity.Property(e => e.CreatedAt).IsRequired();
-        entity.Property(e => e.UpdatedAt);
-        entity.Property(e => e.IsActive).IsRequired();
-        entity.Property(e => e.MustChangePassword).IsRequired();
-      });
-
-      // Configure Role entity properties
-      builder.Entity<Role>(entity =>
-      {
-        entity.Property(e => e.Description).HasMaxLength(500);
-        entity.Property(e => e.CreatedAt).IsRequired();
-        entity.Property(e => e.UpdatedAt);
-      });
-
-      // Configure UserRole entity
-      builder.Entity<UserRole>(entity =>
-      {
-        entity.HasKey(e => new { e.UserId, e.RoleId });
-        entity.HasOne(e => e.User)
-                  .WithMany(e => e.UserRoles)
-                  .HasForeignKey(e => e.UserId)
-                  .OnDelete(DeleteBehavior.Cascade);
-        entity.HasOne(e => e.Role)
-                  .WithMany(e => e.UserRoles)
-                  .HasForeignKey(e => e.RoleId)
-                  .OnDelete(DeleteBehavior.Cascade);
-      });
-
-      // Configure UserClaim entity
-      builder.Entity<UserClaim>(entity =>
-      {
-        entity.HasOne(e => e.User)
-                  .WithMany(e => e.UserClaims)
-                  .HasForeignKey(e => e.UserId)
-                  .OnDelete(DeleteBehavior.Cascade);
-      });
-
-      // Configure UserLogin entity
-      builder.Entity<UserLogin>(entity =>
-      {
-        entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
-        entity.HasOne(e => e.User)
-                  .WithMany(e => e.UserLogins)
-                  .HasForeignKey(e => e.UserId)
-                  .OnDelete(DeleteBehavior.Cascade);
-      });
-
-      // Configure UserToken entity
-      builder.Entity<UserToken>(entity =>
-      {
-        entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
-        entity.HasOne(e => e.User)
-                  .WithMany(e => e.UserTokens)
-                  .HasForeignKey(e => e.UserId)
-                  .OnDelete(DeleteBehavior.Cascade);
-      });
-
-      // Configure RoleClaim entity
-      builder.Entity<RoleClaim>(entity =>
-      {
-        entity.HasOne(e => e.Role)
-                  .WithMany(e => e.RoleClaims)
-                  .HasForeignKey(e => e.RoleId)
-                  .OnDelete(DeleteBehavior.Cascade);
-      });
-
-
-
-
-
+      // Apply all entity configurations automatically
+      builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
       // Seed data logic moved to DatabaseInitializationService
     }
 
-    private void ApplySnakeCaseNaming(ModelBuilder builder)
+    private void ApplySnakeCaseNamingAndUtcDateTimeHandling(ModelBuilder builder)
     {
       foreach (var entity in builder.Model.GetEntityTypes())
       {
@@ -131,13 +49,33 @@ namespace CleanArchitecture.Infrastructure.Data
           entity.SetTableName(ToSnakeCase(tableName));
         }
 
-        // Set column names to snake_case
         foreach (var property in entity.GetProperties())
         {
+          // Set column names to snake_case
           var columnName = property.GetColumnName();
           if (!string.IsNullOrEmpty(columnName))
           {
             property.SetColumnName(ToSnakeCase(columnName));
+          }
+
+          // Handle DateTime properties - ensure UTC conversion
+          if (property.ClrType == typeof(DateTime))
+          {
+            property.SetValueConverter(new UtcDateTimeValueConverter());
+          }
+
+          if (property.ClrType == typeof(DateTime?))
+          {
+            property.SetValueConverter(new ValueConverter<DateTime?, DateTime?>(
+              v => v.HasValue ? (v.Value.Kind == DateTimeKind.Utc ? v.Value : v.Value.ToUniversalTime()) : v,
+              v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : v
+            ));
+          }
+
+          // Configure UpdatedAt to be updated on save
+          if (property.Name == "UpdatedAt")
+          {
+            property.SetAfterSaveBehavior(Microsoft.EntityFrameworkCore.Metadata.PropertySaveBehavior.Save);
           }
         }
 

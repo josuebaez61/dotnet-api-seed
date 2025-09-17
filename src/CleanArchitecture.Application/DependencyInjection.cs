@@ -36,8 +36,9 @@ namespace CleanArchitecture.Application
 
       services.AddScoped<ILocalizationService, LocalizationService>();
       services.AddScoped<IPaginationService, PaginationService>();
+      services.AddScoped<IUserTimezoneService, UserTimezoneService>();
 
-      // Add HttpContextAccessor for localization
+      // Add HttpContextAccessor for localization and timezone
       services.AddHttpContextAccessor();
 
       return services;
