@@ -31,6 +31,11 @@ namespace CleanArchitecture.Infrastructure.Data.Configurations
       builder.Property(e => e.MustChangePassword)
           .IsRequired();
 
+      builder.HasMany(e => e.UserRoles)
+          .WithOne(e => e.User)
+          .HasForeignKey(e => e.UserId)
+          .IsRequired();
+
       // Configure table name (already handled by snake_case convention)
       builder.ToTable("users");
     }

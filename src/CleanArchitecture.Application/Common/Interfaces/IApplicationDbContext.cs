@@ -7,6 +7,7 @@ namespace CleanArchitecture.Application.Common.Interfaces
   {
     DbSet<User> Users { get; }
     DbSet<Role> Roles { get; }
+    DbSet<UserRole> UserRoles { get; }
     DbSet<Permission> Permissions { get; }
     DbSet<RolePermission> RolePermissions { get; }
     DbSet<PasswordResetCode> PasswordResetCodes { get; }

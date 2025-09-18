@@ -96,6 +96,9 @@
   <data name="SUCCESS_TOKEN_REFRESHED" xml:space="preserve">
     <value>Token refreshed successfully</value>
   </data>
+  <data name="SUCCESS_USER_ROLES_UPDATED" xml:space="preserve">
+    <value>User roles updated successfully</value>
+  </data>
   
   <!-- Error Messages -->
   <data name="ERROR_USER_NOT_FOUND" xml:space="preserve">

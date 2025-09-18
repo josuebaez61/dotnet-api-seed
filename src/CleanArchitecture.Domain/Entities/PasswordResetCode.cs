@@ -11,6 +11,6 @@ namespace CleanArchitecture.Domain.Entities
     public DateTime? UsedAt { get; set; }
 
     // Navigation property
-    public User User { get; set; } = null!;
+    public virtual User User { get; set; } = null!;
   }
 }

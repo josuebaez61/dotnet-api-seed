@@ -27,7 +27,7 @@ namespace CleanArchitecture.API.Controllers
       _mediator = mediator;
     }
 
-    [HttpGet]
+    [HttpGet("all")]
     [Authorize(Policy = PermissionConstants.Roles.Read)]
     public async Task<ActionResult<ApiResponse<List<RoleDto>>>> GetAllRoles()
     {

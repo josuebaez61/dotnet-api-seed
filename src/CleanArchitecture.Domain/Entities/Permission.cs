@@ -11,5 +11,8 @@ namespace CleanArchitecture.Domain.Entities
     public string Module { get; set; } = string.Empty; // e.g., "UserManagement", "ProductManagement"
     public DateTime? LastModifiedAt { get; set; }
     public bool IsHierarchical { get; set; } = false; // Indicates if this is a hierarchical permission
+
+    // Navigation properties
+    public virtual ICollection<RolePermission> RolePermissions { get; set; } = new List<RolePermission>();
   }
 }

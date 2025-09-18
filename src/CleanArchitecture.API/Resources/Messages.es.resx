@@ -105,6 +105,9 @@
   <data name="SUCCESS_ROLE_PERMISSIONS_UPDATED" xml:space="preserve">
     <value>Permisos del rol actualizados exitosamente</value>
   </data>
+  <data name="SUCCESS_USER_ROLES_UPDATED" xml:space="preserve">
+    <value>Roles del usuario actualizados exitosamente</value>
+  </data>
   
   <!-- Error Messages -->
   <data name="ERROR_USER_NOT_FOUND" xml:space="preserve">

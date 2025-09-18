@@ -17,6 +17,16 @@ namespace CleanArchitecture.Infrastructure.Data.Configurations
 
       builder.Property(e => e.UpdatedAt);
 
+      builder.HasMany(e => e.UserRoles)
+          .WithOne(e => e.Role)
+          .HasForeignKey(e => e.RoleId)
+          .IsRequired();
+
+      builder.HasMany(e => e.RolePermissions)
+          .WithOne(e => e.Role)
+          .HasForeignKey(e => e.RoleId)
+          .IsRequired();
+
       // Configure table name (already handled by snake_case convention)
       builder.ToTable("roles");
     }

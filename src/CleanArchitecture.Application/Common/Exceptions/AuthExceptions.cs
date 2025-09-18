@@ -2,21 +2,6 @@ using System;
 
 namespace CleanArchitecture.Application.Common.Exceptions
 {
-  public class UserNotFoundError : ApplicationException
-  {
-    public UserNotFoundError(string emailOrUsername)
-        : base("USER_NOT_FOUND", $"User not found: {emailOrUsername}", new { EmailOrUsername = emailOrUsername })
-    {
-    }
-  }
-
-  public class UserNotFoundByIdError : ApplicationException
-  {
-    public UserNotFoundByIdError(Guid userId)
-        : base("USER_NOT_FOUND", $"User not found with ID: {userId}", new { UserId = userId })
-    {
-    }
-  }
 
   public class InvalidCredentialsError : ApplicationException
   {
@@ -26,21 +11,6 @@ namespace CleanArchitecture.Application.Common.Exceptions
     }
   }
 
-  public class AccountDeactivatedError : ApplicationException
-  {
-    public AccountDeactivatedError(string userId)
-        : base("ACCOUNT_DEACTIVATED", $"Account is deactivated for user: {userId}", new { UserId = userId })
-    {
-    }
-  }
-
-  public class UserAlreadyExistsError : ApplicationException
-  {
-    public UserAlreadyExistsError(string field, string value)
-        : base("USER_ALREADY_EXISTS", $"User already exists with {field}: {value}", new { Field = field, Value = value })
-    {
-    }
-  }
 
   public class InvalidPasswordError : ApplicationException
   {

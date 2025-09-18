@@ -19,6 +19,7 @@ namespace CleanArchitecture.Infrastructure.Data
 
     public DbSet<PasswordResetCode> PasswordResetCodes { get; set; }
     public DbSet<EmailVerificationCode> EmailVerificationCodes { get; set; }
+    public new DbSet<UserRole> UserRoles { get; set; }
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
     public DbSet<Country> Countries { get; set; }
