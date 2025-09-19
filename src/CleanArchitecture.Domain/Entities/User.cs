@@ -22,7 +22,6 @@ namespace CleanArchitecture.Domain.Entities
     public virtual ICollection<UserClaim> UserClaims { get; set; } = new List<UserClaim>();
     public virtual ICollection<UserLogin> UserLogins { get; set; } = new List<UserLogin>();
     public virtual ICollection<UserToken> UserTokens { get; set; } = new List<UserToken>();
-
   }
 
   public class Role : IdentityRole<Guid>

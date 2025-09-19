@@ -42,6 +42,7 @@ namespace CleanArchitecture.Application.Features.Auth.Queries.GetAuthUser
 
       // user.Permissions = await _permissionService.GetUserPermissionsAsync(user.Id); ;
 
+
       var authUserDto = _mapper.Map<AuthUserDto>(user);
       return authUserDto;
     }

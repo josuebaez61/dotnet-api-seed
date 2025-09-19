@@ -32,6 +32,11 @@ namespace CleanArchitecture.Application.Common.Mappings
 
 
             CreateMap<User, AuthUserDto>()
+                .ForMember(dest => dest.Roles, opt => opt.MapFrom(src =>
+                    src.UserRoles
+                        .Where(ur => ur.Role != null)
+                        .Select(ur => ur.Role.Name)
+                        .ToList()))
                 .ForMember(dest => dest.Permissions, opt => opt.MapFrom(src =>
                     src.UserRoles
                         .Where(ur => ur.Role != null && ur.Role.RolePermissions != null)
@@ -39,11 +44,6 @@ namespace CleanArchitecture.Application.Common.Mappings
                         .Where(rp => rp.Permission != null)
                         .Select(rp => rp.Permission.Name)
                         .Distinct()
-                        .ToList()))
-                .ForMember(dest => dest.Roles, opt => opt.MapFrom(src =>
-                    src.UserRoles
-                        .Where(ur => ur.Role != null)
-                        .Select(ur => ur.Role.Name)
                         .ToList()));
 
 

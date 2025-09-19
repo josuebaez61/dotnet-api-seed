@@ -114,9 +114,21 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins(
+                "http://localhost:3000",    // React default
+                "http://localhost:3001",    // React alternative
+                "http://localhost:4200",    // Angular default
+                "http://localhost:5173",    // Vite default
+                "http://localhost:8080",    // Vue default
+                "https://localhost:3000",   // HTTPS variants
+                "https://localhost:3001",
+                "https://localhost:4200",
+                "https://localhost:5173",
+                "https://localhost:8080"
+              )
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials(); // Permite cookies y headers de auth
     });
 });
 

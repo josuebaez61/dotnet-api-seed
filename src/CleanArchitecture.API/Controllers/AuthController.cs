@@ -90,12 +90,12 @@ namespace CleanArchitecture.API.Controllers
 
     [HttpGet("me")]
     [Authorize]
-    public async Task<ActionResult<ApiResponse<UserDto>>> GetCurrentUser()
+    public async Task<ActionResult<ApiResponse<AuthUserDto>>> GetCurrentUser()
     {
       var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
       {
-        return Unauthorized(ApiResponse<UserDto>.ErrorResponse("Invalid user token"));
+        return Unauthorized(ApiResponse<AuthUserDto>.ErrorResponse("Invalid user token"));
       }
 
       var query = new GetAuthUserQuery { Id = userId };
@@ -103,10 +103,10 @@ namespace CleanArchitecture.API.Controllers
 
       if (result == null)
       {
-        return NotFound(ApiResponse<UserDto>.ErrorResponse("User not found"));
+        return NotFound(ApiResponse<AuthUserDto>.ErrorResponse("User not found"));
       }
 
-      return Ok(ApiResponse<UserDto>.SuccessResponse(result));
+      return Ok(ApiResponse<AuthUserDto>.SuccessResponse(result));
     }
 
     [HttpPost("request-password-reset")]
