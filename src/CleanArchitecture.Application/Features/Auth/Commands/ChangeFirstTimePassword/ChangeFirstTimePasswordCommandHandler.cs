@@ -8,10 +8,11 @@ using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Application.Features.Auth.Commands.ChangeFirstTimePassword
 {
-  public class ChangeFirstTimePasswordCommandHandler : IRequestHandler<ChangeFirstTimePasswordCommand, AuthResponseDto>
+  public class ChangeFirstTimePasswordCommandHandler : IRequestHandler<ChangeFirstTimePasswordCommand, AuthDataDto>
   {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
@@ -30,10 +31,18 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.ChangeFirstTimePa
       _emailService = emailService;
     }
 
-    public async Task<AuthResponseDto> Handle(ChangeFirstTimePasswordCommand request, CancellationToken cancellationToken)
+    public async Task<AuthDataDto> Handle(ChangeFirstTimePasswordCommand request, CancellationToken cancellationToken)
     {
       // Find user by ID
-      var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+      var user = await _userManager.Users
+          .Where(u => u.Id == request.UserId)
+          .Include(u => u.UserRoles)
+              .ThenInclude(ur => ur.Role)
+          .Include(u => u.UserRoles)
+              .ThenInclude(ur => ur.Role.RolePermissions)
+                  .ThenInclude(rp => rp.Permission)
+          .FirstOrDefaultAsync();
+
       if (user == null)
       {
         throw new UserNotFoundError(request.UserId.ToString());
@@ -67,7 +76,7 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.ChangeFirstTimePa
       await _emailService.SendPasswordChangedEmailAsync(user.Email!, userName);
 
       // Generate new auth response
-      return await _authService.GenerateAuthResponseAsync(user);
+      return await _authService.GenerateAuthDataAsync(user);
     }
   }
 }

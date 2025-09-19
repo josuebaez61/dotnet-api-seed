@@ -13,6 +13,7 @@ using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Domain.Common.Constants;
 using CleanArchitecture.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -47,9 +48,10 @@ namespace CleanArchitecture.Application.Common.Services
       _mapper = mapper;
     }
 
-    public async Task<AuthResponseDto> LoginAsync(LoginRequestDto request)
+    public async Task<AuthDataDto> LoginAsync(LoginRequestDto request)
     {
       var user = await GetUserByEmailOrUsernameAsync(request.EmailOrUsername);
+
       if (user == null)
       {
         throw new InvalidCredentialsError();
@@ -66,32 +68,10 @@ namespace CleanArchitecture.Application.Common.Services
         throw new AccountDeactivatedError(user.Id.ToString());
       }
 
-      var token = await GenerateJwtTokenAsync(user);
-      var refreshToken = GenerateRefreshToken();
-
-      // Store refresh token (in production, store in database)
-      _refreshTokens[refreshToken] = new RefreshTokenInfo
-      {
-        UserId = user.Id,
-        ExpiresAt = DateTime.UtcNow.AddDays(7)
-      };
-
-      var userPermissions = await _permissionService.GetUserPermissionsAsync(user.Id);
-
-      var authUserDto = _mapper.Map<AuthUserDto>(user);
-      authUserDto.Roles = (await _userManager.GetRolesAsync(user)).ToList();
-      authUserDto.Permissions = userPermissions.Select(p => p.Name).ToList();
-
-      return new AuthResponseDto
-      {
-        Token = token,
-        RefreshToken = refreshToken,
-        ExpiresAt = DateTime.UtcNow.AddHours(1),
-        User = authUserDto
-      };
+      return await GenerateAuthDataAsync(user);
     }
 
-    public async Task<AuthResponseDto> RegisterAsync(RegisterRequestDto request)
+    public async Task<AuthDataDto> RegisterAsync(RegisterRequestDto request)
     {
       var existingUser = await _userManager.FindByEmailAsync(request.Email);
       if (existingUser != null)
@@ -126,31 +106,10 @@ namespace CleanArchitecture.Application.Common.Services
       }
 
       // Generate tokens for the new user
-      var token = await GenerateJwtTokenAsync(user);
-      var refreshToken = GenerateRefreshToken();
-      _refreshTokens[refreshToken] = new RefreshTokenInfo
-      {
-        UserId = user.Id,
-        ExpiresAt = DateTime.UtcNow.AddDays(7)
-      };
-
-
-      var userPermissions = await _permissionService.GetUserPermissionsAsync(user.Id);
-
-      var authUserDto = _mapper.Map<AuthUserDto>(user);
-      authUserDto.Roles = (await _userManager.GetRolesAsync(user)).ToList();
-      authUserDto.Permissions = userPermissions.Select(p => p.Name).ToList();
-
-      return new AuthResponseDto
-      {
-        Token = token,
-        RefreshToken = refreshToken,
-        ExpiresAt = DateTime.UtcNow.AddHours(1),
-        User = authUserDto
-      };
+      return await GenerateAuthDataAsync(user);
     }
 
-    public async Task<AuthResponseDto> RefreshTokenAsync(string refreshToken)
+    public async Task<AuthDataDto> RefreshTokenAsync(string refreshToken)
     {
       if (!_refreshTokens.TryGetValue(refreshToken, out var tokenInfo))
       {
@@ -165,7 +124,15 @@ namespace CleanArchitecture.Application.Common.Services
 
       var userId = tokenInfo.UserId;
 
-      var user = await _userManager.FindByIdAsync(userId.ToString());
+      var user = await _userManager.Users
+          .Where(u => u.Id == userId)
+          .Include(u => u.UserRoles)
+              .ThenInclude(ur => ur.Role)
+          .Include(u => u.UserRoles)
+              .ThenInclude(ur => ur.Role.RolePermissions)
+                  .ThenInclude(rp => rp.Permission)
+          .FirstOrDefaultAsync();
+
       if (user == null || !user.IsActive)
       {
         throw new UserNotFoundError(userId.ToString());
@@ -175,27 +142,7 @@ namespace CleanArchitecture.Application.Common.Services
       _refreshTokens.Remove(refreshToken);
 
       // Generate new tokens
-      var newToken = await GenerateJwtTokenAsync(user);
-      var newRefreshToken = GenerateRefreshToken();
-      _refreshTokens[newRefreshToken] = new RefreshTokenInfo
-      {
-        UserId = user.Id,
-        ExpiresAt = DateTime.UtcNow.AddDays(7)
-      };
-
-      var userPermissions = await _permissionService.GetUserPermissionsAsync(user.Id);
-
-      var authUserDto = _mapper.Map<AuthUserDto>(user);
-      authUserDto.Roles = (await _userManager.GetRolesAsync(user)).ToList();
-      authUserDto.Permissions = userPermissions.Select(p => p.Name).ToList();
-
-      return new AuthResponseDto
-      {
-        Token = newToken,
-        RefreshToken = newRefreshToken,
-        ExpiresAt = DateTime.UtcNow.AddHours(1),
-        User = authUserDto
-      };
+      return await GenerateAuthDataAsync(user);
     }
 
     public async Task<bool> ChangePasswordAsync(Guid userId, ChangePasswordRequestDto request)
@@ -227,10 +174,14 @@ namespace CleanArchitecture.Application.Common.Services
 
     public async Task<User?> GetUserByEmailOrUsernameAsync(string emailOrUsername)
     {
-      var user = await _userManager.FindByEmailAsync(emailOrUsername);
-      if (user != null)
-        return user;
-      return await _userManager.FindByNameAsync(emailOrUsername);
+      return await _userManager.Users
+                .Where(u => u.NormalizedEmail == emailOrUsername.ToUpper() || u.UserName == emailOrUsername)
+                .Include(u => u.UserRoles)
+                    .ThenInclude(ur => ur.Role)
+                .Include(u => u.UserRoles)
+                    .ThenInclude(ur => ur.Role.RolePermissions)
+                        .ThenInclude(rp => rp.Permission)
+                .FirstOrDefaultAsync();
     }
 
     public async Task<string> GenerateJwtTokenAsync(User user)
@@ -288,7 +239,7 @@ namespace CleanArchitecture.Application.Common.Services
       return Convert.ToBase64String(randomNumber);
     }
 
-    public async Task<AuthResponseDto> GenerateAuthResponseAsync(User user)
+    public async Task<AuthDataDto> GenerateAuthDataAsync(User user)
     {
       var token = await GenerateJwtTokenAsync(user);
       var refreshToken = GenerateRefreshToken();
@@ -300,18 +251,12 @@ namespace CleanArchitecture.Application.Common.Services
         ExpiresAt = DateTime.UtcNow.AddDays(7)
       };
 
-      var userPermissions = await _permissionService.GetUserPermissionsAsync(user.Id);
-
-      var authUserDto = _mapper.Map<AuthUserDto>(user);
-      authUserDto.Roles = (await _userManager.GetRolesAsync(user)).ToList();
-      authUserDto.Permissions = userPermissions.Select(p => p.Name).ToList();
-
-      return new AuthResponseDto
+      return new AuthDataDto
       {
         Token = token,
         RefreshToken = refreshToken,
         ExpiresAt = DateTime.UtcNow.AddHours(1),
-        User = authUserDto
+        User = _mapper.Map<AuthUserDto>(user)
       };
     }
 

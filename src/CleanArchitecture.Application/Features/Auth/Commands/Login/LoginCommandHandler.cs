@@ -6,7 +6,7 @@ using MediatR;
 
 namespace CleanArchitecture.Application.Features.Auth.Commands.Login
 {
-  public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto>
+  public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthDataDto>
   {
     private readonly IAuthService _authService;
 
@@ -15,7 +15,7 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.Login
       _authService = authService;
     }
 
-    public async Task<AuthResponseDto> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<AuthDataDto> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
       return await _authService.LoginAsync(request.Request);
     }

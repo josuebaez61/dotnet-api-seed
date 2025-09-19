@@ -4,7 +4,7 @@ using MediatR;
 
 namespace CleanArchitecture.Application.Features.Auth.Commands.ChangeFirstTimePassword
 {
-  public class ChangeFirstTimePasswordCommand : IRequest<AuthResponseDto>
+  public class ChangeFirstTimePasswordCommand : IRequest<AuthDataDto>
   {
     public Guid UserId { get; set; }
     public FirstTimePasswordChangeRequestDto Request { get; set; } = new();

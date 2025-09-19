@@ -34,32 +34,32 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<ApiResponse<AuthResponseDto>>> Login([FromBody] LoginRequestDto request)
+    public async Task<ActionResult<ApiResponse<AuthDataDto>>> Login([FromBody] LoginRequestDto request)
     {
       var command = new LoginCommand { Request = request };
       var result = await _mediator.Send(command);
-      return Ok(ApiResponse<AuthResponseDto>.SuccessResponse(result));
+      return Ok(ApiResponse<AuthDataDto>.SuccessResponse(result));
     }
 
     [HttpPost("register")]
-    public async Task<ActionResult<ApiResponse<AuthResponseDto>>> Register([FromBody] RegisterRequestDto request)
+    public async Task<ActionResult<ApiResponse<AuthDataDto>>> Register([FromBody] RegisterRequestDto request)
     {
       var command = new RegisterCommand { Request = request };
       var result = await _mediator.Send(command);
-      return CreatedAtAction(nameof(Login), ApiResponse<AuthResponseDto>.SuccessResponse(result));
+      return CreatedAtAction(nameof(Login), ApiResponse<AuthDataDto>.SuccessResponse(result));
     }
 
     [HttpPost("refresh-token")]
-    public async Task<ActionResult<ApiResponse<AuthResponseDto>>> RefreshToken([FromHeader(Name = "X-Refresh-Token")] string? refreshToken)
+    public async Task<ActionResult<ApiResponse<AuthDataDto>>> RefreshToken([FromHeader(Name = "X-Refresh-Token")] string? refreshToken)
     {
       if (string.IsNullOrEmpty(refreshToken))
       {
-        return BadRequest(ApiResponse<AuthResponseDto>.ErrorResponse("Refresh token is required in X-Refresh-Token header"));
+        return BadRequest(ApiResponse<AuthDataDto>.ErrorResponse("Refresh token is required in X-Refresh-Token header"));
       }
 
       var command = new RefreshTokenCommand { RefreshToken = refreshToken };
       var result = await _mediator.Send(command);
-      return Ok(ApiResponse<AuthResponseDto>.SuccessResponse(result));
+      return Ok(ApiResponse<AuthDataDto>.SuccessResponse(result));
     }
 
     [HttpPost("change-password")]
@@ -155,7 +155,7 @@ namespace CleanArchitecture.API.Controllers
 
     [HttpPost("change-first-time-password")]
     [Authorize]
-    public async Task<ActionResult<ApiResponse<AuthResponseDto>>> ChangeFirstTimePassword(
+    public async Task<ActionResult<ApiResponse<AuthDataDto>>> ChangeFirstTimePassword(
         [FromBody] FirstTimePasswordChangeRequestDto request)
     {
       var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -170,7 +170,7 @@ namespace CleanArchitecture.API.Controllers
         Request = request
       };
       var result = await _mediator.Send(command);
-      return Ok(ApiResponse<AuthResponseDto>.SuccessResponse(result, "Password changed successfully"));
+      return Ok(ApiResponse<AuthDataDto>.SuccessResponse(result, "Password changed successfully"));
     }
   }
 }

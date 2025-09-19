@@ -40,11 +40,7 @@ namespace CleanArchitecture.Application.Features.Auth.Queries.GetAuthUser
         throw new UserNotFoundByIdError(request.Id);
       }
 
-      // user.Permissions = await _permissionService.GetUserPermissionsAsync(user.Id); ;
-
-
-      var authUserDto = _mapper.Map<AuthUserDto>(user);
-      return authUserDto;
+      return _mapper.Map<AuthUserDto>(user);
     }
 
   }

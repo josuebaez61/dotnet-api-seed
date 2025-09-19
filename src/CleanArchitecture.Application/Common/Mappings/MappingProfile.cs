@@ -48,7 +48,7 @@ namespace CleanArchitecture.Application.Common.Mappings
 
 
             // Auth mappings
-            CreateMap<User, AuthResponseDto>()
+            CreateMap<User, AuthDataDto>()
                 .ForMember(dest => dest.Token, opt => opt.Ignore())
                 .ForMember(dest => dest.RefreshToken, opt => opt.Ignore());
         }

@@ -3,7 +3,7 @@ using MediatR;
 
 namespace CleanArchitecture.Application.Features.Auth.Commands.Register
 {
-  public class RegisterCommand : IRequest<AuthResponseDto>
+  public class RegisterCommand : IRequest<AuthDataDto>
   {
     public RegisterRequestDto Request { get; set; } = new();
   }

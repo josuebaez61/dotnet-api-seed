@@ -6,7 +6,7 @@ using MediatR;
 
 namespace CleanArchitecture.Application.Features.Auth.Commands.RefreshToken
 {
-  public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, AuthResponseDto>
+  public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, AuthDataDto>
   {
     private readonly IAuthService _authService;
 
@@ -15,7 +15,7 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.RefreshToken
       _authService = authService;
     }
 
-    public async Task<AuthResponseDto> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
+    public async Task<AuthDataDto> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {
       return await _authService.RefreshTokenAsync(request.RefreshToken);
     }
