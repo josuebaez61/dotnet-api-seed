@@ -8,6 +8,10 @@ namespace CleanArchitecture.Infrastructure.Data.Configurations
   {
     public void Configure(EntityTypeBuilder<Role> builder)
     {
+      // Configure table name (already handled by snake_case convention)
+      builder.ToTable("roles");
+      builder.HasKey(r => r.Id);
+
       // Configure properties
       builder.Property(e => e.Description)
           .HasMaxLength(500);
@@ -17,18 +21,13 @@ namespace CleanArchitecture.Infrastructure.Data.Configurations
 
       builder.Property(e => e.UpdatedAt);
 
-      builder.HasMany(e => e.UserRoles)
-          .WithOne(e => e.Role)
-          .HasForeignKey(e => e.RoleId)
+      // Role-UserRole relationship (one-to-many)
+      builder.HasMany(r => r.UserRoles)
+          .WithOne(ur => ur.Role)
+          .HasForeignKey(ur => ur.RoleId)
           .IsRequired();
 
-      builder.HasMany(e => e.RolePermissions)
-          .WithOne(e => e.Role)
-          .HasForeignKey(e => e.RoleId)
-          .IsRequired();
-
-      // Configure table name (already handled by snake_case convention)
-      builder.ToTable("roles");
+      // Role-RolePermission relationship is configured in RolePermissionConfiguration
     }
   }
 }

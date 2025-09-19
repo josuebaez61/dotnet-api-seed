@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.DTOs;
@@ -31,17 +32,19 @@ namespace CleanArchitecture.Application.Common.Services
     private readonly IPermissionService _permissionService;
     private readonly Dictionary<string, RefreshTokenInfo> _refreshTokens = new();
     private readonly Dictionary<Guid, List<PasswordResetCode>> _passwordResetCodes = new();
-
+    private readonly IMapper _mapper;
     public AuthService(
         UserManager<User> userManager,
         SignInManager<User> signInManager,
         IConfiguration configuration,
-        IPermissionService permissionService)
+        IPermissionService permissionService,
+        IMapper mapper)
     {
       _userManager = userManager;
       _signInManager = signInManager;
       _configuration = configuration;
       _permissionService = permissionService;
+      _mapper = mapper;
     }
 
     public async Task<AuthResponseDto> LoginAsync(LoginRequestDto request)
@@ -73,25 +76,18 @@ namespace CleanArchitecture.Application.Common.Services
         ExpiresAt = DateTime.UtcNow.AddDays(7)
       };
 
+      var userPermissions = await _permissionService.GetUserPermissionsAsync(user.Id);
+
+      var authUserDto = _mapper.Map<AuthUserDto>(user);
+      authUserDto.Roles = (await _userManager.GetRolesAsync(user)).ToList();
+      authUserDto.Permissions = userPermissions.Select(p => p.Name).ToList();
+
       return new AuthResponseDto
       {
         Token = token,
         RefreshToken = refreshToken,
         ExpiresAt = DateTime.UtcNow.AddHours(1),
-        User = new UserDto
-        {
-          Id = user.Id,
-          FirstName = user.FirstName,
-          LastName = user.LastName,
-          Email = user.Email!,
-          UserName = user.UserName,
-          DateOfBirth = user.DateOfBirth,
-          ProfilePicture = user.ProfilePicture,
-          CreatedAt = user.CreatedAt,
-          UpdatedAt = user.UpdatedAt,
-          IsActive = user.IsActive,
-          EmailConfirmed = user.EmailConfirmed
-        }
+        User = authUserDto
       };
     }
 
@@ -138,25 +134,19 @@ namespace CleanArchitecture.Application.Common.Services
         ExpiresAt = DateTime.UtcNow.AddDays(7)
       };
 
+
+      var userPermissions = await _permissionService.GetUserPermissionsAsync(user.Id);
+
+      var authUserDto = _mapper.Map<AuthUserDto>(user);
+      authUserDto.Roles = (await _userManager.GetRolesAsync(user)).ToList();
+      authUserDto.Permissions = userPermissions.Select(p => p.Name).ToList();
+
       return new AuthResponseDto
       {
         Token = token,
         RefreshToken = refreshToken,
         ExpiresAt = DateTime.UtcNow.AddHours(1),
-        User = new UserDto
-        {
-          Id = user.Id,
-          FirstName = user.FirstName,
-          LastName = user.LastName,
-          Email = user.Email!,
-          UserName = user.UserName,
-          DateOfBirth = user.DateOfBirth,
-          ProfilePicture = user.ProfilePicture,
-          CreatedAt = user.CreatedAt,
-          UpdatedAt = user.UpdatedAt,
-          IsActive = user.IsActive,
-          EmailConfirmed = user.EmailConfirmed
-        }
+        User = authUserDto
       };
     }
 
@@ -193,25 +183,18 @@ namespace CleanArchitecture.Application.Common.Services
         ExpiresAt = DateTime.UtcNow.AddDays(7)
       };
 
+      var userPermissions = await _permissionService.GetUserPermissionsAsync(user.Id);
+
+      var authUserDto = _mapper.Map<AuthUserDto>(user);
+      authUserDto.Roles = (await _userManager.GetRolesAsync(user)).ToList();
+      authUserDto.Permissions = userPermissions.Select(p => p.Name).ToList();
+
       return new AuthResponseDto
       {
         Token = newToken,
         RefreshToken = newRefreshToken,
         ExpiresAt = DateTime.UtcNow.AddHours(1),
-        User = new UserDto
-        {
-          Id = user.Id,
-          FirstName = user.FirstName,
-          LastName = user.LastName,
-          Email = user.Email!,
-          UserName = user.UserName,
-          DateOfBirth = user.DateOfBirth,
-          ProfilePicture = user.ProfilePicture,
-          CreatedAt = user.CreatedAt,
-          UpdatedAt = user.UpdatedAt,
-          IsActive = user.IsActive,
-          EmailConfirmed = user.EmailConfirmed
-        }
+        User = authUserDto
       };
     }
 
@@ -247,7 +230,6 @@ namespace CleanArchitecture.Application.Common.Services
       var user = await _userManager.FindByEmailAsync(emailOrUsername);
       if (user != null)
         return user;
-
       return await _userManager.FindByNameAsync(emailOrUsername);
     }
 
@@ -318,26 +300,18 @@ namespace CleanArchitecture.Application.Common.Services
         ExpiresAt = DateTime.UtcNow.AddDays(7)
       };
 
+      var userPermissions = await _permissionService.GetUserPermissionsAsync(user.Id);
+
+      var authUserDto = _mapper.Map<AuthUserDto>(user);
+      authUserDto.Roles = (await _userManager.GetRolesAsync(user)).ToList();
+      authUserDto.Permissions = userPermissions.Select(p => p.Name).ToList();
+
       return new AuthResponseDto
       {
         Token = token,
         RefreshToken = refreshToken,
         ExpiresAt = DateTime.UtcNow.AddHours(1),
-        User = new UserDto
-        {
-          Id = user.Id,
-          FirstName = user.FirstName,
-          LastName = user.LastName,
-          Email = user.Email!,
-          UserName = user.UserName,
-          DateOfBirth = user.DateOfBirth,
-          ProfilePicture = user.ProfilePicture,
-          CreatedAt = user.CreatedAt,
-          UpdatedAt = user.UpdatedAt,
-          IsActive = user.IsActive,
-          EmailConfirmed = user.EmailConfirmed,
-          MustChangePassword = user.MustChangePassword
-        }
+        User = authUserDto
       };
     }
 

@@ -47,6 +47,7 @@ La documentación completa del proyecto se encuentra en la carpeta `docs/`:
 
 - [👤 Usuario Roles - GET](docs/USER_ROLES_ENDPOINT.md) - Endpoint para obtener roles de usuario
 - [✏️ Usuario Roles - PUT](docs/UPDATE_USER_ROLES_ENDPOINT.md) - Endpoint para actualizar roles de usuario
+- [🔐 Usuario Permisos - GET](docs/USER_PERMISSIONS_ENDPOINT.md) - Endpoint para obtener permisos de usuario
 
 ### **Infraestructura:**
 

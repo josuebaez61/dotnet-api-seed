@@ -30,9 +30,8 @@ namespace CleanArchitecture.Application
       services.AddScoped<IEmailTemplateService, EmailTemplateService>();
       services.AddScoped<IPasswordGeneratorService, PasswordGeneratorService>();
 
-      // Permission services - HierarchicalPermissionService wraps the base PermissionService
-      services.AddScoped<PermissionService>(); // Base service
-      services.AddScoped<IPermissionService, HierarchicalPermissionService>(); // Hierarchical wrapper
+      // Permission services
+      services.AddScoped<IPermissionService, HierarchicalPermissionService>();
 
       services.AddScoped<ILocalizationService, LocalizationService>();
       services.AddScoped<IPaginationService, PaginationService>();

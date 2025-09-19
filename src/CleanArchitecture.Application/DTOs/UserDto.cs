@@ -40,4 +40,10 @@ namespace CleanArchitecture.Application.DTOs
     public string? ProfilePicture { get; set; }
     public bool IsActive { get; set; }
   }
+  public class AuthUserDto : UserDto
+  {
+    public new List<string>? Roles { get; set; } = [];
+    public List<string>? Permissions { get; set; } = [];
+  }
 }
+

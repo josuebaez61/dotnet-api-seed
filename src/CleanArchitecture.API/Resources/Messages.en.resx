@@ -285,5 +285,7 @@
   <data name="SUBJECT_TEMPORARY_PASSWORD" xml:space="preserve">
     <value>Account Created - Temporary Password</value>
   </data>
-  
+  <data name="USER_PERMISSIONS_RETRIEVED" xml:space="preserve">
+    <value>User permissions retrieved successfully</value>
+  </data>
 </root>

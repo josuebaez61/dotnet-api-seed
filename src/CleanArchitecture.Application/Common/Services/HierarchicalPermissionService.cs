@@ -7,6 +7,7 @@ using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Domain.Common.Constants;
 using CleanArchitecture.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Application.Common.Services
 {
@@ -16,16 +17,16 @@ namespace CleanArchitecture.Application.Common.Services
   /// </summary>
   public class HierarchicalPermissionService : IPermissionService
   {
-    private readonly PermissionService _basePermissionService;
+    private readonly IApplicationDbContext _context;
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<Role> _roleManager;
 
     public HierarchicalPermissionService(
-        PermissionService basePermissionService,
+        IApplicationDbContext context,
         UserManager<User> userManager,
         RoleManager<Role> roleManager)
     {
-      _basePermissionService = basePermissionService;
+      _context = context;
       _userManager = userManager;
       _roleManager = roleManager;
     }
@@ -33,10 +34,17 @@ namespace CleanArchitecture.Application.Common.Services
     /// <summary>
     /// Gets user permissions including hierarchical permissions
     /// </summary>
-    public async Task<List<Permission>> GetUserPermissionsAsync(Guid userId)
+    public async Task<ICollection<Permission>> GetUserPermissionsAsync(Guid userId)
     {
-      var basePermissions = await _basePermissionService.GetUserPermissionsAsync(userId);
-      return ExpandHierarchicalPermissions(basePermissions);
+      var permissions = await _context.Users
+          .Where(u => u.Id == userId)
+          .SelectMany(u => u.UserRoles)
+          .SelectMany(ur => ur.Role.RolePermissions)
+          .Select(rp => rp.Permission)
+          .Distinct()
+          .ToListAsync();
+
+      return ExpandHierarchicalPermissions(permissions);
     }
 
     /// <summary>
@@ -44,8 +52,12 @@ namespace CleanArchitecture.Application.Common.Services
     /// </summary>
     public async Task<List<Permission>> GetRolePermissionsAsync(Guid roleId)
     {
-      var basePermissions = await _basePermissionService.GetRolePermissionsAsync(roleId);
-      return ExpandHierarchicalPermissions(basePermissions);
+      var permissions = await _context.RolePermissions
+          .Where(rp => rp.RoleId == roleId)
+          .Select(rp => rp.Permission)
+          .ToListAsync();
+
+      return ExpandHierarchicalPermissions(permissions);
     }
 
     /// <summary>
@@ -55,6 +67,29 @@ namespace CleanArchitecture.Application.Common.Services
     {
       var userPermissions = await GetUserPermissionsAsync(userId);
       return userPermissions.Any(p => p.Name == permissionName);
+    }
+
+    /// <summary>
+    /// Checks if user has any of the specified permissions (including hierarchical)
+    /// </summary>
+    public async Task<bool> UserHasAnyPermissionAsync(Guid userId, params string[] permissionNames)
+    {
+      var userPermissions = await GetUserPermissionsAsync(userId);
+      return userPermissions.Any(p => permissionNames.Contains(p.Name));
+    }
+
+    /// <summary>
+    /// Gets all users that have a specific permission (including hierarchical)
+    /// </summary>
+    public async Task<ICollection<User>> GetUsersWithPermissionAsync(string permissionName)
+    {
+      var users = await _context.Users
+          .Where(u => u.UserRoles
+              .SelectMany(ur => ur.Role.RolePermissions)
+              .Any(rp => rp.Permission.Name == permissionName))
+          .ToListAsync();
+
+      return users;
     }
 
     /// <summary>
@@ -88,7 +123,22 @@ namespace CleanArchitecture.Application.Common.Services
     /// </summary>
     public async Task<bool> AssignPermissionToRoleAsync(Guid roleId, Guid permissionId)
     {
-      return await _basePermissionService.AssignPermissionToRoleAsync(roleId, permissionId);
+      var existingRolePermission = await _context.RolePermissions
+          .FirstOrDefaultAsync(rp => rp.RoleId == roleId && rp.PermissionId == permissionId);
+
+      if (existingRolePermission != null)
+        return false; // Already exists
+
+      var rolePermission = new RolePermission
+      {
+        RoleId = roleId,
+        PermissionId = permissionId,
+        CreatedAt = DateTime.UtcNow
+      };
+
+      _context.RolePermissions.Add(rolePermission);
+      await _context.SaveChangesAsync();
+      return true;
     }
 
     /// <summary>
@@ -96,7 +146,15 @@ namespace CleanArchitecture.Application.Common.Services
     /// </summary>
     public async Task<bool> RemovePermissionFromRoleAsync(Guid roleId, Guid permissionId)
     {
-      return await _basePermissionService.RemovePermissionFromRoleAsync(roleId, permissionId);
+      var rolePermission = await _context.RolePermissions
+          .FirstOrDefaultAsync(rp => rp.RoleId == roleId && rp.PermissionId == permissionId);
+
+      if (rolePermission == null)
+        return false; // Doesn't exist
+
+      _context.RolePermissions.Remove(rolePermission);
+      await _context.SaveChangesAsync();
+      return true;
     }
 
     /// <summary>
@@ -104,7 +162,19 @@ namespace CleanArchitecture.Application.Common.Services
     /// </summary>
     public async Task<Permission?> UpdatePermissionAsync(Guid permissionId, Permission permission)
     {
-      return await _basePermissionService.UpdatePermissionAsync(permissionId, permission);
+      var existingPermission = await _context.Permissions.FindAsync(permissionId);
+      if (existingPermission == null)
+        return null;
+
+      existingPermission.Name = permission.Name;
+      existingPermission.Description = permission.Description;
+      existingPermission.Resource = permission.Resource;
+      existingPermission.Action = permission.Action;
+      existingPermission.Module = permission.Module;
+      existingPermission.LastModifiedAt = DateTime.UtcNow;
+
+      await _context.SaveChangesAsync();
+      return existingPermission;
     }
 
     /// <summary>
@@ -112,7 +182,13 @@ namespace CleanArchitecture.Application.Common.Services
     /// </summary>
     public async Task<bool> DeletePermissionAsync(Guid permissionId)
     {
-      return await _basePermissionService.DeletePermissionAsync(permissionId);
+      var permission = await _context.Permissions.FindAsync(permissionId);
+      if (permission == null)
+        return false;
+
+      _context.Permissions.Remove(permission);
+      await _context.SaveChangesAsync();
+      return true;
     }
 
     /// <summary>
@@ -226,17 +302,22 @@ namespace CleanArchitecture.Application.Common.Services
       };
     }
 
-    // Delegate other methods to the base service
+    // Direct database access methods
     public async Task<Permission?> GetPermissionByIdAsync(Guid id) =>
-        await _basePermissionService.GetPermissionByIdAsync(id);
+        await _context.Permissions.FindAsync(id);
 
     public async Task<Permission?> GetPermissionByNameAsync(string name) =>
-        await _basePermissionService.GetPermissionByNameAsync(name);
+        await _context.Permissions.FirstOrDefaultAsync(p => p.Name == name);
 
     public async Task<List<Permission>> GetAllPermissionsAsync() =>
-        await _basePermissionService.GetAllPermissionsAsync();
+        await _context.Permissions.ToListAsync();
 
-    public async Task<Permission> CreatePermissionAsync(Permission permission) =>
-        await _basePermissionService.CreatePermissionAsync(permission);
+    public async Task<Permission> CreatePermissionAsync(Permission permission)
+    {
+      permission.CreatedAt = DateTime.UtcNow;
+      _context.Permissions.Add(permission);
+      await _context.SaveChangesAsync();
+      return permission;
+    }
   }
 }

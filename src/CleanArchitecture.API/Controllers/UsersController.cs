@@ -9,6 +9,7 @@ using CleanArchitecture.Application.Features.Users.Commands.UpdateUser;
 using CleanArchitecture.Application.Features.Users.Commands.UpdateUserRoles;
 using CleanArchitecture.Application.Features.Users.Queries.GetAllUsers;
 using CleanArchitecture.Application.Features.Users.Queries.GetUserById;
+using CleanArchitecture.Application.Features.Users.Queries.GetUserPermissions;
 using CleanArchitecture.Application.Features.Users.Queries.GetUserRoles;
 using CleanArchitecture.Application.Features.Users.Queries.GetUsersPaginated;
 using CleanArchitecture.Domain.Common.Constants;
@@ -145,6 +146,33 @@ namespace CleanArchitecture.API.Controllers
       catch (Exception ex)
       {
         return BadRequest(ApiResponse<List<RoleDto>>.ErrorResponse(ex.Message));
+      }
+    }
+
+    /// <summary>
+    /// Obtiene todos los permisos de un usuario por su ID
+    /// </summary>
+    /// <param name="id">ID del usuario</param>
+    /// <returns>Lista de permisos del usuario a través de sus roles</returns>
+    [HttpGet("id/{id}/permissions")]
+    [ProducesResponseType(typeof(ApiResponse<List<PermissionDto>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<List<PermissionDto>>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse<List<PermissionDto>>), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetUserPermissions(Guid id)
+    {
+      try
+      {
+        var query = new GetUserPermissionsQuery(id);
+        var result = await _mediator.Send(query);
+        return Ok(ApiResponse<List<PermissionDto>>.SuccessResponse(result, _localizationService.GetSuccessMessage("USER_PERMISSIONS_RETRIEVED")));
+      }
+      catch (UserNotFoundByIdError ex)
+      {
+        return NotFound(ApiResponse<List<PermissionDto>>.ErrorResponse(ex.Message));
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ApiResponse<List<PermissionDto>>.ErrorResponse(ex.Message));
       }
     }
   }

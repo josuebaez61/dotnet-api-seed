@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using Microsoft.AspNetCore.Identity;
 
 namespace CleanArchitecture.Domain.Entities
@@ -20,6 +22,7 @@ namespace CleanArchitecture.Domain.Entities
     public virtual ICollection<UserClaim> UserClaims { get; set; } = new List<UserClaim>();
     public virtual ICollection<UserLogin> UserLogins { get; set; } = new List<UserLogin>();
     public virtual ICollection<UserToken> UserTokens { get; set; } = new List<UserToken>();
+
   }
 
   public class Role : IdentityRole<Guid>

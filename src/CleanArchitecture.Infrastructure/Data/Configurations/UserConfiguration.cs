@@ -4,40 +4,42 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CleanArchitecture.Infrastructure.Data.Configurations
 {
-  public class UserConfiguration : IEntityTypeConfiguration<User>
-  {
-    public void Configure(EntityTypeBuilder<User> builder)
+    public class UserConfiguration : IEntityTypeConfiguration<User>
     {
-      // Configure properties
-      builder.Property(e => e.FirstName)
-          .HasMaxLength(100)
-          .IsRequired();
+        public void Configure(EntityTypeBuilder<User> builder)
+        {
+            // Configure table name (already handled by snake_case convention)
+            builder.ToTable("users");
+            builder.HasKey(u => u.Id);
 
-      builder.Property(e => e.LastName)
-          .HasMaxLength(100)
-          .IsRequired();
+            // Configure properties
+            builder.Property(e => e.FirstName)
+                .HasMaxLength(100)
+                .IsRequired();
 
-      builder.Property(e => e.ProfilePicture)
-          .HasMaxLength(500);
+            builder.Property(e => e.LastName)
+                .HasMaxLength(100)
+                .IsRequired();
 
-      builder.Property(e => e.CreatedAt)
-          .IsRequired();
+            builder.Property(e => e.ProfilePicture)
+                .HasMaxLength(500);
 
-      builder.Property(e => e.UpdatedAt);
+            builder.Property(e => e.CreatedAt)
+                .IsRequired();
 
-      builder.Property(e => e.IsActive)
-          .IsRequired();
+            builder.Property(e => e.UpdatedAt);
 
-      builder.Property(e => e.MustChangePassword)
-          .IsRequired();
+            builder.Property(e => e.IsActive)
+                .IsRequired();
 
-      builder.HasMany(e => e.UserRoles)
-          .WithOne(e => e.User)
-          .HasForeignKey(e => e.UserId)
-          .IsRequired();
+            builder.Property(e => e.MustChangePassword)
+                .IsRequired();
 
-      // Configure table name (already handled by snake_case convention)
-      builder.ToTable("users");
+            // User-UserRole relationship (one-to-many)
+            builder.HasMany(u => u.UserRoles)
+                .WithOne(ur => ur.User)
+                .HasForeignKey(ur => ur.UserId)
+                .IsRequired();
+        }
     }
-  }
 }

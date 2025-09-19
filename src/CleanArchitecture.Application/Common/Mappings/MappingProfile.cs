@@ -6,6 +6,7 @@ namespace CleanArchitecture.Application.Common.Mappings
 {
     public class MappingProfile : Profile
     {
+
         public MappingProfile()
         {
             // User mappings
@@ -28,6 +29,23 @@ namespace CleanArchitecture.Application.Common.Mappings
 
             // RolePermission mappings
             CreateMap<RolePermission, RolePermissionDto>();
+
+
+            CreateMap<User, AuthUserDto>()
+                .ForMember(dest => dest.Permissions, opt => opt.MapFrom(src =>
+                    src.UserRoles
+                        .Where(ur => ur.Role != null && ur.Role.RolePermissions != null)
+                        .SelectMany(ur => ur.Role.RolePermissions)
+                        .Where(rp => rp.Permission != null)
+                        .Select(rp => rp.Permission.Name)
+                        .Distinct()
+                        .ToList()))
+                .ForMember(dest => dest.Roles, opt => opt.MapFrom(src =>
+                    src.UserRoles
+                        .Where(ur => ur.Role != null)
+                        .Select(ur => ur.Role.Name)
+                        .ToList()));
+
 
             // Auth mappings
             CreateMap<User, AuthResponseDto>()

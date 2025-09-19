@@ -13,6 +13,7 @@ using CleanArchitecture.Application.Features.Auth.Commands.RequestEmailChange;
 using CleanArchitecture.Application.Features.Auth.Commands.RequestPasswordReset;
 using CleanArchitecture.Application.Features.Auth.Commands.ResetPassword;
 using CleanArchitecture.Application.Features.Auth.Commands.VerifyEmailChange;
+using CleanArchitecture.Application.Features.Auth.Queries.GetAuthUser;
 using CleanArchitecture.Application.Features.Users.Queries.GetUserById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -97,7 +98,7 @@ namespace CleanArchitecture.API.Controllers
         return Unauthorized(ApiResponse<UserDto>.ErrorResponse("Invalid user token"));
       }
 
-      var query = new GetUserByIdQuery { Id = userId };
+      var query = new GetAuthUserQuery { Id = userId };
       var result = await _mediator.Send(query);
 
       if (result == null)

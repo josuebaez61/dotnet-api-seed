@@ -287,4 +287,7 @@
   <data name="SUBJECT_TEMPORARY_PASSWORD" xml:space="preserve">
     <value>Cuenta Creada - Contraseña Temporal</value>
   </data>
+  <data name="USER_PERMISSIONS_RETRIEVED" xml:space="preserve">
+    <value>Permisos del usuario obtenidos exitosamente</value>
+  </data>
 </root>
