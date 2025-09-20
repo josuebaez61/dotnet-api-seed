@@ -69,6 +69,11 @@ La documentación completa del proyecto se encuentra en la carpeta `docs/`:
 - [🤖 Scripts y Automatización](docs/SCRIPTS_AND_AUTOMATION.md) - Scripts de desarrollo
 - [📝 Ejemplos de Manejo de Errores](docs/ERROR_HANDLING_EXAMPLES.md) - Ejemplos prácticos
 
+### **Configuración y Entornos:**
+
+- [🌍 Validación de Entornos](docs/ENVIRONMENT_VALIDATION.md) - Sistema de validación de entornos
+- [📋 Ejemplos de Configuración](docs/ENVIRONMENT_EXAMPLES.md) - Ejemplos prácticos de configuración
+
 ## 🛠️ Configuración Rápida
 
 ### **Prerrequisitos:**
@@ -87,8 +92,12 @@ cd CleanArchitecture
 # Restaurar dependencias
 dotnet restore
 
+# Configurar variables de entorno (requerido)
+export ASPNETCORE_ENVIRONMENT=Development
+export ConnectionStrings__DefaultConnection="Host=localhost;Database=CleanArchitectureDB_Dev;Username=postgres;Password=postgres"
+
 # Configurar base de datos
-# Editar connection string en appsettings.json
+# Editar connection string en appsettings.json o usar variables de entorno
 
 # Ejecutar migraciones
 dotnet ef database update --project src/CleanArchitecture.Infrastructure
@@ -96,6 +105,14 @@ dotnet ef database update --project src/CleanArchitecture.Infrastructure
 # Ejecutar la aplicación
 dotnet run --project src/CleanArchitecture.API
 ```
+
+### **Variables de Entorno Requeridas:**
+
+- `ASPNETCORE_ENVIRONMENT` - Entorno de la aplicación (Development/Staging/Production)
+- `ConnectionStrings__DefaultConnection` - Cadena de conexión a PostgreSQL
+- `JwtSettings__SecretKey` - Clave secreta para JWT (mínimo 32 caracteres)
+
+📖 **Ver documentación completa:** [Validación de Entornos](docs/ENVIRONMENT_VALIDATION.md)
 
 ## 🔧 Comandos Útiles
 

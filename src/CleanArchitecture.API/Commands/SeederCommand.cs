@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.CommandLine;
 using System.Linq;
 using System.Threading.Tasks;
+using CleanArchitecture.API.Common;
 using CleanArchitecture.Infrastructure.Data;
 using CleanArchitecture.Infrastructure.Services.Seeders;
 using Microsoft.EntityFrameworkCore;
@@ -76,9 +77,24 @@ namespace CleanArchitecture.API.Commands
         return;
       }
 
-      // Check if running in Production environment
+      // Validate environment first
       var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-      if (string.Equals(environment, "Production", StringComparison.OrdinalIgnoreCase))
+      try
+      {
+        EnvironmentConstants.ValidateEnvironment(environment);
+        _logger.LogInformation("✅ Environment validation passed: {Environment}", environment);
+      }
+      catch (InvalidOperationException ex)
+      {
+        _logger.LogError("❌ {ErrorMessage}", ex.Message);
+        _logger.LogError("🔧 Current environment: '{Environment}'", environment);
+        _logger.LogError("💡 Please set ASPNETCORE_ENVIRONMENT to one of: {AllowedEnvironments}",
+            EnvironmentConstants.GetAllowedEnvironmentsString());
+        throw;
+      }
+
+      // Check if running in Production environment
+      if (string.Equals(environment, EnvironmentConstants.Production, StringComparison.OrdinalIgnoreCase))
       {
         _logger.LogWarning("⚠️  WARNING: You are about to run seeders in PRODUCTION environment!");
         _logger.LogWarning("⚠️  This action will modify the production database.");
@@ -164,9 +180,24 @@ namespace CleanArchitecture.API.Commands
     {
       try
       {
-        // Check if we're in development environment
+        // Validate environment first
         var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-        if (environment != "Development")
+        try
+        {
+          EnvironmentConstants.ValidateEnvironment(environment);
+          _logger.LogInformation("✅ Environment validation passed: {Environment}", environment);
+        }
+        catch (InvalidOperationException ex)
+        {
+          _logger.LogError("❌ {ErrorMessage}", ex.Message);
+          _logger.LogError("🔧 Current environment: '{Environment}'", environment);
+          _logger.LogError("💡 Please set ASPNETCORE_ENVIRONMENT to one of: {AllowedEnvironments}",
+              EnvironmentConstants.GetAllowedEnvironmentsString());
+          throw;
+        }
+
+        // Check if we're in development environment
+        if (environment != EnvironmentConstants.Development)
         {
           _logger.LogError("❌ This command can only be run in Development environment!");
           _logger.LogError($"Current environment: {environment ?? "Not set"}");

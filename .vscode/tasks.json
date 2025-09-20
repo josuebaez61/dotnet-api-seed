@@ -1,160 +1,79 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "Build",
-            "command": "dotnet",
-            "type": "process",
-            "args": ["build", "--configuration", "Debug", "--verbosity", "normal"],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "silent",
-                "focus": false,
-                "panel": "shared"
-            },
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "Run",
-            "command": "dotnet",
-            "type": "process",
-            "args": ["run", "--project", "src/CleanArchitecture.API"],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "new"
-            },
-            "dependsOn": "Build"
-        },
-        {
-            "label": "Test",
-            "command": "dotnet",
-            "type": "process",
-            "args": ["test"],
-            "group": "test",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "new"
-            }
-        },
-        {
-            "label": "Clean",
-            "command": "dotnet",
-            "type": "process",
-            "args": ["clean"],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "silent",
-                "focus": false,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Restore",
-            "command": "dotnet",
-            "type": "process",
-            "args": ["restore"],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "silent",
-                "focus": false,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Docker Up",
-            "command": "docker",
-            "type": "process",
-            "args": ["compose", "up", "-d"],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "new"
-            }
-        },
-        {
-            "label": "Docker Down",
-            "command": "docker",
-            "type": "process",
-            "args": ["compose", "down"],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "new"
-            }
-        },
-        {
-            "label": "Database Migrate",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "ef",
-                "database",
-                "update",
-                "--project",
-                "src/CleanArchitecture.Infrastructure",
-                "--startup-project",
-                "src/CleanArchitecture.API"
-            ],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "new"
-            }
-        },
-        {
-            "label": "Add Migration",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "ef",
-                "migrations",
-                "add",
-                "${input:migrationName}",
-                "--project",
-                "src/CleanArchitecture.Infrastructure"
-            ],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "new"
-            }
-        },
-        {
-            "label": "Format Code",
-            "command": "dotnet",
-            "type": "process",
-            "args": ["format"],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "new"
-            }
-        }
-    ],
-    "inputs": [
-        {
-            "id": "migrationName",
-            "description": "Migration name",
-            "default": "NewMigration",
-            "type": "promptString"
-        }
-    ]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/src/CleanArchitecture.API/CleanArchitecture.API.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "publish",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "publish",
+        "${workspaceFolder}/src/CleanArchitecture.API/CleanArchitecture.API.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary",
+        "--configuration",
+        "Release"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "watch",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "watch",
+        "run",
+        "--project",
+        "${workspaceFolder}/src/CleanArchitecture.API/CleanArchitecture.API.csproj"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "run-seeders",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "run",
+        "--project",
+        "${workspaceFolder}/src/CleanArchitecture.API/CleanArchitecture.API.csproj",
+        "--launch-profile",
+        "cli",
+        "--seed",
+        "all"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "build"
+    },
+    {
+      "label": "run-migrations",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "ef",
+        "database",
+        "update",
+        "--project",
+        "${workspaceFolder}/src/CleanArchitecture.Infrastructure",
+        "--startup-project",
+        "${workspaceFolder}/src/CleanArchitecture.API"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "build"
+    }
+  ]
 }

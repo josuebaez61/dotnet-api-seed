@@ -2,50 +2,83 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch API",
+      "name": "Launch API (Development)",
       "type": "coreclr",
       "request": "launch",
-      "preLaunchTask": "Build",
+      "preLaunchTask": "build",
       "program": "${workspaceFolder}/src/CleanArchitecture.API/bin/Debug/net9.0/CleanArchitecture.API.dll",
       "args": [],
       "cwd": "${workspaceFolder}/src/CleanArchitecture.API",
-      "console": "integratedTerminal",
+      "console": "internalConsole",
       "stopAtEntry": false,
-      "justMyCode": false,
-      "enableStepFiltering": false,
-      "symbolOptions": {
-        "searchPaths": [],
-        "searchMicrosoftSymbolServer": false,
-        "searchNuGetOrgSymbolServer": false
-      },
       "env": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "http://localhost:5103"
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Views"
       }
     },
     {
-      "name": "Launch API (Debug Mode)",
+      "name": "Launch API (Staging)",
       "type": "coreclr",
       "request": "launch",
-      "preLaunchTask": "Build",
+      "preLaunchTask": "build",
       "program": "${workspaceFolder}/src/CleanArchitecture.API/bin/Debug/net9.0/CleanArchitecture.API.dll",
       "args": [],
       "cwd": "${workspaceFolder}/src/CleanArchitecture.API",
-      "console": "integratedTerminal",
-      "stopAtEntry": true,
-      "justMyCode": false,
-      "enableStepFiltering": false,
+      "console": "internalConsole",
+      "stopAtEntry": false,
       "env": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "http://localhost:5103"
+        "ASPNETCORE_ENVIRONMENT": "Staging"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Views"
       }
     },
     {
-      "name": "Attach to Process",
+      "name": "Launch API (Production)",
       "type": "coreclr",
-      "request": "attach",
-      "processId": "${command:pickProcess}",
-      "justMyCode": false
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/src/CleanArchitecture.API/bin/Debug/net9.0/CleanArchitecture.API.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/CleanArchitecture.API",
+      "console": "internalConsole",
+      "stopAtEntry": false,
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Production"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Views"
+      }
+    },
+    {
+      "name": "Debug Seeders (Development)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/src/CleanArchitecture.API/bin/Debug/net9.0/CleanArchitecture.API.dll",
+      "args": ["--seed", "all"],
+      "cwd": "${workspaceFolder}/src/CleanArchitecture.API",
+      "console": "internalConsole",
+      "stopAtEntry": false,
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    {
+      "name": "Debug Specific Seeder",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/src/CleanArchitecture.API/bin/Debug/net9.0/CleanArchitecture.API.dll",
+      "args": ["--seed", "AdminUser"],
+      "cwd": "${workspaceFolder}/src/CleanArchitecture.API",
+      "console": "internalConsole",
+      "stopAtEntry": false,
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
     }
   ]
 }

@@ -1,6 +1,7 @@
 using System.CommandLine;
 using System.Text;
 using CleanArchitecture.API.Commands;
+using CleanArchitecture.API.Common;
 using CleanArchitecture.API.Extensions;
 using CleanArchitecture.API.Middleware;
 using CleanArchitecture.Application;
@@ -17,23 +18,32 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Local";
-Console.WriteLine($"Environment: {environment}");
+// Validate environment before proceeding
+try
+{
+    EnvironmentConstants.ValidateEnvironment(builder.Environment.EnvironmentName);
+    Console.WriteLine($"✅ Environment validation passed: {builder.Environment.EnvironmentName}");
+}
+catch (InvalidOperationException ex)
+{
+    Console.WriteLine(ex.Message);
+    Console.WriteLine($"🔧 Current environment: '{builder.Environment.EnvironmentName}'");
+    Console.WriteLine($"💡 Please set ASPNETCORE_ENVIRONMENT to one of the allowed values.");
+    Environment.Exit(1);
+}
 
-// Build configuration
-var configuration = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
-    .AddEnvironmentVariables()
-    .Build();
+// Log environment information
+Console.WriteLine($"🚀 Starting application in {builder.Environment.EnvironmentName} environment");
+Console.WriteLine($"📁 Content Root: {builder.Environment.ContentRootPath}");
+Console.WriteLine($"🌐 Web Root: {builder.Environment.WebRootPath}");
 
-builder.Configuration.AddConfiguration(configuration);
+// Add additional configuration sources if needed
+builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
 // Check if we're running CLI commands
 if (args.Length > 0 && IsCliCommand(args[0]))
 {
-    await RunCliCommands(args, configuration);
+    await RunCliCommands(args, builder.Configuration);
     return;
 }
 
@@ -47,36 +57,50 @@ builder.Services.AddControllers(options =>
 });
 builder.Services.AddEndpointsApiExplorer();
 
-// Configure Swagger with JWT support
-builder.Services.AddSwaggerGen(c =>
+// Configure Swagger with JWT support (only in Development and Staging)
+if (builder.Environment.IsDevelopment() || builder.Environment.IsStaging())
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Clean Architecture API", Version = "v1" });
-
-    // Add JWT authentication to Swagger
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    builder.Services.AddSwaggerGen(c =>
     {
-        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
-    });
-
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
+        var environment = builder.Environment.EnvironmentName;
+        c.SwaggerDoc("v1", new OpenApiInfo
         {
-            new OpenApiSecurityScheme
+            Title = $"Clean Architecture API ({environment.ToUpper()})",
+            Version = "v1",
+            Description = $"API documentation for {environment} environment",
+            Contact = new OpenApiContact
             {
-                Reference = new OpenApiReference
+                Name = "Clean Architecture Team",
+                Email = "dev@cleanarchitecture.com"
+            }
+        });
+
+        // Add JWT authentication to Swagger
+        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer"
+        });
+
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                Array.Empty<string>()
+            }
+        });
     });
-});
+}
 
 // Add custom services
 builder.Services.AddApplication();
@@ -121,44 +145,77 @@ builder.Services.AddAuthentication(options =>
 // Configure Authorization Policies
 builder.Services.AddAuthorization();
 
-// Add CORS
+// Add Health Checks
+builder.Services.AddHealthChecks()
+    .AddCheck("application", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy("Application is running"));
+
+// Configure CORS based on environment
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    if (builder.Environment.IsDevelopment())
     {
-        policy.WithOrigins(
-                "http://localhost:3000",    // React default
-                "http://localhost:3001",    // React alternative
-                "http://localhost:4200",    // Angular default
-                "http://localhost:5173",    // Vite default
-                "http://localhost:8080",    // Vue default
-                "https://localhost:3000",   // HTTPS variants
-                "https://localhost:3001",
-                "https://localhost:4200",
-                "https://localhost:5173",
-                "https://localhost:8080"
-              )
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials(); // Permite cookies y headers de auth
-    });
+        // Development: Allow all localhost origins
+        options.AddPolicy("AllowAll", policy =>
+        {
+            policy.WithOrigins(
+                    "http://localhost:3000",    // React default
+                    "http://localhost:3001",    // React alternative
+                    "http://localhost:4200",    // Angular default
+                    "http://localhost:5173",    // Vite default
+                    "http://localhost:8080",    // Vue default
+                    "https://localhost:3000",   // HTTPS variants
+                    "https://localhost:3001",
+                    "https://localhost:4200",
+                    "https://localhost:5173",
+                    "https://localhost:8080"
+                  )
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials();
+        });
+    }
+    else
+    {
+        // Production/Staging: Restrict to specific origins
+        var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>() ?? new[] { "https://yourdomain.com" };
+        options.AddPolicy("AllowSpecificOrigins", policy =>
+        {
+            policy.WithOrigins(allowedOrigins)
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials();
+        });
+    }
 });
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Clean Architecture API V1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", $"Clean Architecture API V1 ({app.Environment.EnvironmentName.ToUpper()})");
         c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
+        c.DocumentTitle = $"Clean Architecture API - {app.Environment.EnvironmentName.ToUpper()}";
     });
 }
 
 app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+
+// Use appropriate CORS policy based on environment
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors("AllowAll");
+}
+else
+{
+    app.UseCors("AllowSpecificOrigins");
+}
+
+// Add health check endpoint
+app.MapHealthChecks("/health");
 
 // Configure localization
 var supportedCultures = new[] { "en", "es" };
@@ -167,6 +224,9 @@ var localizationOptions = new RequestLocalizationOptions()
     .AddSupportedCultures(supportedCultures)
     .AddSupportedUICultures(supportedCultures);
 app.UseRequestLocalization(localizationOptions);
+
+// Add environment validation middleware (optional, for runtime validation)
+// app.UseEnvironmentValidation(); // Uncomment if you want runtime validation
 
 // Add user timezone middleware (must be before exception handling)
 app.UseMiddleware<UserTimezoneMiddleware>();
