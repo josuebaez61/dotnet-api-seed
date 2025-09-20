@@ -373,3 +373,7 @@ Migrations/
 
 # Docker
 .dockerignore
+
+# Appsettings (ignore all except template)
+appsettings.*
+!appsettings.json.template
