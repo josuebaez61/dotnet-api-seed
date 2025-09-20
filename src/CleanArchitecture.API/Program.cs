@@ -103,6 +103,30 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("admin", policy => policy.RequireClaim("permission", "admin"));
     options.AddPolicy("superAdmin", policy => policy.RequireClaim("permission", "superAdmin"));
 
+    // Multiple Permission Policies (ANY of the permissions)
+    options.AddPolicy("manage.users.or.admin", policy =>
+        policy.RequireAssertion(context =>
+            context.User.HasClaim("permission", "manage.users") ||
+            context.User.HasClaim("permission", "admin") ||
+            context.User.HasClaim("permission", "superAdmin")));
+
+    options.AddPolicy("manage.roles.or.admin", policy =>
+        policy.RequireAssertion(context =>
+            context.User.HasClaim("permission", "manage.roles") ||
+            context.User.HasClaim("permission", "admin") ||
+            context.User.HasClaim("permission", "superAdmin")));
+
+    options.AddPolicy("admin.or.superadmin", policy =>
+        policy.RequireAssertion(context =>
+            context.User.HasClaim("permission", "admin") ||
+            context.User.HasClaim("permission", "superAdmin")));
+
+    // Multiple Permission Policies (ALL of the permissions)
+    options.AddPolicy("manage.users.and.roles", policy =>
+        policy.RequireAssertion(context =>
+            context.User.HasClaim("permission", "manage.users") &&
+            context.User.HasClaim("permission", "manage.roles")));
+
     // Legacy Policies (Deprecated but still supported)
     options.AddPolicy("Users.Read", policy => policy.RequireClaim("permission", "Users.Read"));
     options.AddPolicy("Users.Write", policy => policy.RequireClaim("permission", "Users.Write"));

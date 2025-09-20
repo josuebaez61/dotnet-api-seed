@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using CleanArchitecture.API.Attributes;
 using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.Common.Models;
@@ -34,7 +35,8 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpGet("paginated")]
-    [Authorize(Policy = PermissionConstants.ManageUsers)]
+    [Authorize]
+    [RequireAnyPermission(PermissionConstants.ManageUsers, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<PaginationResponse<UserDto>>>> GetUsersPaginated([FromQuery] GetUsersPaginatedRequestDto request)
     {
       var query = new GetUsersPaginatedQuery { Request = request };
@@ -177,6 +179,28 @@ namespace CleanArchitecture.API.Controllers
       {
         return BadRequest(ApiResponse<List<PermissionDto>>.ErrorResponse(ex.Message));
       }
+    }
+
+    // ===== EJEMPLOS DE USO DE LOS NUEVOS ATRIBUTOS DE AUTORIZACIÓN =====
+
+    /// <summary>
+    /// Ejemplo: Usuario necesita CUALQUIERA de estos permisos (manage.users O admin)
+    /// </summary>
+    [HttpGet("example/any-permission")]
+    [RequireAnyPermission(PermissionConstants.ManageUsers, PermissionConstants.Admin)]
+    public ActionResult<ApiResponse<string>> ExampleAnyPermission()
+    {
+      return Ok(ApiResponse<string>.SuccessResponse("Usuario tiene al menos uno de los permisos requeridos"));
+    }
+
+    /// <summary>
+    /// Ejemplo: Usuario necesita TODOS estos permisos (manage.users Y manage.roles)
+    /// </summary>
+    [HttpGet("example/all-permissions")]
+    [RequireAllPermissions(PermissionConstants.ManageUsers, PermissionConstants.ManageRoles)]
+    public ActionResult<ApiResponse<string>> ExampleAllPermissions()
+    {
+      return Ok(ApiResponse<string>.SuccessResponse("Usuario tiene todos los permisos requeridos"));
     }
   }
 }
