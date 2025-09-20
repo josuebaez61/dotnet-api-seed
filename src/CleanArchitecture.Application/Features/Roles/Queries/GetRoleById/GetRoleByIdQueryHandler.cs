@@ -40,10 +40,8 @@ namespace CleanArchitecture.Application.Features.Roles.Queries.GetRoleById
         Name = p.Name,
         Description = p.Description,
         Resource = p.Resource,
-        Action = p.Action,
-        Module = p.Module,
         CreatedAt = p.CreatedAt,
-        LastModifiedAt = p.LastModifiedAt
+        UpdatedAt = p.UpdatedAt
       }).ToList();
 
       return new RoleDto

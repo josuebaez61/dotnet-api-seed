@@ -94,9 +94,16 @@ namespace CleanArchitecture.Application.Features.Users.Queries.GetUsersPaginated
       }
 
       // Filtro por estado activo
-      if (request.IsActive.HasValue)
+      if (request.IsActive != null)
       {
-        query = query.Where(u => u.IsActive == request.IsActive.Value);
+        if (request.IsActive == "true")
+        {
+          query = query.Where(u => u.IsActive == true);
+        }
+        else if (request.IsActive == "false")
+        {
+          query = query.Where(u => u.IsActive == false);
+        }
       }
 
       // Filtro por confirmación de email

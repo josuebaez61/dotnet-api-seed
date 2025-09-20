@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CleanArchitecture.Domain.Common.Constants
 {
@@ -5,7 +7,7 @@ namespace CleanArchitecture.Domain.Common.Constants
   /// Constants for all system permissions
   /// Centralizes permission names to avoid typos and facilitate maintenance
   /// </summary>
-  public static class PermissionConstants
+  public static class PermissionNames
   {
     /// <summary>
     /// Permission to manage roles
@@ -20,12 +22,7 @@ namespace CleanArchitecture.Domain.Common.Constants
     /// <summary>
     /// Permission to manage user roles
     /// </summary>
-    public const string ManageUserRoles = "manage.user.roles";
-
-    /// <summary>
-    /// Permission to manage role permissions
-    /// </summary>
-    public const string ManageRolePermissions = "manage.role.permissions";
+    public const string ManageUserRoles = "manage.userRoles";
 
     /// <summary>
     /// Admin permission
@@ -47,14 +44,17 @@ namespace CleanArchitecture.Domain.Common.Constants
       return GetAllPermissions().Contains(permission);
     }
 
-    private static List<string> GetAllPermissions()
+    /// <summary>
+    /// Gets all available permissions in the system
+    /// </summary>
+    /// <returns>List of all permission strings</returns>
+    public static List<string> GetAllPermissions()
     {
       return new List<string>
       {
         ManageRoles,
         ManageUsers,
         ManageUserRoles,
-        ManageRolePermissions,
         Admin,
         SuperAdmin
       };

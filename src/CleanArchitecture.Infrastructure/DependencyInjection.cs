@@ -5,6 +5,7 @@ using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Infrastructure.Data;
 using CleanArchitecture.Infrastructure.Repositories;
 using CleanArchitecture.Infrastructure.Services;
+using CleanArchitecture.Infrastructure.Services.Seeders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -49,10 +50,18 @@ namespace CleanArchitecture.Infrastructure
       services.AddScoped<IPasswordResetCodeRepository, PasswordResetCodeRepository>();
       services.AddScoped<IEmailVerificationCodeRepository, EmailVerificationCodeRepository>();
 
+      // Seeders
+      services.AddScoped<ISeeder, RoleSeeder>();
+      services.AddScoped<ISeeder, PermissionSeeder>();
+      services.AddScoped<ISeeder, RolePermissionSeeder>();
+      services.AddScoped<ISeeder, AdminUserSeeder>();
+      services.AddScoped<ISeeder, CountrySeeder>();
+      services.AddScoped<ISeeder, CitySeeder>();
+      services.AddScoped<SeederRunner>();
+
+
       // Database initialization
       services.AddScoped<DatabaseInitializationService>();
-      services.AddScoped<CountryDataSeederService>();
-      services.AddScoped<CityDataSeederService>();
 
       // Cleanup services
       services.AddHostedService<CleanupService>();

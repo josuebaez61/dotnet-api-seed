@@ -24,7 +24,7 @@ namespace CleanArchitecture.Application.Features.Roles.Queries.GetAllRoles
 
     public async Task<List<RoleDto>> Handle(GetAllRolesQuery request, CancellationToken cancellationToken)
     {
-      var roles = await _roleManager.Roles.ToListAsync();
+      var roles = await _roleManager.Roles.OrderByDescending(r => r.UpdatedAt).ToListAsync();
 
       var roleDtos = new List<RoleDto>();
       foreach (var role in roles)
@@ -36,10 +36,8 @@ namespace CleanArchitecture.Application.Features.Roles.Queries.GetAllRoles
           Name = p.Name,
           Description = p.Description,
           Resource = p.Resource,
-          Action = p.Action,
-          Module = p.Module,
           CreatedAt = p.CreatedAt,
-          LastModifiedAt = p.LastModifiedAt
+          UpdatedAt = p.UpdatedAt
         }).ToList();
 
         roleDtos.Add(new RoleDto

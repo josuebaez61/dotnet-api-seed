@@ -38,7 +38,7 @@ namespace CleanArchitecture.API.Controllers
 
     [HttpGet("paginated")]
     [Authorize]
-    [RequireAnyPermission(PermissionConstants.ManageUsers, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
+    [RequireAnyPermission(PermissionNames.ManageUsers, PermissionNames.Admin, PermissionNames.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<PaginationResponse<UserDto>>>> GetUsersPaginated([FromQuery] GetUsersPaginatedRequestDto request)
     {
       var query = new GetUsersPaginatedQuery { Request = request };
@@ -48,7 +48,7 @@ namespace CleanArchitecture.API.Controllers
 
     [HttpGet]
     [Authorize]
-    [RequireAnyPermission(PermissionConstants.ManageUsers, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
+    [RequireAnyPermission(PermissionNames.ManageUsers, PermissionNames.Admin, PermissionNames.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<List<UserDto>>>> GetAllUsers()
     {
       var query = new GetAllUsersQuery();
@@ -58,7 +58,7 @@ namespace CleanArchitecture.API.Controllers
 
     [HttpGet("id/{id}")]
     [Authorize]
-    [RequireAnyPermission(PermissionConstants.ManageUsers, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
+    [RequireAnyPermission(PermissionNames.ManageUsers, PermissionNames.Admin, PermissionNames.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<UserDto>>> GetUserById(Guid id)
     {
       var query = new GetUserByIdQuery { Id = id };
@@ -72,7 +72,7 @@ namespace CleanArchitecture.API.Controllers
 
     [HttpPost]
     [Authorize]
-    [RequireAnyPermission(PermissionConstants.ManageUsers, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
+    [RequireAnyPermission(PermissionNames.ManageUsers, PermissionNames.Admin, PermissionNames.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<UserDto>>> CreateUser([FromBody] CreateUserDto userDto)
     {
       var command = new CreateUserCommand { User = userDto };
@@ -82,7 +82,7 @@ namespace CleanArchitecture.API.Controllers
 
     [HttpPut("id/{id}")]
     [Authorize]
-    [RequireAnyPermission(PermissionConstants.ManageUsers, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
+    [RequireAnyPermission(PermissionNames.ManageUsers, PermissionNames.Admin, PermissionNames.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<UserDto>>> UpdateUser([FromRoute] Guid id, [FromBody] UpdateUserDto userDto)
     {
       try
@@ -105,7 +105,7 @@ namespace CleanArchitecture.API.Controllers
     /// <returns>Lista de roles del usuario</returns>
     [HttpGet("id/{id}/roles")]
     [Authorize]
-    [RequireAnyPermission(PermissionConstants.ManageUserRoles, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
+    [RequireAnyPermission(PermissionNames.ManageUserRoles, PermissionNames.Admin, PermissionNames.SuperAdmin)]
     [ProducesResponseType(typeof(ApiResponse<List<RoleDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<List<RoleDto>>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ApiResponse<List<RoleDto>>), StatusCodes.Status400BadRequest)]
@@ -135,7 +135,7 @@ namespace CleanArchitecture.API.Controllers
     /// <returns>Lista actualizada de roles del usuario</returns>
     [HttpPut("id/{id}/roles")]
     [Authorize]
-    [RequireAnyPermission(PermissionConstants.ManageUserRoles, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
+    [RequireAnyPermission(PermissionNames.ManageUserRoles, PermissionNames.Admin, PermissionNames.SuperAdmin)]
     [ProducesResponseType(typeof(ApiResponse<List<RoleDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<List<RoleDto>>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ApiResponse<List<RoleDto>>), StatusCodes.Status400BadRequest)]
@@ -168,7 +168,7 @@ namespace CleanArchitecture.API.Controllers
     /// <returns>Lista de permisos del usuario a través de sus roles</returns>
     [HttpGet("id/{id}/permissions")]
     [Authorize]
-    [RequireAnyPermission(PermissionConstants.ManageUserRoles, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
+    [RequireAnyPermission(PermissionNames.ManageUserRoles, PermissionNames.Admin, PermissionNames.SuperAdmin)]
     [ProducesResponseType(typeof(ApiResponse<List<PermissionDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<List<PermissionDto>>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ApiResponse<List<PermissionDto>>), StatusCodes.Status400BadRequest)]
@@ -197,7 +197,7 @@ namespace CleanArchitecture.API.Controllers
     /// <returns>Resultado de la operación</returns>
     [HttpPatch("id/{id}/activate")]
     [Authorize]
-    [RequireAnyPermission(PermissionConstants.ManageUsers, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
+    [RequireAnyPermission(PermissionNames.ManageUsers, PermissionNames.Admin, PermissionNames.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<bool>>> ActivateUser(Guid id)
     {
       try
@@ -223,7 +223,7 @@ namespace CleanArchitecture.API.Controllers
     /// <returns>Resultado de la operación</returns>
     [HttpPatch("id/{id}/deactivate")]
     [Authorize]
-    [RequireAnyPermission(PermissionConstants.ManageUsers, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
+    [RequireAnyPermission(PermissionNames.ManageUsers, PermissionNames.Admin, PermissionNames.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<bool>>> DeactivateUser(Guid id)
     {
       try

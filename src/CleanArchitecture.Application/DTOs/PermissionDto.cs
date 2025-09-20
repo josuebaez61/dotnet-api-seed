@@ -8,10 +8,8 @@ namespace CleanArchitecture.Application.DTOs
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string Resource { get; set; } = string.Empty;
-    public string Action { get; set; } = string.Empty;
-    public string Module { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
-    public DateTime? LastModifiedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
   }
 
   public class CreatePermissionDto

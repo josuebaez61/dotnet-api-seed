@@ -27,7 +27,7 @@ namespace CleanArchitecture.Application.DTOs
     /// <summary>
     /// Filtrar por estado activo
     /// </summary>
-    public bool? IsActive { get; set; }
+    public string? IsActive { get; set; }
 
     /// <summary>
     /// Filtrar por confirmación de email

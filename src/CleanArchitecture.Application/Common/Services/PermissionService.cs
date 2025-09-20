@@ -140,15 +140,6 @@ namespace CleanArchitecture.Application.Common.Services
     }
 
     /// <summary>
-    /// Checks if user has a specific permission by resource and action
-    /// </summary>
-    public async Task<bool> HasPermissionAsync(Guid userId, string resource, string action)
-    {
-      var permissions = await GetUserPermissionsAsync(userId);
-      return permissions.Any(p => p.Resource == resource && p.Action == action);
-    }
-
-    /// <summary>
     /// Checks if user has a specific permission
     /// </summary>
     public async Task<bool> HasPermissionAsync(Guid userId, string permissionName)
@@ -204,48 +195,6 @@ namespace CleanArchitecture.Application.Common.Services
       return true;
     }
 
-    /// <summary>
-    /// Updates a permission
-    /// </summary>
-    public async Task<Permission?> UpdatePermissionAsync(Guid permissionId, Permission permissionData)
-    {
-      var permission = await _context.Permissions.FindAsync(permissionId);
-      if (permission == null)
-        return null;
-
-      permission.Name = permissionData.Name;
-      permission.Description = permissionData.Description;
-      permission.Resource = permissionData.Resource;
-      permission.Action = permissionData.Action;
-      permission.Module = permissionData.Module;
-      permission.UpdatedAt = DateTime.UtcNow;
-
-      _context.Permissions.Update(permission);
-      await _context.SaveChangesAsync();
-
-      return permission;
-    }
-
-    /// <summary>
-    /// Deletes a permission
-    /// </summary>
-    public async Task<bool> DeletePermissionAsync(Guid permissionId)
-    {
-      var permission = await _context.Permissions.FindAsync(permissionId);
-      if (permission == null)
-        return false;
-
-      // Remove all role-permission associations first
-      var rolePermissions = await _context.RolePermissions
-          .Where(rp => rp.PermissionId == permissionId)
-          .ToListAsync();
-
-      _context.RolePermissions.RemoveRange(rolePermissions);
-      _context.Permissions.Remove(permission);
-      await _context.SaveChangesAsync();
-
-      return true;
-    }
 
     /// <summary>
     /// Gets a permission by ID
@@ -270,20 +219,6 @@ namespace CleanArchitecture.Application.Common.Services
     public async Task<List<Permission>> GetAllPermissionsAsync()
     {
       return await _context.Permissions.ToListAsync();
-    }
-
-    /// <summary>
-    /// Creates a new permission
-    /// </summary>
-    public async Task<Permission> CreatePermissionAsync(Permission permission)
-    {
-      permission.Id = Guid.NewGuid();
-      permission.CreatedAt = DateTime.UtcNow;
-
-      _context.Permissions.Add(permission);
-      await _context.SaveChangesAsync();
-
-      return permission;
     }
   }
 }

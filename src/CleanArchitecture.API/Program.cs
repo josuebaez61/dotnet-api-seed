@@ -1,4 +1,6 @@
+using System.CommandLine;
 using System.Text;
+using CleanArchitecture.API.Commands;
 using CleanArchitecture.API.Extensions;
 using CleanArchitecture.API.Middleware;
 using CleanArchitecture.Application;
@@ -8,10 +10,21 @@ using CleanArchitecture.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Check if we're running CLI commands
+if (args.Length > 0 && IsCliCommand(args[0]))
+{
+    await RunCliCommands(args);
+    return;
+}
+
+// Continue with normal API startup
 
 // Add services to the container.
 builder.Services.AddControllers(options =>
@@ -202,3 +215,55 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+// Helper functions for CLI commands
+static bool IsCliCommand(string arg)
+{
+    var cliCommands = new[] { "seed", "truncate", "all", "run", "list" };
+    return cliCommands.Contains(arg, StringComparer.OrdinalIgnoreCase);
+}
+
+static async Task RunCliCommands(string[] args)
+{
+    try
+    {
+        // Build configuration
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
+            .AddEnvironmentVariables()
+            .Build();
+
+        // Build host for CLI
+        var host = Host.CreateDefaultBuilder(args)
+            .ConfigureServices((context, services) =>
+            {
+                // Add infrastructure services
+                services.AddInfrastructure(configuration);
+
+                // Add CLI commands
+                services.AddScoped<SeederCommand>();
+            })
+            .ConfigureLogging(logging =>
+            {
+                logging.ClearProviders();
+                logging.AddConsole();
+                logging.SetMinimumLevel(LogLevel.Information);
+            })
+            .Build();
+
+        // Create the seeder command
+        using var scope = host.Services.CreateScope();
+        var seederCommand = scope.ServiceProvider.GetRequiredService<SeederCommand>();
+        var rootCommand = seederCommand.CreateCommand();
+
+        // Execute the command
+        await rootCommand.InvokeAsync(args);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ Error: {ex.Message}");
+        Environment.Exit(1);
+    }
+}
