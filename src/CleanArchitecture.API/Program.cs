@@ -17,10 +17,23 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Local";
+Console.WriteLine($"Environment: {environment}");
+
+// Build configuration
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables()
+    .Build();
+
+builder.Configuration.AddConfiguration(configuration);
+
 // Check if we're running CLI commands
 if (args.Length > 0 && IsCliCommand(args[0]))
 {
-    await RunCliCommands(args);
+    await RunCliCommands(args, configuration);
     return;
 }
 
@@ -177,22 +190,14 @@ app.Run();
 // Helper functions for CLI commands
 static bool IsCliCommand(string arg)
 {
-    var cliCommands = new[] { "seed", "truncate", "all", "run", "list" };
+    var cliCommands = new[] { "--seed", "-s", "truncate", "list" };
     return cliCommands.Contains(arg, StringComparer.OrdinalIgnoreCase);
 }
 
-static async Task RunCliCommands(string[] args)
+static async Task RunCliCommands(string[] args, IConfiguration configuration)
 {
     try
     {
-        // Build configuration
-        var configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
-            .AddEnvironmentVariables()
-            .Build();
-
         // Build host for CLI
         var host = Host.CreateDefaultBuilder(args)
             .ConfigureServices((context, services) =>

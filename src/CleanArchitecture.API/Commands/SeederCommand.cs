@@ -32,17 +32,22 @@ namespace CleanArchitecture.API.Commands
     {
       var rootCommand = new RootCommand("Database seeding commands");
 
-      // All seeders command
-      var allCommand = new Command("all", "Run all seeders in the correct order");
-      allCommand.SetHandler(RunAllSeedersAsync);
-      rootCommand.AddCommand(allCommand);
-
-      // Specific seeder command
-      var seederCommand = new Command("run", "Run a specific seeder");
-      var seederNameArgument = new Argument<string>("name", "Name of the seeder to run");
-      seederCommand.AddArgument(seederNameArgument);
-      seederCommand.SetHandler(RunSpecificSeederAsync, seederNameArgument);
-      rootCommand.AddCommand(seederCommand);
+      // Seed option - can run all seeders or a specific one
+      var seedOption = new Option<string?>(
+        aliases: new[] { "--seed", "-s" },
+        description: "Run seeders. Use 'all' to run all seeders, or specify a seeder name (e.g., 'AdminUser', 'Roles', 'Countries')")
+      {
+        ArgumentHelpName = "seeder-name"
+      };
+      seedOption.AddValidator(result =>
+      {
+        var value = result.GetValueForOption(seedOption);
+        if (string.IsNullOrEmpty(value))
+        {
+          result.ErrorMessage = "Seeder name is required. Use 'all' to run all seeders or specify a specific seeder name.";
+        }
+      });
+      rootCommand.AddOption(seedOption);
 
       // List seeders command
       var listCommand = new Command("list", "List all available seeders");
@@ -54,7 +59,61 @@ namespace CleanArchitecture.API.Commands
       truncateCommand.SetHandler(TruncateAllTablesAsync);
       rootCommand.AddCommand(truncateCommand);
 
+      // Set handler for seed option
+      rootCommand.SetHandler(RunSeedersAsync, seedOption);
+
       return rootCommand;
+    }
+
+    /// <summary>
+    /// Handles the --seed option
+    /// </summary>
+    private async Task RunSeedersAsync(string? seederName)
+    {
+      if (string.IsNullOrEmpty(seederName))
+      {
+        _logger.LogError("❌ Seeder name is required. Use 'all' to run all seeders or specify a specific seeder name.");
+        return;
+      }
+
+      // Check if running in Production environment
+      var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+      if (string.Equals(environment, "Production", StringComparison.OrdinalIgnoreCase))
+      {
+        _logger.LogWarning("⚠️  WARNING: You are about to run seeders in PRODUCTION environment!");
+        _logger.LogWarning("⚠️  This action will modify the production database.");
+        _logger.LogWarning("⚠️  Seeder: {SeederName}", seederName);
+        _logger.LogWarning("⚠️  Environment: {Environment}", environment);
+
+        Console.WriteLine();
+        Console.WriteLine("🚨 PRODUCTION ENVIRONMENT DETECTED 🚨");
+        Console.WriteLine($"You are about to run seeder: {seederName}");
+        Console.WriteLine($"Environment: {environment}");
+        Console.WriteLine();
+        Console.WriteLine("This action will modify the PRODUCTION database!");
+        Console.WriteLine("Type 'CONFIRM' (in uppercase) to proceed, or anything else to cancel:");
+
+        var confirmation = Console.ReadLine();
+        if (!string.Equals(confirmation, "CONFIRM", StringComparison.OrdinalIgnoreCase))
+        {
+          _logger.LogInformation("❌ Operation cancelled by user");
+          Console.WriteLine("❌ Operation cancelled. No changes made to the database.");
+          return;
+        }
+
+        _logger.LogWarning("✅ User confirmed operation in Production environment");
+        Console.WriteLine("✅ Confirmed. Proceeding with seeding in Production...");
+        Console.WriteLine();
+      }
+
+      if (seederName.Equals("all", StringComparison.OrdinalIgnoreCase))
+      {
+        await RunAllSeedersAsync();
+      }
+      else
+      {
+        await RunSpecificSeederAsync(seederName);
+      }
     }
 
     private async Task RunAllSeedersAsync()
