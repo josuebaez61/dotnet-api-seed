@@ -25,7 +25,7 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpGet]
-    [Authorize(Policy = PermissionConstants.Permissions.Read)]
+    [Authorize(Policy = PermissionConstants.ManageRolePermissions)]
     public async Task<ActionResult<ApiResponse<List<PermissionDto>>>> GetAllPermissions()
     {
       try
@@ -41,7 +41,7 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpPost]
-    [Authorize(Policy = PermissionConstants.Permissions.Write)]
+    [Authorize(Policy = PermissionConstants.ManageRolePermissions)]
     public async Task<ActionResult<ApiResponse<PermissionDto>>> CreatePermission([FromBody] CreatePermissionDto request)
     {
       try

@@ -95,16 +95,20 @@ builder.Services.AddAuthentication(options =>
 // Configure Authorization Policies
 builder.Services.AddAuthorization(options =>
 {
-    // User Management Policies
+    // New Permission System Policies
+    options.AddPolicy("manage.roles", policy => policy.RequireClaim("permission", "manage.roles"));
+    options.AddPolicy("manage.users", policy => policy.RequireClaim("permission", "manage.users"));
+    options.AddPolicy("manage.user.roles", policy => policy.RequireClaim("permission", "manage.user.roles"));
+    options.AddPolicy("manage.role.permissions", policy => policy.RequireClaim("permission", "manage.role.permissions"));
+    options.AddPolicy("admin", policy => policy.RequireClaim("permission", "admin"));
+    options.AddPolicy("superAdmin", policy => policy.RequireClaim("permission", "superAdmin"));
+
+    // Legacy Policies (Deprecated but still supported)
     options.AddPolicy("Users.Read", policy => policy.RequireClaim("permission", "Users.Read"));
     options.AddPolicy("Users.Write", policy => policy.RequireClaim("permission", "Users.Write"));
     options.AddPolicy("Users.Delete", policy => policy.RequireClaim("permission", "Users.Delete"));
-
-    // Role Management Policies
     options.AddPolicy("Roles.Read", policy => policy.RequireClaim("permission", "Roles.Read"));
     options.AddPolicy("Roles.Write", policy => policy.RequireClaim("permission", "Roles.Write"));
-
-    // Permission Management Policies
     options.AddPolicy("Permissions.Read", policy => policy.RequireClaim("permission", "Permissions.Read"));
     options.AddPolicy("Permissions.Write", policy => policy.RequireClaim("permission", "Permissions.Write"));
 });

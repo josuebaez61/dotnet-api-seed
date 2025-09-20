@@ -34,7 +34,7 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpGet("paginated")]
-    [Authorize(Policy = PermissionConstants.Users.Read)]
+    [Authorize(Policy = PermissionConstants.ManageUsers)]
     public async Task<ActionResult<ApiResponse<PaginationResponse<UserDto>>>> GetUsersPaginated([FromQuery] GetUsersPaginatedRequestDto request)
     {
       var query = new GetUsersPaginatedQuery { Request = request };
@@ -43,7 +43,7 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpGet]
-    [Authorize(Policy = PermissionConstants.Users.Read)]
+    [Authorize(Policy = PermissionConstants.ManageUsers)]
     public async Task<ActionResult<ApiResponse<List<UserDto>>>> GetAllUsers()
     {
       var query = new GetAllUsersQuery();
@@ -52,7 +52,7 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpGet("id/{id}")]
-    [Authorize(Policy = PermissionConstants.Users.Read)]
+    [Authorize(Policy = PermissionConstants.ManageUsers)]
     public async Task<ActionResult<ApiResponse<UserDto>>> GetUserById(Guid id)
     {
       var query = new GetUserByIdQuery { Id = id };
@@ -65,7 +65,7 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpPost]
-    [Authorize(Policy = PermissionConstants.Users.Write)]
+    [Authorize(Policy = PermissionConstants.ManageUsers)]
     public async Task<ActionResult<ApiResponse<UserDto>>> CreateUser([FromBody] CreateUserDto userDto)
     {
       var command = new CreateUserCommand { User = userDto };
@@ -74,7 +74,7 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpPut("id/{id}")]
-    [Authorize(Policy = PermissionConstants.Users.Write)]
+    [Authorize(Policy = PermissionConstants.ManageUsers)]
     public async Task<ActionResult<ApiResponse<UserDto>>> UpdateUser([FromRoute] Guid id, [FromBody] UpdateUserDto userDto)
     {
       try
@@ -96,6 +96,7 @@ namespace CleanArchitecture.API.Controllers
     /// <param name="id">ID del usuario</param>
     /// <returns>Lista de roles del usuario</returns>
     [HttpGet("id/{id}/roles")]
+    [Authorize(Policy = PermissionConstants.ManageUserRoles)]
     [ProducesResponseType(typeof(ApiResponse<List<RoleDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<List<RoleDto>>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ApiResponse<List<RoleDto>>), StatusCodes.Status400BadRequest)]
@@ -124,6 +125,7 @@ namespace CleanArchitecture.API.Controllers
     /// <param name="request">Lista de IDs de roles a asignar</param>
     /// <returns>Lista actualizada de roles del usuario</returns>
     [HttpPut("id/{id}/roles")]
+    [Authorize(Policy = PermissionConstants.ManageUserRoles)]
     [ProducesResponseType(typeof(ApiResponse<List<RoleDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<List<RoleDto>>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ApiResponse<List<RoleDto>>), StatusCodes.Status400BadRequest)]
@@ -155,6 +157,7 @@ namespace CleanArchitecture.API.Controllers
     /// <param name="id">ID del usuario</param>
     /// <returns>Lista de permisos del usuario a través de sus roles</returns>
     [HttpGet("id/{id}/permissions")]
+    [Authorize(Policy = PermissionConstants.ManageUserRoles)]
     [ProducesResponseType(typeof(ApiResponse<List<PermissionDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<List<PermissionDto>>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ApiResponse<List<PermissionDto>>), StatusCodes.Status400BadRequest)]

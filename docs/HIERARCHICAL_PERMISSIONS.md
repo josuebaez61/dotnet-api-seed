@@ -1,52 +1,58 @@
-# Hierarchical Permissions System
+# New Simplified Permissions System
 
-This document describes the hierarchical permissions system implemented in the Clean Architecture application.
+This document describes the new simplified permissions system implemented in the Clean Architecture application.
 
 ## 🎯 **Overview**
 
-The hierarchical permissions system allows you to define permission relationships where higher-level permissions automatically include lower-level permissions. This eliminates the need to manually assign multiple related permissions to roles.
+The new permissions system uses a simplified approach with 6 core permissions that cover all system functionality. This eliminates complex hierarchical relationships and makes permission management more straightforward.
 
 ## 🏗️ **Architecture**
 
 ### **Core Components**
 
 1. **`HierarchicalPermissionService`** - Wraps the base permission service and adds hierarchical logic
-2. **`HierarchicalPermissionConfiguration`** - Defines the permission hierarchy relationships
-3. **`PermissionHierarchyController`** - API endpoints for testing and managing hierarchies
+2. **`PermissionConstants.NewPermissions`** - Defines the new simplified permission constants
+3. **`DatabaseInitializationService`** - Seeds the new permission system
 
 ### **How It Works**
 
-When a user or role is assigned a permission, the system automatically includes all hierarchical permissions defined for that permission.
+The new system uses 6 core permissions that provide clear, non-overlapping access control:
 
-## 📋 **Permission Hierarchy Examples**
+## 📋 **New Permission System**
 
-### **Users Module**
+### **Core Permissions**
+
+```
+manage.roles          → Manage roles (create, update, delete, read)
+manage.users          → Manage users (create, update, delete, read)
+manage.user.roles     → Manage user-role assignments
+manage.role.permissions → Manage role-permission assignments
+admin                 → Administrative access
+superAdmin            → Super administrative access (includes all permissions)
+```
+
+### **Permission Hierarchy**
+
+```
+superAdmin → All permissions (admin + manage.roles + manage.users + manage.user.roles + manage.role.permissions)
+admin → Administrative access
+manage.role.permissions → Can assign/remove permissions from roles
+manage.user.roles → Can assign/remove roles from users
+manage.roles → Can manage roles
+manage.users → Can manage users
+```
+
+### **Legacy System (Deprecated)**
+
+The old hierarchical system is still supported but marked as deprecated:
 
 ```
 Users.Write → Users.Read
 Users.Update → Users.Read
 Users.Delete → Users.Read
-Users.ViewSensitive → Users.Read
-Users.ManageRoles → Users.Read + Users.Write + Users.Update + Roles.Read
-Users.Manage → All Users permissions (Read, Write, Update, Delete, ManageRoles, ViewSensitive)
-```
-
-### **Roles Module**
-
-```
 Roles.Write → Roles.Read
-Roles.Update → Roles.Read
-Roles.Delete → Roles.Read
-Roles.ManagePermissions → Roles.Read + Roles.Write + Roles.Update + Permissions.Read
-Roles.Manage → All Roles permissions (Read, Write, Update, Delete, ManagePermissions)
-```
-
-### **System Module**
-
-```
-System.ManageSettings → System.ViewLogs
-System.Maintenance → System.ViewLogs + System.ManageSettings
-System.Admin → ALL system permissions
+Permissions.Write → Permissions.Read
+System.Admin → System permissions
 ```
 
 ### **Audit Module**

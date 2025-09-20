@@ -15,6 +15,8 @@ docs/                               # Documentación del proyecto
 ├── README.md                       # Documentación principal
 ├── AUTHENTICATION.md               # Sistema de autenticación
 ├── PERMISSIONS_AND_ROLES.md        # Sistema de permisos y roles
+├── HIERARCHICAL_PERMISSIONS.md     # Sistema de permisos jerárquicos
+├── NEW_PERMISSIONS_MIGRATION.md    # Migración al nuevo sistema de permisos
 ├── ERROR_HANDLING.md               # Manejo de errores
 ├── LOCALIZATION_AND_EMAIL.md       # Localización y emails
 ├── UTC_DATETIME_SYSTEM.md          # Sistema de fechas UTC

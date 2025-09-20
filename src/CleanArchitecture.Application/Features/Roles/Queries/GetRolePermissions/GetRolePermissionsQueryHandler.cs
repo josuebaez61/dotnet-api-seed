@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CleanArchitecture.Application.Common.Configurations;
 using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.DTOs;
@@ -69,23 +68,10 @@ namespace CleanArchitecture.Application.Features.Roles.Queries.GetRolePermission
           ParentPermissions = new List<string>()
         };
 
-        // Check if this permission is included by hierarchy
-        var parentPermissions = HierarchicalPermissionConfiguration.GetParentPermissions(permission.Name);
-        foreach (var parentPermission in parentPermissions)
-        {
-          if (assignedPermissionNames.Contains(parentPermission))
-          {
-            permissionItem.IsIncludedByHierarchy = true;
-            permissionItem.IncludedBy = parentPermission;
-            break; // Only show the first parent that includes it
-          }
-        }
-
-        // Get permissions that this permission includes hierarchically
-        permissionItem.IncludesPermissions = HierarchicalPermissionConfiguration.GetHierarchicalPermissions(permission.Name);
-
-        // Get parent permissions that include this one
-        permissionItem.ParentPermissions = parentPermissions;
+        // Simplified - no hierarchical permissions
+        permissionItem.IsIncludedByHierarchy = false;
+        permissionItem.IncludesPermissions = new List<string>();
+        permissionItem.ParentPermissions = new List<string>();
 
         response.Permissions.Add(permissionItem);
       }

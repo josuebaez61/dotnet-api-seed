@@ -1,3 +1,4 @@
+
 namespace CleanArchitecture.Domain.Common.Constants
 {
   /// <summary>
@@ -6,253 +7,35 @@ namespace CleanArchitecture.Domain.Common.Constants
   /// </summary>
   public static class PermissionConstants
   {
-    #region Users Permissions
+    /// <summary>
+    /// Permission to manage roles
+    /// </summary>
+    public const string ManageRoles = "manage.roles";
 
     /// <summary>
-    /// Permissions related to user management
+    /// Permission to manage users
     /// </summary>
-    public static class Users
-    {
-      /// <summary>
-      /// Permission to read/list users
-      /// </summary>
-      public const string Read = "Users.Read";
-
-      /// <summary>
-      /// Permission to create new users
-      /// </summary>
-      public const string Write = "Users.Write";
-
-      /// <summary>
-      /// Permission to update existing users
-      /// </summary>
-      public const string Update = "Users.Update";
-
-      /// <summary>
-      /// Permission to delete users
-      /// </summary>
-      public const string Delete = "Users.Delete";
-
-      /// <summary>
-      /// Permission to manage user roles
-      /// </summary>
-      public const string ManageRoles = "Users.ManageRoles";
-
-      /// <summary>
-      /// Permission to view sensitive user information
-      /// </summary>
-      public const string ViewSensitive = "Users.ViewSensitive";
-
-      /// <summary>
-      /// Permission to manage users (includes all user operations)
-      /// </summary>
-      public const string Manage = "Users.Manage";
-    }
-
-    #endregion
-
-    #region Roles Permissions
+    public const string ManageUsers = "manage.users";
 
     /// <summary>
-    /// Permissions related to role management
+    /// Permission to manage user roles
     /// </summary>
-    public static class Roles
-    {
-      /// <summary>
-      /// Permission to read/list roles
-      /// </summary>
-      public const string Read = "Roles.Read";
-
-      /// <summary>
-      /// Permission to create new roles
-      /// </summary>
-      public const string Write = "Roles.Write";
-
-      /// <summary>
-      /// Permission to update existing roles
-      /// </summary>
-      public const string Update = "Roles.Update";
-
-      /// <summary>
-      /// Permission to delete roles
-      /// </summary>
-      public const string Delete = "Roles.Delete";
-
-      /// <summary>
-      /// Permission to manage role permissions
-      /// </summary>
-      public const string ManagePermissions = "Roles.ManagePermissions";
-
-      /// <summary>
-      /// Permission to manage roles (includes all role operations)
-      /// </summary>
-      public const string Manage = "Roles.Manage";
-    }
-
-    #endregion
-
-    #region Permissions Permissions
+    public const string ManageUserRoles = "manage.user.roles";
 
     /// <summary>
-    /// Permissions related to permission management
+    /// Permission to manage role permissions
     /// </summary>
-    public static class Permissions
-    {
-      /// <summary>
-      /// Permission to read/list permissions
-      /// </summary>
-      public const string Read = "Permissions.Read";
-
-      /// <summary>
-      /// Permission to create new permissions
-      /// </summary>
-      public const string Write = "Permissions.Write";
-
-      /// <summary>
-      /// Permission to update existing permissions
-      /// </summary>
-      public const string Update = "Permissions.Update";
-
-      /// <summary>
-      /// Permission to delete permissions
-      /// </summary>
-      public const string Delete = "Permissions.Delete";
-    }
-
-    #endregion
-
-    #region System Permissions
+    public const string ManageRolePermissions = "manage.role.permissions";
 
     /// <summary>
-    /// Permissions related to system administration
+    /// Admin permission
     /// </summary>
-    public static class System
-    {
-      /// <summary>
-      /// Permission to access the administration panel
-      /// </summary>
-      public const string Admin = "System.Admin";
-
-      /// <summary>
-      /// Permission to view system logs
-      /// </summary>
-      public const string ViewLogs = "System.ViewLogs";
-
-      /// <summary>
-      /// Permission to manage system settings
-      /// </summary>
-      public const string ManageSettings = "System.ManageSettings";
-
-      /// <summary>
-      /// Permission to execute maintenance tasks
-      /// </summary>
-      public const string Maintenance = "System.Maintenance";
-    }
-
-    #endregion
-
-    #region Audit Permissions
+    public const string Admin = "admin";
 
     /// <summary>
-    /// Permissions related to audit and reports
+    /// Super admin permission
     /// </summary>
-    public static class Audit
-    {
-      /// <summary>
-      /// Permission to view audit reports
-      /// </summary>
-      public const string ViewReports = "Audit.ViewReports";
-
-      /// <summary>
-      /// Permission to export audit data
-      /// </summary>
-      public const string ExportData = "Audit.ExportData";
-    }
-
-    #endregion
-
-    #region Helper Methods
-
-    /// <summary>
-    /// Gets all system permissions as a list
-    /// </summary>
-    /// <returns>List of all available permissions</returns>
-    public static List<string> GetAllPermissions()
-    {
-      return new List<string>
-            {
-                // Users permissions
-                Users.Read,
-                Users.Write,
-                Users.Update,
-                Users.Delete,
-                Users.ManageRoles,
-                Users.ViewSensitive,
-                Users.Manage,
-                
-                // Roles permissions
-                Roles.Read,
-                Roles.Write,
-                Roles.Update,
-                Roles.Delete,
-                Roles.ManagePermissions,
-                Roles.Manage,
-                
-                // Permissions permissions
-                Permissions.Read,
-                Permissions.Write,
-                Permissions.Update,
-                Permissions.Delete,
-                
-                // System permissions
-                System.Admin,
-                System.ViewLogs,
-                System.ManageSettings,
-                System.Maintenance,
-                
-                // Audit permissions
-                Audit.ViewReports,
-                Audit.ExportData
-            };
-    }
-
-    /// <summary>
-    /// Gets the basic permissions that a standard user should have
-    /// </summary>
-    /// <returns>List of basic permissions</returns>
-    public static List<string> GetBasicUserPermissions()
-    {
-      return new List<string>
-            {
-                Users.Read, // Can view their own profile and list basic users
-            };
-    }
-
-    /// <summary>
-    /// Gets the permissions that an administrator should have
-    /// </summary>
-    /// <returns>List of administrator permissions</returns>
-    public static List<string> GetAdminPermissions()
-    {
-      return GetAllPermissions();
-    }
-
-    /// <summary>
-    /// Gets the permissions that a moderator should have
-    /// </summary>
-    /// <returns>List of moderator permissions</returns>
-    public static List<string> GetModeratorPermissions()
-    {
-      return new List<string>
-            {
-                Users.Read,
-                Users.Write,
-                Users.Update,
-                Roles.Read,
-                Permissions.Read,
-                Audit.ViewReports
-            };
-    }
+    public const string SuperAdmin = "superAdmin";
 
     /// <summary>
     /// Verifies if a permission exists in the system
@@ -264,6 +47,17 @@ namespace CleanArchitecture.Domain.Common.Constants
       return GetAllPermissions().Contains(permission);
     }
 
-    #endregion
+    private static List<string> GetAllPermissions()
+    {
+      return new List<string>
+      {
+        ManageRoles,
+        ManageUsers,
+        ManageUserRoles,
+        ManageRolePermissions,
+        Admin,
+        SuperAdmin
+      };
+    }
   }
 }

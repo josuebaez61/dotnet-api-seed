@@ -259,7 +259,6 @@ namespace CleanArchitecture.Application.Common.Services
         User = _mapper.Map<AuthUserDto>(user)
       };
     }
-
     public async Task<string> GeneratePasswordResetCodeAsync(Guid userId)
     {
       // Generar código string aleatorio (similar al de confirmación de email)

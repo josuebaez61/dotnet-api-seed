@@ -21,24 +21,40 @@ namespace CleanArchitecture.Infrastructure.Services
     private static readonly Guid UserRoleId = new Guid("c894dc98-510d-4a96-8e90-aecf829d2a7c");
     private static readonly Guid AdminUserId = new Guid("f9e8d7c6-b5a4-3210-9876-543210fedcba");
 
-    // Permission GUIDs
-    private static readonly Guid UserReadPermissionId = new Guid("32edea54-6b49-4f4f-8257-aa1992f23c28");
-    private static readonly Guid UserWritePermissionId = new Guid("e1d015ea-0d8a-42b5-a0c1-237a8e018999");
-    private static readonly Guid UserDeletePermissionId = new Guid("3c883108-b93d-4142-acc8-bbd67f694fb1");
-    private static readonly Guid RoleReadPermissionId = new Guid("02033fae-fccd-4a7f-8cea-06a43178ec73");
-    private static readonly Guid RoleWritePermissionId = new Guid("082a40e0-2ff4-4c05-a078-4dfaf778172f");
-    private static readonly Guid PermissionReadPermissionId = new Guid("a1b2c3d4-e5f6-7890-abcd-ef1234567890");
-    private static readonly Guid PermissionWritePermissionId = new Guid("b2c3d4e5-f6a7-8901-bcde-f23456789012");
+    // New Permission GUIDs
+    private static readonly Guid ManageRolesPermissionId = new Guid("32edea54-6b49-4f4f-8257-aa1992f23c28");
+    private static readonly Guid ManageUsersPermissionId = new Guid("e1d015ea-0d8a-42b5-a0c1-237a8e018999");
+    private static readonly Guid ManageUserRolesPermissionId = new Guid("3c883108-b93d-4142-acc8-bbd67f694fb1");
+    private static readonly Guid ManageRolePermissionsPermissionId = new Guid("02033fae-fccd-4a7f-8cea-06a43178ec73");
+    private static readonly Guid AdminPermissionId = new Guid("082a40e0-2ff4-4c05-a078-4dfaf778172f");
+    private static readonly Guid SuperAdminPermissionId = new Guid("a1b2c3d4-e5f6-7890-abcd-ef1234567890");
 
-    // RolePermission GUIDs
-    private static readonly Guid AdminUserReadPermissionId = new Guid("54135e51-88ee-490b-92b6-31fc3802db45");
-    private static readonly Guid AdminUserWritePermissionId = new Guid("8fccec4a-199d-4e4d-8f33-659d7ea41d8c");
-    private static readonly Guid AdminUserDeletePermissionId = new Guid("94ef9ec0-390e-4e4f-8da4-80a49ea997b6");
-    private static readonly Guid AdminRoleReadPermissionId = new Guid("b4c4f525-866d-468f-b474-e7a0ffc8e53f");
-    private static readonly Guid AdminRoleWritePermissionId = new Guid("ea00cad1-99a9-415c-b8b8-4bf5efd0f81b");
-    private static readonly Guid AdminPermissionReadPermissionId = new Guid("f1a2b3c4-d5e6-7890-abcd-ef1234567890");
-    private static readonly Guid AdminPermissionWritePermissionId = new Guid("a2b3c4d5-e6f7-8901-bcde-f23456789012");
-    private static readonly Guid UserUserReadPermissionId = new Guid("b3c4d5e6-f7a8-9012-cdef-345678901234");
+    // Legacy Permission GUIDs (for backward compatibility)
+    private static readonly Guid UserReadPermissionId = new Guid("b2c3d4e5-f6a7-8901-bcde-f23456789012");
+    private static readonly Guid UserWritePermissionId = new Guid("c3d4e5f6-a7b8-9012-cdef-345678901234");
+    private static readonly Guid UserDeletePermissionId = new Guid("d4e5f6a7-b8c9-0123-def4-456789012345");
+    private static readonly Guid RoleReadPermissionId = new Guid("e5f6a7b8-c9d0-1234-ef56-567890123456");
+    private static readonly Guid RoleWritePermissionId = new Guid("f6a7b8c9-d0e1-2345-f678-678901234567");
+    private static readonly Guid PermissionReadPermissionId = new Guid("a7b8c9d0-e1f2-3456-789a-789012345678");
+    private static readonly Guid PermissionWritePermissionId = new Guid("b8c9d0e1-f2a3-4567-89ab-890123456789");
+
+    // New RolePermission GUIDs
+    private static readonly Guid AdminManageRolesPermissionId = new Guid("54135e51-88ee-490b-92b6-31fc3802db45");
+    private static readonly Guid AdminManageUsersPermissionId = new Guid("8fccec4a-199d-4e4d-8f33-659d7ea41d8c");
+    private static readonly Guid AdminManageUserRolesPermissionId = new Guid("94ef9ec0-390e-4e4f-8da4-80a49ea997b6");
+    private static readonly Guid AdminManageRolePermissionsPermissionId = new Guid("b4c4f525-866d-468f-b474-e7a0ffc8e53f");
+    private static readonly Guid AdminAdminPermissionId = new Guid("ea00cad1-99a9-415c-b8b8-4bf5efd0f81b");
+    private static readonly Guid AdminSuperAdminPermissionId = new Guid("f1a2b3c4-d5e6-7890-abcd-ef1234567890");
+
+    // Legacy RolePermission GUIDs (for backward compatibility)
+    private static readonly Guid AdminUserReadPermissionId = new Guid("a2b3c4d5-e6f7-8901-bcde-f23456789012");
+    private static readonly Guid AdminUserWritePermissionId = new Guid("b3c4d5e6-f7a8-9012-cdef-345678901234");
+    private static readonly Guid AdminUserDeletePermissionId = new Guid("c4d5e6f7-a8b9-0123-def4-456789012345");
+    private static readonly Guid AdminRoleReadPermissionId = new Guid("d5e6f7a8-b9c0-1234-ef56-567890123456");
+    private static readonly Guid AdminRoleWritePermissionId = new Guid("e6f7a8b9-c0d1-2345-f678-678901234567");
+    private static readonly Guid AdminPermissionReadPermissionId = new Guid("f7a8b9c0-d1e2-3456-789a-789012345678");
+    private static readonly Guid AdminPermissionWritePermissionId = new Guid("a8b9c0d1-e2f3-4567-89ab-890123456789");
+    private static readonly Guid UserUserReadPermissionId = new Guid("b9c0d1e2-f3a4-5678-9abc-901234567890");
 
     private static readonly DateTime SeedTimestamp = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
@@ -122,13 +138,77 @@ namespace CleanArchitecture.Infrastructure.Services
         return; // Permissions already seeded
       }
 
-      var permissions = new[]
+      var newPermissions = new[]
+      {
+        new Permission
+        {
+          Id = ManageRolesPermissionId,
+          Name = PermissionConstants.ManageRoles,
+          Description = "Manage roles (create, update, delete, read)",
+          Resource = "Roles",
+          Action = "Manage",
+          Module = "RoleManagement",
+          CreatedAt = SeedTimestamp
+        },
+        new Permission
+        {
+          Id = ManageUsersPermissionId,
+          Name = PermissionConstants.ManageUsers,
+          Description = "Manage users (create, update, delete, read)",
+          Resource = "Users",
+          Action = "Manage",
+          Module = "UserManagement",
+          CreatedAt = SeedTimestamp
+        },
+        new Permission
+        {
+          Id = ManageUserRolesPermissionId,
+          Name = PermissionConstants.ManageUserRoles,
+          Description = "Manage user-role assignments",
+          Resource = "UserRoles",
+          Action = "Manage",
+          Module = "UserManagement",
+          CreatedAt = SeedTimestamp
+        },
+        new Permission
+        {
+          Id = ManageRolePermissionsPermissionId,
+          Name = PermissionConstants.ManageRolePermissions,
+          Description = "Manage role-permission assignments",
+          Resource = "RolePermissions",
+          Action = "Manage",
+          Module = "PermissionManagement",
+          CreatedAt = SeedTimestamp
+        },
+        new Permission
+        {
+          Id = AdminPermissionId,
+          Name = PermissionConstants.Admin,
+          Description = "Administrative access",
+          Resource = "System",
+          Action = "Admin",
+          Module = "System",
+          CreatedAt = SeedTimestamp
+        },
+        new Permission
+        {
+          Id = SuperAdminPermissionId,
+          Name = PermissionConstants.SuperAdmin,
+          Description = "Super administrative access (includes all permissions)",
+          Resource = "System",
+          Action = "SuperAdmin",
+          Module = "System",
+          CreatedAt = SeedTimestamp
+        }
+      };
+
+      var legacyPermissions = new[]
       {
         new Permission
         {
           Id = UserReadPermissionId,
-          Name = PermissionConstants.Users.Read,
-          Description = "Read access to users",
+          Name = "Users.Read", // Legacy permission
+          Description = "Read access to users (Legacy)",
           Resource = "Users",
           Action = "Read",
           Module = "UserManagement",
@@ -137,8 +217,8 @@ namespace CleanArchitecture.Infrastructure.Services
         new Permission
         {
           Id = UserWritePermissionId,
-          Name = PermissionConstants.Users.Write,
-          Description = "Write access to users",
+          Name = "Users.Write", // Legacy permission
+          Description = "Write access to users (Legacy)",
           Resource = "Users",
           Action = "Write",
           Module = "UserManagement",
@@ -147,8 +227,8 @@ namespace CleanArchitecture.Infrastructure.Services
         new Permission
         {
           Id = UserDeletePermissionId,
-          Name = PermissionConstants.Users.Delete,
-          Description = "Delete access to users",
+          Name = "Users.Delete", // Legacy permission
+          Description = "Delete access to users (Legacy)",
           Resource = "Users",
           Action = "Delete",
           Module = "UserManagement",
@@ -157,8 +237,8 @@ namespace CleanArchitecture.Infrastructure.Services
         new Permission
         {
           Id = RoleReadPermissionId,
-          Name = PermissionConstants.Roles.Read,
-          Description = "Read access to roles",
+          Name = "Roles.Read", // Legacy permission
+          Description = "Read access to roles (Legacy)",
           Resource = "Roles",
           Action = "Read",
           Module = "RoleManagement",
@@ -167,8 +247,8 @@ namespace CleanArchitecture.Infrastructure.Services
         new Permission
         {
           Id = RoleWritePermissionId,
-          Name = PermissionConstants.Roles.Write,
-          Description = "Write access to roles",
+          Name = "Roles.Write", // Legacy permission
+          Description = "Write access to roles (Legacy)",
           Resource = "Roles",
           Action = "Write",
           Module = "RoleManagement",
@@ -177,8 +257,8 @@ namespace CleanArchitecture.Infrastructure.Services
         new Permission
         {
           Id = PermissionReadPermissionId,
-          Name = PermissionConstants.Permissions.Read,
-          Description = "Read access to permissions",
+          Name = "Permissions.Read", // Legacy permission
+          Description = "Read access to permissions (Legacy)",
           Resource = "Permissions",
           Action = "Read",
           Module = "PermissionManagement",
@@ -187,8 +267,8 @@ namespace CleanArchitecture.Infrastructure.Services
         new Permission
         {
           Id = PermissionWritePermissionId,
-          Name = PermissionConstants.Permissions.Write,
-          Description = "Write access to permissions",
+          Name = "Permissions.Write", // Legacy permission
+          Description = "Write access to permissions (Legacy)",
           Resource = "Permissions",
           Action = "Write",
           Module = "PermissionManagement",
@@ -196,7 +276,9 @@ namespace CleanArchitecture.Infrastructure.Services
         }
       };
 
-      await _context.Permissions.AddRangeAsync(permissions);
+      // Add both new and legacy permissions
+      await _context.Permissions.AddRangeAsync(newPermissions);
+      await _context.Permissions.AddRangeAsync(legacyPermissions);
       await _context.SaveChangesAsync();
     }
 
@@ -208,9 +290,56 @@ namespace CleanArchitecture.Infrastructure.Services
         return; // Role permissions already seeded
       }
 
-      var rolePermissions = new[]
+      var newRolePermissions = new[]
       {
-        // Admin role gets all permissions
+        // Admin role gets all new permissions
+        new RolePermission
+        {
+          Id = AdminManageRolesPermissionId,
+          RoleId = AdminRoleId,
+          PermissionId = ManageRolesPermissionId,
+          CreatedAt = SeedTimestamp
+        },
+        new RolePermission
+        {
+          Id = AdminManageUsersPermissionId,
+          RoleId = AdminRoleId,
+          PermissionId = ManageUsersPermissionId,
+          CreatedAt = SeedTimestamp
+        },
+        new RolePermission
+        {
+          Id = AdminManageUserRolesPermissionId,
+          RoleId = AdminRoleId,
+          PermissionId = ManageUserRolesPermissionId,
+          CreatedAt = SeedTimestamp
+        },
+        new RolePermission
+        {
+          Id = AdminManageRolePermissionsPermissionId,
+          RoleId = AdminRoleId,
+          PermissionId = ManageRolePermissionsPermissionId,
+          CreatedAt = SeedTimestamp
+        },
+        new RolePermission
+        {
+          Id = AdminAdminPermissionId,
+          RoleId = AdminRoleId,
+          PermissionId = AdminPermissionId,
+          CreatedAt = SeedTimestamp
+        },
+        new RolePermission
+        {
+          Id = AdminSuperAdminPermissionId,
+          RoleId = AdminRoleId,
+          PermissionId = SuperAdminPermissionId,
+          CreatedAt = SeedTimestamp
+        }
+      };
+
+      var legacyRolePermissions = new[]
+      {
+        // Legacy permissions for backward compatibility
         new RolePermission
         {
           Id = AdminUserReadPermissionId,
@@ -260,7 +389,7 @@ namespace CleanArchitecture.Infrastructure.Services
           PermissionId = PermissionWritePermissionId,
           CreatedAt = SeedTimestamp
         },
-        // User role gets only read permissions
+        // User role gets only read permissions (legacy)
         new RolePermission
         {
           Id = UserUserReadPermissionId,
@@ -270,7 +399,9 @@ namespace CleanArchitecture.Infrastructure.Services
         }
       };
 
-      await _context.RolePermissions.AddRangeAsync(rolePermissions);
+      // Add both new and legacy role permissions
+      await _context.RolePermissions.AddRangeAsync(newRolePermissions);
+      await _context.RolePermissions.AddRangeAsync(legacyRolePermissions);
       await _context.SaveChangesAsync();
     }
 

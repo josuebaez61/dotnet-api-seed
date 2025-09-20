@@ -31,7 +31,7 @@ namespace CleanArchitecture.Application
       services.AddScoped<IPasswordGeneratorService, PasswordGeneratorService>();
 
       // Permission services
-      services.AddScoped<IPermissionService, HierarchicalPermissionService>();
+      services.AddScoped<IPermissionService, PermissionService>();
 
       services.AddScoped<ILocalizationService, LocalizationService>();
       services.AddScoped<IPaginationService, PaginationService>();

@@ -20,6 +20,7 @@ The permissions and roles functionality is **fully implemented** and includes:
 ### **Main Entities**
 
 #### **Permission**
+
 ```csharp
 public class Permission : BaseEntity
 {
@@ -33,6 +34,7 @@ public class Permission : BaseEntity
 ```
 
 #### **RolePermission**
+
 ```csharp
 public class RolePermission : BaseEntity
 {
@@ -44,13 +46,14 @@ public class RolePermission : BaseEntity
 ```
 
 #### **Role (Updated)**
+
 ```csharp
 public class Role : IdentityRole<Guid>
 {
     public string? Description { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
-    
+
     // Navigation properties
     public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
     public virtual ICollection<RoleClaim> RoleClaims { get; set; } = new List<RoleClaim>();
@@ -63,12 +66,14 @@ public class Role : IdentityRole<Guid>
 ### **Permission Management**
 
 #### 1. Get All Permissions
+
 ```http
 GET /api/v1/permissions
 Authorization: Bearer {token}
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -90,6 +95,7 @@ Authorization: Bearer {token}
 ```
 
 #### 2. Create Permission
+
 ```http
 POST /api/v1/permissions
 Authorization: Bearer {token}
@@ -107,12 +113,14 @@ Content-Type: application/json
 ### **Role Management**
 
 #### 1. Get All Roles
+
 ```http
 GET /api/v1/roles
 Authorization: Bearer {token}
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -141,6 +149,7 @@ Authorization: Bearer {token}
 ```
 
 #### 2. Create Role
+
 ```http
 POST /api/v1/roles
 Authorization: Bearer {token}
@@ -154,6 +163,7 @@ Content-Type: application/json
 ```
 
 #### 3. Update Role Permissions
+
 ```http
 PATCH /api/v1/roles/{id}/permissions
 Authorization: Bearer {token}
@@ -167,12 +177,14 @@ Content-Type: application/json
 ### **User Management (Updated)**
 
 #### 1. Get Users (Requires Permission)
+
 ```http
 GET /api/v1/users
 Authorization: Bearer {token}
 ```
 
 #### 2. Create User (Requires Permission)
+
 ```http
 POST /api/v1/users
 Authorization: Bearer {token}
@@ -189,6 +201,7 @@ Content-Type: application/json
 ```
 
 #### 3. Get Paginated Users (Requires Permission)
+
 ```http
 GET /api/v1/users/paginated?page=1&limit=10
 Authorization: Bearer {token}
@@ -286,6 +299,7 @@ public async Task<string> GenerateJwtTokenAsync(User user)
 ### **Created Tables**
 
 #### **Permissions**
+
 ```sql
 CREATE TABLE "Permissions" (
     "Id" uuid NOT NULL,
@@ -303,6 +317,7 @@ CREATE UNIQUE INDEX "IX_Permissions_Name" ON "Permissions" ("Name");
 ```
 
 #### **RolePermissions**
+
 ```sql
 CREATE TABLE "RolePermissions" (
     "Id" uuid NOT NULL,
@@ -310,19 +325,20 @@ CREATE TABLE "RolePermissions" (
     "PermissionId" uuid NOT NULL,
     "CreatedAt" timestamp with time zone NOT NULL,
     CONSTRAINT "PK_RolePermissions" PRIMARY KEY ("Id"),
-    CONSTRAINT "FK_RolePermissions_Permissions_PermissionId" 
+    CONSTRAINT "FK_RolePermissions_Permissions_PermissionId"
         FOREIGN KEY ("PermissionId") REFERENCES "Permissions" ("Id") ON DELETE CASCADE,
-    CONSTRAINT "FK_RolePermissions_Roles_RoleId" 
+    CONSTRAINT "FK_RolePermissions_Roles_RoleId"
         FOREIGN KEY ("RoleId") REFERENCES "Roles" ("Id") ON DELETE CASCADE
 );
 
-CREATE UNIQUE INDEX "IX_RolePermissions_RoleId_PermissionId" 
+CREATE UNIQUE INDEX "IX_RolePermissions_RoleId_PermissionId"
     ON "RolePermissions" ("RoleId", "PermissionId");
 ```
 
 ### **Initial Data (Seed Data)**
 
 #### **Predefined Permissions**
+
 - ✅ **Users.Read** - User reading
 - ✅ **Users.Write** - User writing
 - ✅ **Users.Delete** - User deletion
@@ -333,10 +349,12 @@ CREATE UNIQUE INDEX "IX_RolePermissions_RoleId_PermissionId"
 - ✅ **System.Admin** - System administration
 
 #### **Predefined Roles**
+
 - ✅ **Admin** - All permissions
 - ✅ **User** - Only user reading
 
 #### **Predefined Assignments**
+
 - ✅ **Admin** → All permissions
 - ✅ **User** → Only Users.Read
 
@@ -413,6 +431,7 @@ var createdPermission = await _permissionService.CreatePermissionAsync(permissio
 ## 🔍 Implemented Validations
 
 ### **CreatePermissionValidator**
+
 - ✅ Name required (maximum 100 characters)
 - ✅ Description required (maximum 500 characters)
 - ✅ Resource required (maximum 50 characters)
@@ -420,6 +439,7 @@ var createdPermission = await _permissionService.CreatePermissionAsync(permissio
 - ✅ Module required (maximum 50 characters)
 
 ### **CreateRoleValidator**
+
 - ✅ Name required (maximum 50 characters, only letters, numbers, hyphens and underscores)
 - ✅ Description optional (maximum 500 characters)
 - ✅ Permission ID list not null
@@ -427,6 +447,7 @@ var createdPermission = await _permissionService.CreatePermissionAsync(permissio
 ## 🚨 Error Handling
 
 ### **Common Errors**
+
 - **400 Bad Request**: Invalid input data
 - **401 Unauthorized**: Invalid or expired token
 - **403 Forbidden**: User has insufficient permissions
@@ -434,6 +455,7 @@ var createdPermission = await _permissionService.CreatePermissionAsync(permissio
 - **500 Internal Server Error**: Server error
 
 ### **Standardized Error Responses**
+
 ```json
 {
   "success": false,
@@ -479,6 +501,7 @@ dotnet ef database update
 ## ✅ Implementation Status
 
 ### **Fully Implemented**
+
 - ✅ **Entities** for permissions and roles
 - ✅ **Services** for permission management
 - ✅ **Endpoints** for CRUD of permissions and roles
@@ -492,6 +515,7 @@ dotnet ef database update
 - ✅ **Complete documentation**
 
 ### **Ready to Use**
+
 The permissions and roles system is **100% functional** and ready for:
 
 - ✅ **Local development** - Just configure database
@@ -500,20 +524,40 @@ The permissions and roles system is **100% functional** and ready for:
 
 ## 🎯 Available Permissions
 
-### **User Management**
+### **New Simplified System (Recommended)**
+
+#### **Core Management Permissions**
+
+- `manage.roles` - Manage roles (create, update, delete, read)
+- `manage.users` - Manage users (create, update, delete, read)
+- `manage.user.roles` - Manage user-role assignments
+- `manage.role.permissions` - Manage role-permission assignments
+
+#### **Administrative Permissions**
+
+- `admin` - Administrative access
+- `superAdmin` - Super administrative access (includes all permissions)
+
+### **Legacy System (Deprecated)**
+
+#### **User Management**
+
 - `Users.Read` - Read users
 - `Users.Write` - Create/edit users
 - `Users.Delete` - Delete users
 
-### **Role Management**
+#### **Role Management**
+
 - `Roles.Read` - Read roles
 - `Roles.Write` - Create/edit roles
 
-### **Permission Management**
+#### **Permission Management**
+
 - `Permissions.Read` - Read permissions
 - `Permissions.Write` - Create/edit permissions
 
-### **System Administration**
+#### **System Administration**
+
 - `System.Admin` - System administration
 
 ## 🔮 Extensibility
@@ -521,6 +565,7 @@ The permissions and roles system is **100% functional** and ready for:
 The system is designed to be easily extensible:
 
 ### **Add New Permissions**
+
 ```csharp
 // Create new permission
 var newPermission = new Permission
@@ -534,12 +579,14 @@ var newPermission = new Permission
 ```
 
 ### **Add New Policies**
+
 ```csharp
 // In Program.cs
 options.AddPolicy("Products.Read", policy => policy.RequireClaim("permission", "Products.Read"));
 ```
 
 ### **Add New Modules**
+
 - Create module entities
 - Define specific permissions
 - Configure authorization policies
