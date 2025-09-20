@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CleanArchitecture.API.Attributes;
 using CleanArchitecture.Application.Common.Models;
 using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Application.Features.Permissions.Commands.CreatePermission;
@@ -25,7 +26,8 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpGet]
-    [Authorize(Policy = PermissionConstants.ManageRolePermissions)]
+    [Authorize]
+    [RequireAnyPermission(PermissionConstants.ManageRolePermissions, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<List<PermissionDto>>>> GetAllPermissions()
     {
       try
@@ -41,7 +43,8 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpPost]
-    [Authorize(Policy = PermissionConstants.ManageRolePermissions)]
+    [Authorize]
+    [RequireAnyPermission(PermissionConstants.ManageRolePermissions, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<PermissionDto>>> CreatePermission([FromBody] CreatePermissionDto request)
     {
       try

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CleanArchitecture.API.Attributes;
 using CleanArchitecture.Application.Common.Models;
 using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Application.Features.Roles.Commands.CreateRole;
@@ -28,7 +29,8 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpGet("all")]
-    [Authorize(Policy = PermissionConstants.ManageRoles)]
+    [Authorize]
+    [RequireAnyPermission(PermissionConstants.ManageRoles, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<List<RoleDto>>>> GetAllRoles()
     {
       try
@@ -44,7 +46,8 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpGet("id/{roleId}")]
-    [Authorize(Policy = PermissionConstants.ManageRoles)]
+    [Authorize]
+    [RequireAnyPermission(PermissionConstants.ManageRoles, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<RoleDto>>> GetRoleById([FromRoute] Guid roleId)
     {
       try
@@ -60,7 +63,8 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpGet("id/{roleId}/permissions")]
-    [Authorize(Policy = PermissionConstants.ManageRolePermissions)]
+    [Authorize]
+    [RequireAnyPermission(PermissionConstants.ManageRolePermissions, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<RolePermissionsDto>>> GetRolePermissions([FromRoute] Guid roleId)
     {
       try
@@ -76,7 +80,8 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpPost]
-    [Authorize(Policy = PermissionConstants.ManageRoles)]
+    [Authorize]
+    [RequireAnyPermission(PermissionConstants.ManageRoles, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<RoleDto>>> CreateRole([FromBody] CreateRoleDto request)
     {
       try
@@ -92,7 +97,8 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpPatch("id/{roleId}/permissions")]
-    [Authorize(Policy = PermissionConstants.ManageRolePermissions)]
+    [Authorize]
+    [RequireAnyPermission(PermissionConstants.ManageRolePermissions, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
     public async Task<ActionResult<ApiResponse>> UpdateRolePermissions(
         [FromRoute] Guid roleId,
         [FromBody] UpdateRolePermissionsRequestDto request)

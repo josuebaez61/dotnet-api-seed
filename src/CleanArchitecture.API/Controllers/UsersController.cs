@@ -5,7 +5,9 @@ using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.Common.Models;
 using CleanArchitecture.Application.DTOs;
+using CleanArchitecture.Application.Features.Users.Commands.ActivateUser;
 using CleanArchitecture.Application.Features.Users.Commands.CreateUser;
+using CleanArchitecture.Application.Features.Users.Commands.DeactivateUser;
 using CleanArchitecture.Application.Features.Users.Commands.UpdateUser;
 using CleanArchitecture.Application.Features.Users.Commands.UpdateUserRoles;
 using CleanArchitecture.Application.Features.Users.Queries.GetAllUsers;
@@ -45,7 +47,8 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpGet]
-    [Authorize(Policy = PermissionConstants.ManageUsers)]
+    [Authorize]
+    [RequireAnyPermission(PermissionConstants.ManageUsers, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<List<UserDto>>>> GetAllUsers()
     {
       var query = new GetAllUsersQuery();
@@ -54,7 +57,8 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpGet("id/{id}")]
-    [Authorize(Policy = PermissionConstants.ManageUsers)]
+    [Authorize]
+    [RequireAnyPermission(PermissionConstants.ManageUsers, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<UserDto>>> GetUserById(Guid id)
     {
       var query = new GetUserByIdQuery { Id = id };
@@ -67,7 +71,8 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpPost]
-    [Authorize(Policy = PermissionConstants.ManageUsers)]
+    [Authorize]
+    [RequireAnyPermission(PermissionConstants.ManageUsers, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<UserDto>>> CreateUser([FromBody] CreateUserDto userDto)
     {
       var command = new CreateUserCommand { User = userDto };
@@ -76,7 +81,8 @@ namespace CleanArchitecture.API.Controllers
     }
 
     [HttpPut("id/{id}")]
-    [Authorize(Policy = PermissionConstants.ManageUsers)]
+    [Authorize]
+    [RequireAnyPermission(PermissionConstants.ManageUsers, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<UserDto>>> UpdateUser([FromRoute] Guid id, [FromBody] UpdateUserDto userDto)
     {
       try
@@ -98,7 +104,8 @@ namespace CleanArchitecture.API.Controllers
     /// <param name="id">ID del usuario</param>
     /// <returns>Lista de roles del usuario</returns>
     [HttpGet("id/{id}/roles")]
-    [Authorize(Policy = PermissionConstants.ManageUserRoles)]
+    [Authorize]
+    [RequireAnyPermission(PermissionConstants.ManageUserRoles, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
     [ProducesResponseType(typeof(ApiResponse<List<RoleDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<List<RoleDto>>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ApiResponse<List<RoleDto>>), StatusCodes.Status400BadRequest)]
@@ -127,7 +134,8 @@ namespace CleanArchitecture.API.Controllers
     /// <param name="request">Lista de IDs de roles a asignar</param>
     /// <returns>Lista actualizada de roles del usuario</returns>
     [HttpPut("id/{id}/roles")]
-    [Authorize(Policy = PermissionConstants.ManageUserRoles)]
+    [Authorize]
+    [RequireAnyPermission(PermissionConstants.ManageUserRoles, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
     [ProducesResponseType(typeof(ApiResponse<List<RoleDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<List<RoleDto>>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ApiResponse<List<RoleDto>>), StatusCodes.Status400BadRequest)]
@@ -159,7 +167,8 @@ namespace CleanArchitecture.API.Controllers
     /// <param name="id">ID del usuario</param>
     /// <returns>Lista de permisos del usuario a través de sus roles</returns>
     [HttpGet("id/{id}/permissions")]
-    [Authorize(Policy = PermissionConstants.ManageUserRoles)]
+    [Authorize]
+    [RequireAnyPermission(PermissionConstants.ManageUserRoles, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
     [ProducesResponseType(typeof(ApiResponse<List<PermissionDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<List<PermissionDto>>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ApiResponse<List<PermissionDto>>), StatusCodes.Status400BadRequest)]
@@ -181,26 +190,56 @@ namespace CleanArchitecture.API.Controllers
       }
     }
 
-    // ===== EJEMPLOS DE USO DE LOS NUEVOS ATRIBUTOS DE AUTORIZACIÓN =====
-
     /// <summary>
-    /// Ejemplo: Usuario necesita CUALQUIERA de estos permisos (manage.users O admin)
+    /// Activa un usuario por su ID
     /// </summary>
-    [HttpGet("example/any-permission")]
-    [RequireAnyPermission(PermissionConstants.ManageUsers, PermissionConstants.Admin)]
-    public ActionResult<ApiResponse<string>> ExampleAnyPermission()
+    /// <param name="id">ID del usuario a activar</param>
+    /// <returns>Resultado de la operación</returns>
+    [HttpPatch("id/{id}/activate")]
+    [Authorize]
+    [RequireAnyPermission(PermissionConstants.ManageUsers, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
+    public async Task<ActionResult<ApiResponse<bool>>> ActivateUser(Guid id)
     {
-      return Ok(ApiResponse<string>.SuccessResponse("Usuario tiene al menos uno de los permisos requeridos"));
+      try
+      {
+        var command = new ActivateUserCommand(id);
+        var result = await _mediator.Send(command);
+        return Ok(ApiResponse<bool>.SuccessResponse(result, "Usuario activado exitosamente"));
+      }
+      catch (UserNotFoundByIdError ex)
+      {
+        return NotFound(ApiResponse<bool>.ErrorResponse(ex.Message));
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ApiResponse<bool>.ErrorResponse(ex.Message));
+      }
     }
 
     /// <summary>
-    /// Ejemplo: Usuario necesita TODOS estos permisos (manage.users Y manage.roles)
+    /// Desactiva un usuario por su ID
     /// </summary>
-    [HttpGet("example/all-permissions")]
-    [RequireAllPermissions(PermissionConstants.ManageUsers, PermissionConstants.ManageRoles)]
-    public ActionResult<ApiResponse<string>> ExampleAllPermissions()
+    /// <param name="id">ID del usuario a desactivar</param>
+    /// <returns>Resultado de la operación</returns>
+    [HttpPatch("id/{id}/deactivate")]
+    [Authorize]
+    [RequireAnyPermission(PermissionConstants.ManageUsers, PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
+    public async Task<ActionResult<ApiResponse<bool>>> DeactivateUser(Guid id)
     {
-      return Ok(ApiResponse<string>.SuccessResponse("Usuario tiene todos los permisos requeridos"));
+      try
+      {
+        var command = new DeactivateUserCommand(id);
+        var result = await _mediator.Send(command);
+        return Ok(ApiResponse<bool>.SuccessResponse(result, "Usuario desactivado exitosamente"));
+      }
+      catch (UserNotFoundByIdError ex)
+      {
+        return NotFound(ApiResponse<bool>.ErrorResponse(ex.Message));
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ApiResponse<bool>.ErrorResponse(ex.Message));
+      }
     }
   }
 }
