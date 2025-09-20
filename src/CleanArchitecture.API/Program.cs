@@ -106,49 +106,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 // Configure Authorization Policies
-builder.Services.AddAuthorization(options =>
-{
-    // New Permission System Policies
-    options.AddPolicy("manage.roles", policy => policy.RequireClaim("permission", "manage.roles"));
-    options.AddPolicy("manage.users", policy => policy.RequireClaim("permission", "manage.users"));
-    options.AddPolicy("manage.user.roles", policy => policy.RequireClaim("permission", "manage.user.roles"));
-    options.AddPolicy("manage.role.permissions", policy => policy.RequireClaim("permission", "manage.role.permissions"));
-    options.AddPolicy("admin", policy => policy.RequireClaim("permission", "admin"));
-    options.AddPolicy("superAdmin", policy => policy.RequireClaim("permission", "superAdmin"));
-
-    // Multiple Permission Policies (ANY of the permissions)
-    options.AddPolicy("manage.users.or.admin", policy =>
-        policy.RequireAssertion(context =>
-            context.User.HasClaim("permission", "manage.users") ||
-            context.User.HasClaim("permission", "admin") ||
-            context.User.HasClaim("permission", "superAdmin")));
-
-    options.AddPolicy("manage.roles.or.admin", policy =>
-        policy.RequireAssertion(context =>
-            context.User.HasClaim("permission", "manage.roles") ||
-            context.User.HasClaim("permission", "admin") ||
-            context.User.HasClaim("permission", "superAdmin")));
-
-    options.AddPolicy("admin.or.superadmin", policy =>
-        policy.RequireAssertion(context =>
-            context.User.HasClaim("permission", "admin") ||
-            context.User.HasClaim("permission", "superAdmin")));
-
-    // Multiple Permission Policies (ALL of the permissions)
-    options.AddPolicy("manage.users.and.roles", policy =>
-        policy.RequireAssertion(context =>
-            context.User.HasClaim("permission", "manage.users") &&
-            context.User.HasClaim("permission", "manage.roles")));
-
-    // Legacy Policies (Deprecated but still supported)
-    options.AddPolicy("Users.Read", policy => policy.RequireClaim("permission", "Users.Read"));
-    options.AddPolicy("Users.Write", policy => policy.RequireClaim("permission", "Users.Write"));
-    options.AddPolicy("Users.Delete", policy => policy.RequireClaim("permission", "Users.Delete"));
-    options.AddPolicy("Roles.Read", policy => policy.RequireClaim("permission", "Roles.Read"));
-    options.AddPolicy("Roles.Write", policy => policy.RequireClaim("permission", "Roles.Write"));
-    options.AddPolicy("Permissions.Read", policy => policy.RequireClaim("permission", "Permissions.Read"));
-    options.AddPolicy("Permissions.Write", policy => policy.RequireClaim("permission", "Permissions.Write"));
-});
+builder.Services.AddAuthorization();
 
 // Add CORS
 builder.Services.AddCors(options =>
