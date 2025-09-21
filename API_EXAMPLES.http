@@ -42,6 +42,22 @@ Authorization: Bearer {{token}}
 GET {{baseUrl}}/api/users
 Authorization: Bearer {{token}}
 
+### 5.1. Obtener usuarios paginados con filtros básicos
+GET {{baseUrl}}/api/users/paginated?page=1&pageSize=10&firstName=Juan&isActive=true
+Authorization: Bearer {{token}}
+
+### 5.2. Obtener usuarios que tienen un rol específico (filtro contains)
+GET {{baseUrl}}/api/users/paginated?page=1&pageSize=10&roleId={{roleId}}&roleIdFilterMatchMode=contains
+Authorization: Bearer {{token}}
+
+### 5.3. Obtener usuarios que NO tienen un rol específico (filtro notContains)
+GET {{baseUrl}}/api/users/paginated?page=1&pageSize=10&roleId={{roleId}}&roleIdFilterMatchMode=notContains
+Authorization: Bearer {{token}}
+
+### 5.4. Obtener usuarios con múltiples filtros
+GET {{baseUrl}}/api/users/paginated?page=1&pageSize=10&firstName=Juan&roleId={{roleId}}&roleIdFilterMatchMode=contains&createdFrom=2024-01-01T00:00:00Z
+Authorization: Bearer {{token}}
+
 ### 6. Obtener usuario por ID (requiere autenticación)
 GET {{baseUrl}}/api/users/{{userId}}
 Authorization: Bearer {{token}}
@@ -135,6 +151,7 @@ Content-Type: application/json
 # @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 # @refreshToken = base64-encoded-refresh-token
 # @userId = guid-del-usuario
+# @roleId = guid-del-rol
 # @resetCode = 123456
 
 ### Headers para localización:

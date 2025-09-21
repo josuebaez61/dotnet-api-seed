@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using CleanArchitecture.Application.Common.Constants;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.Common.Models;
 using CleanArchitecture.Application.DTOs;
@@ -122,6 +123,30 @@ namespace CleanArchitecture.Application.Features.Users.Queries.GetUsersPaginated
       if (request.CreatedTo.HasValue)
       {
         query = query.Where(u => u.CreatedAt <= request.CreatedTo.Value);
+      }
+
+      // Filtro por RoleId
+      if (request.RoleId.HasValue)
+      {
+        var filterMode = request.RoleIdFilterMatchMode ?? FilterMatchMode.Contains;
+
+        switch (filterMode)
+        {
+          case FilterMatchMode.Contains:
+            // Usuarios que tienen el rol especificado
+            query = query.Where(u => u.UserRoles.Any(ur => ur.RoleId == request.RoleId.Value));
+            break;
+
+          case FilterMatchMode.NotContains:
+            // Usuarios que NO tienen el rol especificado
+            query = query.Where(u => !u.UserRoles.Any(ur => ur.RoleId == request.RoleId.Value));
+            break;
+
+          default:
+            // Por defecto, usar Contains
+            query = query.Where(u => u.UserRoles.Any(ur => ur.RoleId == request.RoleId.Value));
+            break;
+        }
       }
 
       return query;

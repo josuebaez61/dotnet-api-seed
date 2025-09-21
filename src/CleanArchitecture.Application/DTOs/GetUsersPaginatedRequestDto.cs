@@ -43,5 +43,16 @@ namespace CleanArchitecture.Application.DTOs
     /// Filtrar por fecha de creación (hasta)
     /// </summary>
     public DateTime? CreatedTo { get; set; }
+
+
+    /// <summary>
+    /// Filtrar por ID de rol
+    /// </summary>
+    public Guid? RoleId { get; set; }
+
+    /// <summary>
+    /// Modo de filtrado para RoleId. Valores disponibles: contains, notContains
+    /// </summary>
+    public string? RoleIdFilterMatchMode { get; set; }
   }
 }
