@@ -5,6 +5,7 @@ using CleanArchitecture.API.Attributes;
 using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Models;
 using CleanArchitecture.Application.DTOs;
+using CleanArchitecture.Application.Features.Roles.Commands.AssignUsersToRole;
 using CleanArchitecture.Application.Features.Roles.Commands.CreateRole;
 using CleanArchitecture.Application.Features.Roles.Commands.UpdateRole;
 using CleanArchitecture.Application.Features.Roles.Commands.UpdateRolePermissions;
@@ -182,6 +183,44 @@ namespace CleanArchitecture.API.Controllers
       catch (Exception ex)
       {
         return BadRequest(ApiResponse<List<PermissionsByResourceDto>>.ErrorResponse(ex.Message));
+      }
+    }
+
+    /// <summary>
+    /// Assigns multiple users to a specific role
+    /// </summary>
+    /// <param name="roleId">ID of the role to which users will be assigned</param>
+    /// <param name="request">List of user IDs to assign</param>
+    /// <returns>List of users assigned to the role</returns>
+    [HttpPost("id/{roleId}/assign-users")]
+    [Authorize]
+    [RequireAnyPermission(PermissionNames.ManageRoles, PermissionNames.Admin, PermissionNames.SuperAdmin)]
+    public async Task<ActionResult<ApiResponse<List<UserDto>>>> AssignUsersToRole(
+        [FromRoute] Guid roleId,
+        [FromBody] AssignUsersToRoleRequestDto request)
+    {
+      try
+      {
+        var command = new AssignUsersToRoleCommand
+        {
+          RoleId = roleId,
+          UserIds = request.UserIds
+        };
+
+        var result = await _mediator.Send(command);
+        return Ok(ApiResponse<List<UserDto>>.SuccessResponse(result, "Users assigned to role successfully"));
+      }
+      catch (RoleNotFoundByIdError ex)
+      {
+        return NotFound(ApiResponse<List<UserDto>>.ErrorResponse(ex.Message));
+      }
+      catch (ArgumentException ex)
+      {
+        return BadRequest(ApiResponse<List<UserDto>>.ErrorResponse(ex.Message));
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ApiResponse<List<UserDto>>.ErrorResponse(ex.Message));
       }
     }
   }

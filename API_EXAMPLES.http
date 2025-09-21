@@ -146,6 +146,15 @@ Content-Type: application/json
   "permissionIds": ["permission-guid-1", "permission-guid-2"]
 }
 
+### 15.1. Asignar múltiples usuarios a un rol
+POST {{baseUrl}}/api/roles/id/{{roleId}}/assign-users
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "userIds": ["user-guid-1", "user-guid-2", "user-guid-3"]
+}
+
 ### Variables para usar en las peticiones:
 # @baseUrl = https://localhost:7000
 # @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
