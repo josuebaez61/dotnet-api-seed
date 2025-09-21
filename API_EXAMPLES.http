@@ -155,6 +155,14 @@ Content-Type: application/json
   "userIds": ["user-guid-1", "user-guid-2", "user-guid-3"]
 }
 
+### 16. Obtener todos los países
+GET {{baseUrl}}/api/countries
+Authorization: Bearer {{token}}
+
+### 16.1. Obtener códigos telefónicos para selector de país
+GET {{baseUrl}}/api/countries/phone-codes
+Authorization: Bearer {{token}}
+
 ### Variables para usar en las peticiones:
 # @baseUrl = https://localhost:7000
 # @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...

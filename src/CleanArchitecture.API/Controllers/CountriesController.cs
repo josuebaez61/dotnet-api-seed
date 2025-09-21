@@ -1,6 +1,7 @@
 using CleanArchitecture.Application.Common.Models;
 using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Application.Features.Countries.Queries.GetAllCountries;
+using CleanArchitecture.Application.Features.Countries.Queries.GetAllPhoneCodes;
 using CleanArchitecture.Application.Features.Countries.Queries.GetCountryById;
 using CleanArchitecture.Application.Features.Countries.Queries.GetStatesByCountryId;
 using MediatR;
@@ -65,6 +66,19 @@ namespace CleanArchitecture.API.Controllers
             var result = await _mediator.Send(query);
 
             return Ok(ApiResponse<List<StateDto>>.SuccessResponse(result));
+        }
+
+        /// <summary>
+        /// Get all phone codes for country selection in phone number inputs
+        /// </summary>
+        /// <returns>List of phone codes with country information</returns>
+        [HttpGet("phone-codes")]
+        public async Task<ActionResult<ApiResponse<List<PhoneCodeDto>>>> GetAllPhoneCodes()
+        {
+            var query = new GetAllPhoneCodesQuery();
+            var result = await _mediator.Send(query);
+
+            return Ok(ApiResponse<List<PhoneCodeDto>>.SuccessResponse(result));
         }
     }
 }
