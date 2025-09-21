@@ -29,5 +29,15 @@ namespace CleanArchitecture.Application.DTOs
     /// Country flag emoji
     /// </summary>
     public string Emoji { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Country flag URLs and information
+    /// </summary>
+    public CountryFlag Flags => new CountryFlag
+    {
+      Png = new Uri($"https://flagcdn.com/w320/{this.Iso2.ToLower()}.png"),
+      Svg = new Uri($"https://flagcdn.com/{this.Iso2.ToLower()}.svg"),
+      Alt = $"{this.Name}'s flag",
+    };
   }
 }
