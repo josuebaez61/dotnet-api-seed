@@ -215,7 +215,6 @@ namespace CleanArchitecture.API.Controllers
         return BadRequest(ApiResponse<bool>.ErrorResponse(ex.Message));
       }
     }
-
     /// <summary>
     /// Desactiva un usuario por su ID
     /// </summary>
