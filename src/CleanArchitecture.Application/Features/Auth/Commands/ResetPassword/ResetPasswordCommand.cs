@@ -4,7 +4,7 @@ using MediatR;
 
 namespace CleanArchitecture.Application.Features.Auth.Commands.ResetPassword
 {
-  public class ResetPasswordCommand : IRequest<ApiResponse>
+  public class ResetPasswordCommand : IRequest<Unit>
   {
     public ResetPasswordDto Request { get; set; } = new();
   }

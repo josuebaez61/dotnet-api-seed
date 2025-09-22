@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace CleanArchitecture.Application.Features.Auth.Commands.ResetPassword
 {
-  public class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommand, ApiResponse>
+  public class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommand, Unit>
   {
     private readonly UserManager<Domain.Entities.User> _userManager;
     private readonly IAuthService _authService;
@@ -28,7 +28,7 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.ResetPassword
       _localizationService = localizationService;
     }
 
-    public async Task<ApiResponse> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
     {
       // Validar código de reset y obtener el userId
       var userId = await _authService.ValidatePasswordResetCodeAndGetUserIdAsync(request.Request.Code);
@@ -59,7 +59,7 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.ResetPassword
       // Enviar email de confirmación
       await _emailService.SendPasswordChangedEmailAsync(user.Email!, user.UserName!);
 
-      return ApiResponse.SuccessResponse(_localizationService.GetSuccessMessage("PasswordResetSuccessful"));
+      return Unit.Value;
     }
   }
 }

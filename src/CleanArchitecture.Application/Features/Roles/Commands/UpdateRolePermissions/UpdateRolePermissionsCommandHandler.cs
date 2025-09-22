@@ -11,20 +11,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Application.Features.Roles.Commands.UpdateRolePermissions
 {
-  public class UpdateRolePermissionsCommandHandler : IRequestHandler<UpdateRolePermissionsCommand, ApiResponse>
+  public class UpdateRolePermissionsCommandHandler : IRequestHandler<UpdateRolePermissionsCommand, Unit>
   {
     private readonly IApplicationDbContext _context;
-    private readonly ILocalizationService _localizationService;
 
-    public UpdateRolePermissionsCommandHandler(
-        IApplicationDbContext context,
-        ILocalizationService localizationService)
+    public UpdateRolePermissionsCommandHandler(IApplicationDbContext context)
     {
       _context = context;
-      _localizationService = localizationService;
     }
 
-    public async Task<ApiResponse> Handle(UpdateRolePermissionsCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(UpdateRolePermissionsCommand request, CancellationToken cancellationToken)
     {
       // Verificar que el rol existe
       var role = await _context.Roles
@@ -110,7 +106,7 @@ namespace CleanArchitecture.Application.Features.Roles.Commands.UpdateRolePermis
 
       await _context.SaveChangesAsync(cancellationToken);
 
-      return ApiResponse.SuccessResponse("Role permissions updated successfully");
+      return Unit.Value;
     }
   }
 }

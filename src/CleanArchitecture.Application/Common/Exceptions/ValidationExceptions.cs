@@ -73,12 +73,5 @@ namespace CleanArchitecture.Application.Common.Exceptions
     {
     }
   }
-
-  public class InvalidOperationError : ApplicationException
-  {
-    public InvalidOperationError(string message)
-        : base("INVALID_OPERATION", message, new { })
-    {
-    }
-  }
 }
+

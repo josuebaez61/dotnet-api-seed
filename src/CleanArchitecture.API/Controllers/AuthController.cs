@@ -122,35 +122,45 @@ namespace CleanArchitecture.API.Controllers
     {
       var command = new ResetPasswordCommand { Request = request };
       var result = await _mediator.Send(command);
-      return Ok(result);
+      return Ok(ApiResponse.SuccessResponse(_localizationService.GetSuccessMessage("PASSWORD_RESET_SUCCESSFUL")));
     }
 
     [HttpPost("request-email-change")]
     [Authorize]
     public async Task<ActionResult<ApiResponse>> RequestEmailChange([FromBody] RequestEmailChangeDto request)
     {
-      var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-      if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+      try
       {
-        return Unauthorized(ApiResponse.ErrorResponse("Invalid user token"));
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+        {
+          return Unauthorized(ApiResponse.ErrorResponse("Invalid user token"));
+        }
+
+        var command = new RequestEmailChangeCommand
+        {
+          UserId = userId,
+          Request = request
+        };
+
+        var result = await _mediator.Send(command);
+        return Ok(ApiResponse.SuccessResponse(_localizationService.GetSuccessMessage("EMAIL_CHANGE_VERIFICATION_SENT")));
+      }
+      catch (System.Exception)
+      {
+
+        throw;
       }
 
-      var command = new RequestEmailChangeCommand
-      {
-        UserId = userId,
-        Request = request
-      };
 
-      var result = await _mediator.Send(command);
-      return Ok(result);
     }
 
     [HttpPost("verify-email-change")]
     public async Task<ActionResult<ApiResponse>> VerifyEmailChange([FromBody] VerifyEmailChangeDto request)
     {
       var command = new VerifyEmailChangeCommand { Request = request };
-      var result = await _mediator.Send(command);
-      return Ok(result);
+      await _mediator.Send(command);
+      return Ok(ApiResponse.SuccessResponse(_localizationService.GetSuccessMessage("EMAIL_VERIFIED")));
     }
 
     [HttpPost("change-first-time-password")]

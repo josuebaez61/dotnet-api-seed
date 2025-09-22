@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
@@ -67,7 +68,7 @@ namespace CleanArchitecture.Application.Common.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to send email to {Email}", to);
-                throw new InvalidOperationException(_localizationService.GetErrorMessage("EMAIL_SENDING_FAILED"));
+                throw new EmailSendingFailedError();
             }
         }
 

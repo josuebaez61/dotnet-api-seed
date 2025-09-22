@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Application.Features.Roles.Commands.DeleteRole
 {
-  public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, ApiResponse>
+  public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, Unit>
   {
     private readonly RoleManager<Role> _roleManager;
     private readonly IPermissionService _permissionService;
@@ -28,7 +28,7 @@ namespace CleanArchitecture.Application.Features.Roles.Commands.DeleteRole
       _localizationService = localizationService;
     }
 
-    public async Task<ApiResponse> Handle(DeleteRoleCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(DeleteRoleCommand request, CancellationToken cancellationToken)
     {
       // Check if role exists
       var role = await _roleManager.FindByIdAsync(request.RoleId.ToString());
@@ -58,8 +58,7 @@ namespace CleanArchitecture.Application.Features.Roles.Commands.DeleteRole
             $"Failed to delete role: {string.Join(", ", result.Errors.Select(e => e.Description))}");
       }
 
-      return ApiResponse.SuccessResponse(
-          _localizationService.GetSuccessMessage("RoleDeletedSuccessfully"));
+      return Unit.Value;
     }
   }
 }

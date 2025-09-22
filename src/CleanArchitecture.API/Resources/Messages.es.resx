@@ -60,6 +60,12 @@
   </resheader>
   
   <!-- Success Messages -->
+  <data name="SUCCESS_ROLE_DELETED" xml:space="preserve">
+    <value>Rol eliminado exitosamente</value>
+  </data>
+  <data name="SUCCESS_EMAIL_VERIFIED" xml:space="preserve">
+    <value>Verificación de cambio de correo exitosa</value>
+  </data>
   <data name="SUCCESS_USER_CREATED" xml:space="preserve">
     <value>Usuario creado exitosamente</value>
   </data>
@@ -110,6 +116,12 @@
   </data>
   
   <!-- Error Messages -->
+  <data name="ERROR_INVALID_TEST_EMAIL_TYPE" xml:space="preserve">
+    <value>Tipo de correo inválido</value>
+  </data>
+  <data name="ERROR_EMAIL_VERIFICATION_CODE_EXPIRED" xml:space="preserve">
+    <value>El código de verificación de correo ha expirado</value>
+  </data>
   <data name="ERROR_USER_NOT_FOUND" xml:space="preserve">
     <value>Usuario no encontrado</value>
   </data>
@@ -214,6 +226,9 @@
   </data>
   <data name="ERROR_INVALID_OPERATION" xml:space="preserve">
     <value>Operación inválida</value>
+  </data>
+  <data name="ERROR_EMAIL_CANNOT_BE_THE_SAME_AS_CURRENT" xml:space="preserve">
+    <value>El nuevo correo '{0}' no puede ser el mismo que el actual.</value>
   </data>
   <data name="ERROR_MUST_CHANGE_PASSWORD" xml:space="preserve">
     <value>Debes cambiar tu contraseña antes de continuar</value>

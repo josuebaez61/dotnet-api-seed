@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.Common.Models;
 using CleanArchitecture.Domain.Entities;
@@ -12,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Application.Features.Auth.Commands.RequestEmailChange
 {
-  public class RequestEmailChangeCommandHandler : IRequestHandler<RequestEmailChangeCommand, ApiResponse>
+  public class RequestEmailChangeCommandHandler : IRequestHandler<RequestEmailChangeCommand, Unit>
   {
     private readonly IApplicationDbContext _context;
     private readonly IEmailService _emailService;
@@ -28,7 +29,7 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.RequestEmailChang
       _localizationService = localizationService;
     }
 
-    public async Task<ApiResponse> Handle(RequestEmailChangeCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(RequestEmailChangeCommand request, CancellationToken cancellationToken)
     {
       // Verificar que el usuario existe
       var user = await _context.Users
@@ -36,7 +37,7 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.RequestEmailChang
 
       if (user == null)
       {
-        throw new CleanArchitecture.Application.Common.Exceptions.UserNotFoundError(request.UserId.ToString());
+        throw new UserNotFoundError(request.UserId.ToString());
       }
 
       // Verificar que el nuevo email no esté ya en uso
@@ -45,13 +46,13 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.RequestEmailChang
 
       if (existingUser != null)
       {
-        throw new CleanArchitecture.Application.Common.Exceptions.UserAlreadyExistsError("email", request.Request.NewEmail);
+        throw new UserAlreadyExistsError("email", request.Request.NewEmail);
       }
 
       // Verificar que el nuevo email no sea el mismo que el actual
       if (user.Email == request.Request.NewEmail)
       {
-        throw new CleanArchitecture.Application.Common.Exceptions.InvalidOperationError("New email cannot be the same as current email");
+        throw new EmailCannotBeTheSameAsCurrentError(request.Request.NewEmail);
       }
 
       // Limpiar códigos de verificación expirados para este usuario
@@ -88,12 +89,12 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.RequestEmailChang
 
       // Enviar email de verificación
       await _emailService.SendEmailChangeVerificationEmailAsync(
-          request.Request.NewEmail,
-          user.UserName,
-          verificationCode);
+        request.Request.NewEmail,
+        user.UserName,
+        verificationCode
+      );
 
-      var successMessage = _localizationService.GetString("Success_EmailChangeVerificationSent");
-      return ApiResponse.SuccessResponse(successMessage);
+      return Unit.Value;
     }
 
     private static string GenerateVerificationCode()

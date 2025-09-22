@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CleanArchitecture.API.Attributes;
 using CleanArchitecture.Application.Common.Exceptions;
+using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.Common.Models;
 using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Application.Features.Roles.Commands.AssignUsersToRole;
@@ -27,10 +28,11 @@ namespace CleanArchitecture.API.Controllers
   public class RolesController : ControllerBase
   {
     private readonly IMediator _mediator;
-
-    public RolesController(IMediator mediator)
+    private readonly ILocalizationService _localizationService;
+    public RolesController(IMediator mediator, ILocalizationService localizationService)
     {
       _mediator = mediator;
+      _localizationService = localizationService;
     }
 
     [HttpGet("all")]
@@ -113,8 +115,8 @@ namespace CleanArchitecture.API.Controllers
         RoleId = roleId,
         Request = request
       };
-      var result = await _mediator.Send(command);
-      return Ok(result);
+      await _mediator.Send(command);
+      return Ok(ApiResponse.SuccessResponse(_localizationService.GetSuccessMessage("ROLE_PERMISSIONS_UPDATED")));
     }
 
     /// <summary>
@@ -216,8 +218,8 @@ namespace CleanArchitecture.API.Controllers
       try
       {
         var command = new DeleteRoleCommand { RoleId = roleId };
-        var result = await _mediator.Send(command);
-        return Ok(result);
+        await _mediator.Send(command);
+        return Ok(ApiResponse.SuccessResponse(_localizationService.GetSuccessMessage("ROLE_DELETED")));
       }
       catch (RoleNotFoundByIdError ex)
       {

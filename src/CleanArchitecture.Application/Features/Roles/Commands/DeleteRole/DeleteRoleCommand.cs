@@ -3,7 +3,7 @@ using MediatR;
 
 namespace CleanArchitecture.Application.Features.Roles.Commands.DeleteRole
 {
-  public class DeleteRoleCommand : IRequest<ApiResponse>
+  public class DeleteRoleCommand : IRequest<Unit>
   {
     public Guid RoleId { get; set; }
   }

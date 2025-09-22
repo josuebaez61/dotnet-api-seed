@@ -60,6 +60,12 @@
   </resheader>
   
   <!-- Success Messages -->
+  <data name="SUCCESS_ROLE_DELETED" xml:space="preserve">
+    <value>Role deleted successfully</value>
+  </data>
+  <data name="SUCCESS_EMAIL_VERIFIED" xml:space="preserve">
+    <value>Email change verification successful</value>
+  </data>
   <data name="SUCCESS_USER_CREATED" xml:space="preserve">
     <value>User created successfully</value>
   </data>
@@ -101,6 +107,12 @@
   </data>
   
   <!-- Error Messages -->
+  <data name="ERROR_INVALID_TEST_EMAIL_TYPE" xml:space="preserve">
+    <value>Invalid email type</value>
+  </data>
+  <data name="ERROR_EMAIL_VERIFICATION_CODE_EXPIRED" xml:space="preserve">
+    <value>Email verification code has expired</value>
+  </data>
   <data name="ERROR_USER_NOT_FOUND" xml:space="preserve">
     <value>User not found</value>
   </data>
@@ -229,6 +241,9 @@
   </data>
   <data name="ERROR_INVALID_OPERATION" xml:space="preserve">
     <value>Invalid operation</value>
+  </data>
+  <data name="ERROR_EMAIL_CANNOT_BE_THE_SAME_AS_CURRENT" xml:space="preserve">
+    <value>The new email '{0}' cannot be the same as the current email.</value>
   </data>
   <data name="ERROR_MUST_CHANGE_PASSWORD" xml:space="preserve">
     <value>You must change your password before continuing</value>

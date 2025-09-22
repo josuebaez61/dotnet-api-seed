@@ -33,8 +33,8 @@ namespace CleanArchitecture.API.Controllers
     public async Task<ActionResult<ApiResponse>> SendTestEmail([FromBody] TestEmailRequestDto request)
     {
       var command = new SendTestEmailCommand { Request = request };
-      var result = await _mediator.Send(command);
-      return Ok(result);
+      await _mediator.Send(command);
+      return Ok(ApiResponse.SuccessResponse(_localizationService.GetSuccessMessage("TEST_EMAIL_SENT")));
     }
 
     /// <summary>

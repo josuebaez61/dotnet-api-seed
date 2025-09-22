@@ -14,6 +14,7 @@ This document contains practical examples of how the error handling system works
 ### 1. Login with Non-existent User
 
 **Request:**
+
 ```bash
 POST /api/v1/auth/login
 Content-Type: application/json
@@ -25,6 +26,7 @@ Content-Type: application/json
 ```
 
 **Response (Spanish):**
+
 ```json
 {
   "success": false,
@@ -35,6 +37,7 @@ Content-Type: application/json
 ```
 
 **Response (English):**
+
 ```json
 {
   "success": false,
@@ -49,6 +52,7 @@ Content-Type: application/json
 ### 2. Registration with Duplicate Email
 
 **Request:**
+
 ```bash
 POST /api/v1/auth/register
 Content-Type: application/json
@@ -64,6 +68,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -78,6 +83,7 @@ Content-Type: application/json
 ### 3. Incorrect Password
 
 **Request:**
+
 ```bash
 POST /api/v1/auth/login
 Content-Type: application/json
@@ -89,6 +95,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -103,6 +110,7 @@ Content-Type: application/json
 ### 4. Invalid Refresh Token
 
 **Request:**
+
 ```bash
 POST /api/v1/auth/refresh-token
 Content-Type: application/json
@@ -113,6 +121,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -127,6 +136,7 @@ Content-Type: application/json
 ### 5. Invalid Reset Code
 
 **Request:**
+
 ```bash
 POST /api/v1/auth/reset-password
 Content-Type: application/json
@@ -139,6 +149,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -153,12 +164,14 @@ Content-Type: application/json
 ### 6. Insufficient Permissions
 
 **Request:**
+
 ```bash
 GET /api/v1/users
 Authorization: Bearer token_with_insufficient_permissions
 ```
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -173,6 +186,7 @@ Authorization: Bearer token_with_insufficient_permissions
 ### 7. Data Validation
 
 **Request:**
+
 ```bash
 POST /api/v1/auth/register
 Content-Type: application/json
@@ -188,6 +202,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -258,7 +273,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, ApiRe
 
         return ApiResponse<UserDto>.SuccessResponse(
             new UserDto { /* ... */ },
-            _localizationService.GetSuccessMessage("UserCreated")
+            _localizationService.GetSuccessMessage("USER_CREATED")
         );
     }
 }
@@ -351,10 +366,10 @@ public class AuthController : ControllerBase
 
 ```csharp
 // 1. User attempts login with incorrect credentials
-var loginRequest = new LoginRequestDto 
-{ 
-    EmailOrUsername = "admin@example.com", 
-    Password = "wrong_password" 
+var loginRequest = new LoginRequestDto
+{
+    EmailOrUsername = "admin@example.com",
+    Password = "wrong_password"
 };
 
 // 2. AuthService validates and throws exception
@@ -371,6 +386,7 @@ catch (InvalidCredentialsError ex)
 ```
 
 **Result:**
+
 ```json
 {
   "success": false,
@@ -397,6 +413,7 @@ var registerRequest = new RegisterRequestDto
 ```
 
 **Result:**
+
 ```json
 {
   "success": false,
@@ -432,6 +449,7 @@ if (user == null)
 ```
 
 **Result:**
+
 ```json
 {
   "success": false,
@@ -450,8 +468,8 @@ if (user == null)
 public async Task Login_WithNonExistentUser_ThrowsUserNotFoundError()
 {
     // Arrange
-    var request = new LoginRequestDto 
-    { 
+    var request = new LoginRequestDto
+    {
         EmailOrUsername = "nonexistent@example.com",
         Password = "Password123!"
     };
@@ -459,7 +477,7 @@ public async Task Login_WithNonExistentUser_ThrowsUserNotFoundError()
     // Act & Assert
     var exception = await Assert.ThrowsAsync<UserNotFoundError>(
         () => _authService.LoginAsync(request));
-    
+
     Assert.Equal("USER_NOT_FOUND", exception.ErrorCode);
     Assert.Contains("nonexistent@example.com", exception.Message);
 }
@@ -482,7 +500,7 @@ public async Task Register_WithExistingEmail_ThrowsUserAlreadyExistsError()
     // Act & Assert
     var exception = await Assert.ThrowsAsync<UserAlreadyExistsError>(
         () => _authService.RegisterAsync(request));
-    
+
     Assert.Equal("USER_ALREADY_EXISTS", exception.ErrorCode);
     Assert.Equal("email", ((UserAlreadyExistsError)exception).Parameters?.GetType().GetProperty("Field")?.GetValue(((UserAlreadyExistsError)exception).Parameters));
 }
@@ -506,10 +524,10 @@ public async Task Login_WithInvalidCredentials_ReturnsUnauthorized()
 
     // Assert
     Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-    
+
     var content = await response.Content.ReadAsStringAsync();
     var apiResponse = JsonSerializer.Deserialize<ApiResponse<object>>(content);
-    
+
     Assert.False(apiResponse.Success);
     Assert.Equal("INVALID_CREDENTIALS", apiResponse.ErrorCode);
     Assert.Equal("Invalid credentials", apiResponse.Message);
@@ -531,10 +549,10 @@ public async Task Register_WithInvalidData_ReturnsBadRequest()
 
     // Assert
     Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-    
+
     var content = await response.Content.ReadAsStringAsync();
     var apiResponse = JsonSerializer.Deserialize<ApiResponse<object>>(content);
-    
+
     Assert.False(apiResponse.Success);
     Assert.Equal("VALIDATION_ERROR", apiResponse.ErrorCode);
 }
@@ -561,7 +579,7 @@ public async Task Login_WithSpanishLanguage_ReturnsSpanishError()
     // Assert
     var content = await response.Content.ReadAsStringAsync();
     var apiResponse = JsonSerializer.Deserialize<ApiResponse<object>>(content);
-    
+
     Assert.Equal("Usuario no encontrado", apiResponse.Message);
 }
 
@@ -583,7 +601,7 @@ public async Task Login_WithEnglishLanguage_ReturnsEnglishError()
     // Assert
     var content = await response.Content.ReadAsStringAsync();
     var apiResponse = JsonSerializer.Deserialize<ApiResponse<object>>(content);
-    
+
     Assert.Equal("User not found", apiResponse.Message);
 }
 ```
@@ -627,7 +645,7 @@ public class MockAuthService : IAuthService
         {
             throw new UserNotFoundError(request.EmailOrUsername);
         }
-        
+
         if (request.Password == "wrong_password")
         {
             throw new InvalidCredentialsError();
@@ -654,7 +672,7 @@ public class ExceptionHandlingMiddleware
         catch (Exception ex)
         {
             // Structured logging with context
-            _logger.LogError(ex, 
+            _logger.LogError(ex,
                 "Error occurred for user {UserId} on endpoint {Endpoint} with error code {ErrorCode}",
                 context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "Anonymous",
                 context.Request.Path,
@@ -677,8 +695,8 @@ public class ErrorMetricsService
     public void RecordError(string errorCode, string endpoint, string userId = null)
     {
         _metrics.Measure.Counter.Increment(new MetricTags("error_code", errorCode, "endpoint", endpoint), "api.errors");
-        
-        _logger.LogWarning("Error recorded: {ErrorCode} on {Endpoint} for user {UserId}", 
+
+        _logger.LogWarning("Error recorded: {ErrorCode} on {Endpoint} for user {UserId}",
             errorCode, endpoint, userId ?? "Anonymous");
     }
 }
