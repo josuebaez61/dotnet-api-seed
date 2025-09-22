@@ -10,7 +10,6 @@ namespace CleanArchitecture.Application.DTOs
     public string? Description { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
-    public List<PermissionDto> Permissions { get; set; } = new();
   }
 
   public class CreateRoleDto

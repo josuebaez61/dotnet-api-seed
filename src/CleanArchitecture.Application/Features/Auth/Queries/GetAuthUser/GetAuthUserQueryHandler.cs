@@ -15,13 +15,11 @@ namespace CleanArchitecture.Application.Features.Auth.Queries.GetAuthUser
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<Role> _roleManager;
     private readonly IMapper _mapper;
-    private readonly IPermissionService _permissionService;
-    public GetAuthUserQueryHandler(UserManager<User> userManager, RoleManager<Role> roleManager, IMapper mapper, IPermissionService permissionService)
+    public GetAuthUserQueryHandler(UserManager<User> userManager, RoleManager<Role> roleManager, IMapper mapper)
     {
       _userManager = userManager;
       _roleManager = roleManager;
       _mapper = mapper;
-      _permissionService = permissionService;
     }
 
     public async Task<AuthUserDto> Handle(GetAuthUserQuery request, CancellationToken cancellationToken)

@@ -2,8 +2,8 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 using CleanArchitecture.Application.Common.Exceptions;
-using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Domain.Entities;
 using MediatR;
@@ -15,12 +15,11 @@ namespace CleanArchitecture.Application.Features.Roles.Queries.GetRoleById
   public class GetRoleByIdQueryHandler : IRequestHandler<GetRoleByIdQuery, RoleDto>
   {
     private readonly RoleManager<Role> _roleManager;
-    private readonly IPermissionService _permissionService;
-
-    public GetRoleByIdQueryHandler(RoleManager<Role> roleManager, IPermissionService permissionService)
+    private readonly IMapper _mapper;
+    public GetRoleByIdQueryHandler(RoleManager<Role> roleManager, IMapper mapper)
     {
       _roleManager = roleManager;
-      _permissionService = permissionService;
+      _mapper = mapper;
     }
 
     public async Task<RoleDto> Handle(GetRoleByIdQuery request, CancellationToken cancellationToken)
@@ -33,26 +32,7 @@ namespace CleanArchitecture.Application.Features.Roles.Queries.GetRoleById
         throw new RoleNotFoundByIdError(request.RoleId);
       }
 
-      var rolePermissions = await _permissionService.GetRolePermissionsAsync(role.Id);
-      var permissionDtos = rolePermissions.Select(p => new PermissionDto
-      {
-        Id = p.Id,
-        Name = p.Name,
-        Description = p.Description,
-        Resource = p.Resource,
-        CreatedAt = p.CreatedAt,
-        UpdatedAt = p.UpdatedAt
-      }).ToList();
-
-      return new RoleDto
-      {
-        Id = role.Id,
-        Name = role.Name!,
-        Description = role.Description,
-        CreatedAt = role.CreatedAt,
-        UpdatedAt = role.UpdatedAt,
-        Permissions = permissionDtos
-      };
+      return _mapper.Map<RoleDto>(role);
     }
   }
 }
