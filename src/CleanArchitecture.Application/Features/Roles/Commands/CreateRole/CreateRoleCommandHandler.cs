@@ -31,7 +31,8 @@ namespace CleanArchitecture.Application.Features.Roles.Commands.CreateRole
         Name = request.Role.Name,
         NormalizedName = request.Role.Name.ToUpper(),
         Description = request.Role.Description,
-        CreatedAt = DateTime.UtcNow
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow
       };
 
       var result = await _roleManager.CreateAsync(role);

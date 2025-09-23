@@ -9,6 +9,7 @@ using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Application.Features.Roles.Commands.AssignUsersToRole;
 using CleanArchitecture.Application.Features.Roles.Commands.CreateRole;
 using CleanArchitecture.Application.Features.Roles.Commands.DeleteRole;
+using CleanArchitecture.Application.Features.Roles.Commands.UnassignUserFromRole;
 using CleanArchitecture.Application.Features.Roles.Commands.UpdateRole;
 using CleanArchitecture.Application.Features.Roles.Commands.UpdateRolePermissions;
 using CleanArchitecture.Application.Features.Roles.Queries.GetAllRoles;
@@ -232,6 +233,48 @@ namespace CleanArchitecture.API.Controllers
       catch (Exception ex)
       {
         return BadRequest(ApiResponse.ErrorResponse(ex.Message));
+      }
+    }
+
+    /// <summary>
+    /// Unassigns a user from a specific role
+    /// </summary>
+    /// <param name="roleId">ID of the role from which the user will be unassigned</param>
+    /// <param name="request">User ID to unassign from the role</param>
+    /// <returns>Updated user information</returns>
+    [HttpPost("id/{roleId}/unassign-user")]
+    [Authorize]
+    [RequireAnyPermission(PermissionNames.ManageRoles, PermissionNames.Admin, PermissionNames.SuperAdmin)]
+    public async Task<ActionResult<ApiResponse<UserDto>>> UnassignUserFromRole(
+        [FromRoute] Guid roleId,
+        [FromBody] UnassignUserFromRoleRequestDto request)
+    {
+      try
+      {
+        var command = new UnassignUserFromRoleCommand
+        {
+          RoleId = roleId,
+          UserId = request.UserId
+        };
+
+        var result = await _mediator.Send(command);
+        return Ok(ApiResponse<UserDto>.SuccessResponse(result, "User unassigned from role successfully"));
+      }
+      catch (RoleNotFoundByIdError ex)
+      {
+        return NotFound(ApiResponse<UserDto>.ErrorResponse(ex.Message));
+      }
+      catch (UserNotFoundByIdError ex)
+      {
+        return NotFound(ApiResponse<UserDto>.ErrorResponse(ex.Message));
+      }
+      catch (ArgumentException ex)
+      {
+        return BadRequest(ApiResponse<UserDto>.ErrorResponse(ex.Message));
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ApiResponse<UserDto>.ErrorResponse(ex.Message));
       }
     }
   }

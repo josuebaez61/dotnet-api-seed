@@ -13,7 +13,7 @@ namespace CleanArchitecture.Domain.Entities
     public DateTime DateOfBirth { get; set; }
     public string? ProfilePicture { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? UpdatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public bool IsActive { get; set; } = true;
     public bool MustChangePassword { get; set; } = false;
 
@@ -28,7 +28,7 @@ namespace CleanArchitecture.Domain.Entities
   {
     public string? Description { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? UpdatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
     // Navigation properties
     public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
