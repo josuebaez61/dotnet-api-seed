@@ -37,6 +37,7 @@ namespace CleanArchitecture.Infrastructure.Services.Seeders
         "Permissions",     // Must be second
         "RolePermissions", // Must be third (depends on Roles and Permissions)
         "AdminUser",       // Must be fourth (depends on Roles)
+        "FakeUsers",       // Must be fifth (depends on Roles)
         "Countries",       // Geographic data - countries first
         "Cities"           // Geographic data - cities depend on countries
       };

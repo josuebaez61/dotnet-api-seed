@@ -55,6 +55,7 @@ namespace CleanArchitecture.Infrastructure
       services.AddScoped<ISeeder, PermissionSeeder>();
       services.AddScoped<ISeeder, RolePermissionSeeder>();
       services.AddScoped<ISeeder, AdminUserSeeder>();
+      services.AddScoped<ISeeder, FakeUserSeeder>();
       services.AddScoped<ISeeder, CountrySeeder>();
       services.AddScoped<ISeeder, CitySeeder>();
       services.AddScoped<SeederRunner>();
