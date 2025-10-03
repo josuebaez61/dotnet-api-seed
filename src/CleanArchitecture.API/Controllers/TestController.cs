@@ -7,6 +7,7 @@ using CleanArchitecture.Application.Features.Test.Commands.SendTestEmail;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace CleanArchitecture.API.Controllers
 {
@@ -17,11 +18,15 @@ namespace CleanArchitecture.API.Controllers
   {
     private readonly IMediator _mediator;
     private readonly ILocalizationService _localizationService;
+    private readonly IEmailService _emailService;
+    private readonly ILogger<TestController> _logger;
 
-    public TestController(IMediator mediator, ILocalizationService localizationService)
+    public TestController(IMediator mediator, ILocalizationService localizationService, IEmailService emailService, ILogger<TestController> logger)
     {
       _mediator = mediator;
       _localizationService = localizationService;
+      _emailService = emailService;
+      _logger = logger;
     }
 
     /// <summary>
@@ -78,6 +83,32 @@ namespace CleanArchitecture.API.Controllers
       };
 
       return Ok(ApiResponse<object>.SuccessResponse(testMessages, "Localization test"));
+    }
+
+    /// <summary>
+    /// Endpoint de prueba para verificar el envío de emails de password reset
+    /// </summary>
+    /// <param name="email">Email de destino</param>
+    /// <returns>Resultado del envío</returns>
+    [HttpPost("test-password-reset-email")]
+    public async Task<ActionResult<ApiResponse>> TestPasswordResetEmail([FromBody] string email)
+    {
+      try
+      {
+        _logger.LogInformation("Testing password reset email to: {Email}", email);
+        
+        var testCode = "1234-5678";
+        await _emailService.SendPasswordResetEmailAsync(email, "Test User", testCode);
+        
+        _logger.LogInformation("Password reset test email sent successfully to: {Email}", email);
+        
+        return Ok(ApiResponse.SuccessResponse($"Password reset test email sent to {email} with code: {testCode}"));
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError(ex, "Failed to send password reset test email to: {Email}", email);
+        return BadRequest(ApiResponse.ErrorResponse($"Failed to send test email: {ex.Message}"));
+      }
     }
   }
 }

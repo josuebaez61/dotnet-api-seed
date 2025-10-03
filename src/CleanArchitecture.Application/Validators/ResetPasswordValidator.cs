@@ -9,8 +9,7 @@ namespace CleanArchitecture.Application.Validators
     {
       RuleFor(x => x.Code)
           .NotEmpty().WithMessage("Reset code is required")
-          .MinimumLength(16).WithMessage("Reset code must be at least 16 characters long")
-          .MaximumLength(32).WithMessage("Reset code cannot exceed 32 characters");
+          .Matches(@"^\d{4}-\d{4}$").WithMessage("Reset code must be in format 1234-5678 (8 digits separated by hyphen)");
 
       RuleFor(x => x.NewPassword)
           .NotEmpty().WithMessage("New password is required")

@@ -30,7 +30,7 @@ namespace CleanArchitecture.Application.Features.Test.Commands.SendTestEmail
           break;
 
         case EmailType.PasswordReset:
-          var resetCode = "123456"; // Test code
+          var resetCode = "1234-5678"; // Test code in new format
           await _emailService.SendPasswordResetEmailAsync(email, userName, resetCode);
           break;
 
