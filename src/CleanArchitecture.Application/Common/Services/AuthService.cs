@@ -31,20 +31,22 @@ namespace CleanArchitecture.Application.Common.Services
     private readonly SignInManager<User> _signInManager;
     private readonly IConfiguration _configuration;
     private readonly IPermissionService _permissionService;
+    private readonly IApplicationDbContext _context;
     private readonly Dictionary<string, RefreshTokenInfo> _refreshTokens = new();
-    private readonly Dictionary<Guid, List<PasswordResetCode>> _passwordResetCodes = new();
     private readonly IMapper _mapper;
     public AuthService(
         UserManager<User> userManager,
         SignInManager<User> signInManager,
         IConfiguration configuration,
         IPermissionService permissionService,
+        IApplicationDbContext context,
         IMapper mapper)
     {
       _userManager = userManager;
       _signInManager = signInManager;
       _configuration = configuration;
       _permissionService = permissionService;
+      _context = context;
       _mapper = mapper;
     }
 
@@ -267,6 +269,16 @@ namespace CleanArchitecture.Application.Common.Services
       var secondPart = random.Next(1000, 9999); // 4 dígitos
       var code = $"{firstPart}-{secondPart}";
 
+      // Limpiar códigos expirados y usados del usuario
+      var expiredCodes = await _context.PasswordResetCodes
+          .Where(prc => prc.UserId == userId && (prc.ExpiresAt <= DateTime.UtcNow || prc.IsUsed))
+          .ToListAsync();
+
+      if (expiredCodes.Any())
+      {
+        _context.PasswordResetCodes.RemoveRange(expiredCodes);
+      }
+
       var resetCode = new PasswordResetCode
       {
         Id = Guid.NewGuid(),
@@ -274,56 +286,35 @@ namespace CleanArchitecture.Application.Common.Services
         Code = code,
         ExpiresAt = DateTime.UtcNow.AddMinutes(15),
         IsUsed = false,
-        CreatedAt = DateTime.UtcNow
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow
       };
 
-      // Limpiar códigos expirados del usuario
-      if (_passwordResetCodes.ContainsKey(userId))
-      {
-        _passwordResetCodes[userId] = _passwordResetCodes[userId]
-            .Where(c => c.ExpiresAt > DateTime.UtcNow && !c.IsUsed)
-            .ToList();
-      }
-      else
-      {
-        _passwordResetCodes[userId] = new List<PasswordResetCode>();
-      }
-
-      // Agregar nuevo código
-      _passwordResetCodes[userId].Add(resetCode);
+      // Agregar nuevo código a la base de datos
+      _context.PasswordResetCodes.Add(resetCode);
+      await _context.SaveChangesAsync();
 
       return code;
     }
 
     public async Task<bool> ValidatePasswordResetCodeAsync(Guid userId, string code)
     {
-      if (!_passwordResetCodes.ContainsKey(userId))
-        throw new PasswordResetCodeInvalidError(userId.ToString());
+      var resetCode = await _context.PasswordResetCodes
+          .FirstOrDefaultAsync(prc => prc.UserId == userId && prc.Code == code);
 
-      var userCodes = _passwordResetCodes[userId];
-      var validCode = userCodes.FirstOrDefault(c =>
-          c.Code == code &&
-          c.ExpiresAt > DateTime.UtcNow &&
-          !c.IsUsed);
-
-      if (validCode == null)
+      if (resetCode == null)
       {
-        // Check if code exists but is expired
-        var expiredCode = userCodes.FirstOrDefault(c => c.Code == code && c.ExpiresAt <= DateTime.UtcNow);
-        if (expiredCode != null)
-        {
-          throw new PasswordResetCodeExpiredError(userId.ToString());
-        }
-
-        // Check if code exists but is already used
-        var usedCode = userCodes.FirstOrDefault(c => c.Code == code && c.IsUsed);
-        if (usedCode != null)
-        {
-          throw new PasswordResetCodeAlreadyUsedError(userId.ToString());
-        }
-
-        // Code doesn't exist
         throw new PasswordResetCodeInvalidError(userId.ToString());
+      }
+
+      if (resetCode.ExpiresAt <= DateTime.UtcNow)
+      {
+        throw new PasswordResetCodeExpiredError(userId.ToString());
+      }
+
+      if (resetCode.IsUsed)
+      {
+        throw new PasswordResetCodeAlreadyUsedError(userId.ToString());
       }
 
       return true;
@@ -331,51 +322,38 @@ namespace CleanArchitecture.Application.Common.Services
 
     public async Task<Guid> ValidatePasswordResetCodeAndGetUserIdAsync(string code)
     {
-      // Buscar el código en todos los usuarios
-      foreach (var userCodes in _passwordResetCodes)
-      {
-        var validCode = userCodes.Value.FirstOrDefault(c =>
-            c.Code == code &&
-            c.ExpiresAt > DateTime.UtcNow &&
-            !c.IsUsed);
+      var resetCode = await _context.PasswordResetCodes
+          .FirstOrDefaultAsync(prc => prc.Code == code);
 
-        if (validCode != null)
-        {
-          return userCodes.Key; // Retornar el userId
-        }
+      if (resetCode == null)
+      {
+        throw new PasswordResetCodeInvalidError("Invalid reset code");
       }
 
-      // Si no se encuentra un código válido, verificar si existe pero está expirado o usado
-      foreach (var userCodes in _passwordResetCodes)
+      if (resetCode.ExpiresAt <= DateTime.UtcNow)
       {
-        var expiredCode = userCodes.Value.FirstOrDefault(c => c.Code == code && c.ExpiresAt <= DateTime.UtcNow);
-        if (expiredCode != null)
-        {
-          throw new PasswordResetCodeExpiredError(userCodes.Key.ToString());
-        }
-
-        var usedCode = userCodes.Value.FirstOrDefault(c => c.Code == code && c.IsUsed);
-        if (usedCode != null)
-        {
-          throw new PasswordResetCodeAlreadyUsedError(userCodes.Key.ToString());
-        }
+        throw new PasswordResetCodeExpiredError(resetCode.UserId.ToString());
       }
 
-      throw new PasswordResetCodeInvalidError("Invalid reset code");
+      if (resetCode.IsUsed)
+      {
+        throw new PasswordResetCodeAlreadyUsedError(resetCode.UserId.ToString());
+      }
+
+      return resetCode.UserId;
     }
 
     public async Task MarkPasswordResetCodeAsUsedAsync(Guid userId, string code)
     {
-      if (!_passwordResetCodes.ContainsKey(userId))
-        return;
+      var resetCode = await _context.PasswordResetCodes
+          .FirstOrDefaultAsync(prc => prc.UserId == userId && prc.Code == code);
 
-      var userCodes = _passwordResetCodes[userId];
-      var codeToMark = userCodes.FirstOrDefault(c => c.Code == code);
-
-      if (codeToMark != null)
+      if (resetCode != null)
       {
-        codeToMark.IsUsed = true;
-        codeToMark.UsedAt = DateTime.UtcNow;
+        resetCode.IsUsed = true;
+        resetCode.UsedAt = DateTime.UtcNow;
+        resetCode.UpdatedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
       }
     }
   }
