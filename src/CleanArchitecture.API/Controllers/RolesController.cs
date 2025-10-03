@@ -13,6 +13,8 @@ using CleanArchitecture.Application.Features.Roles.Commands.UnassignUserFromRole
 using CleanArchitecture.Application.Features.Roles.Commands.UpdateRole;
 using CleanArchitecture.Application.Features.Roles.Commands.UpdateRolePermissions;
 using CleanArchitecture.Application.Features.Roles.Queries.GetAllRoles;
+using CleanArchitecture.Application.Features.Roles.Queries.GetAssignableRoles;
+using CleanArchitecture.Application.Features.Roles.Queries.GetAssignableUsers;
 using CleanArchitecture.Application.Features.Roles.Queries.GetRoleById;
 using CleanArchitecture.Application.Features.Roles.Queries.GetRolePermissions;
 using CleanArchitecture.Application.Features.Roles.Queries.GetRoleUserCount;
@@ -121,9 +123,9 @@ namespace CleanArchitecture.API.Controllers
     }
 
     /// <summary>
-    /// Obtiene la cantidad de usuarios asignados por cada rol
+    /// Gets the number of users assigned to each role
     /// </summary>
-    /// <returns>Diccionario con la estructura { [roleId]: cantidad de usuarios }</returns>
+    /// <returns>Dictionary with the structure { [roleId]: number of users }</returns>
     [HttpGet("user-counts")]
     [Authorize]
     [RequireAnyPermission(PermissionNames.ManageRoles, PermissionNames.Admin, PermissionNames.SuperAdmin)]
@@ -138,6 +140,58 @@ namespace CleanArchitecture.API.Controllers
       catch (Exception ex)
       {
         return BadRequest(ApiResponse<RoleUserCountDto>.ErrorResponse(ex.Message));
+      }
+    }
+
+    /// <summary>
+    /// Gets a list of roles that can be assigned to a specific user (roles not already assigned to the user)
+    /// </summary>
+    /// <param name="userId">ID of the user to get assignable roles for</param>
+    /// <returns>List of roles that can be assigned to the user</returns>
+    [HttpGet("assignable/user/{userId}")]
+    [Authorize]
+    [RequireAnyPermission(PermissionNames.ManageRoles, PermissionNames.Admin, PermissionNames.SuperAdmin)]
+    public async Task<ActionResult<ApiResponse<List<RoleDto>>>> GetAssignableRoles([FromRoute] Guid userId)
+    {
+      try
+      {
+        var query = new GetAssignableRolesQuery { UserId = userId };
+        var result = await _mediator.Send(query);
+        return Ok(ApiResponse<List<RoleDto>>.SuccessResponse(result));
+      }
+      catch (UserNotFoundByIdError ex)
+      {
+        return NotFound(ApiResponse<List<RoleDto>>.ErrorResponse(ex.Message));
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ApiResponse<List<RoleDto>>.ErrorResponse(ex.Message));
+      }
+    }
+
+    /// <summary>
+    /// Gets a list of users that can be assigned to a specific role (users not already assigned to the role)
+    /// </summary>
+    /// <param name="roleId">ID of the role to get assignable users for</param>
+    /// <returns>List of users that can be assigned to the role</returns>
+    [HttpGet("id/{roleId}/assignable-users")]
+    [Authorize]
+    [RequireAnyPermission(PermissionNames.ManageRoles, PermissionNames.Admin, PermissionNames.SuperAdmin)]
+    public async Task<ActionResult<ApiResponse<List<UserOptionDto>>>> GetAssignableUsers([FromRoute] Guid roleId)
+    {
+      try
+      {
+        var query = new GetAssignableUsersQuery { RoleId = roleId };
+        var result = await _mediator.Send(query);
+        return Ok(ApiResponse<List<UserOptionDto>>.SuccessResponse(result));
+      }
+      catch (RoleNotFoundByIdError ex)
+      {
+        return NotFound(ApiResponse<List<UserOptionDto>>.ErrorResponse(ex.Message));
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ApiResponse<List<UserOptionDto>>.ErrorResponse(ex.Message));
       }
     }
 

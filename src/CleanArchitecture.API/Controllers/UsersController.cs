@@ -6,6 +6,7 @@ using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.Common.Models;
 using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Application.Features.Users.Commands.ActivateUser;
+using CleanArchitecture.Application.Features.Users.Commands.AssignRoleToUser;
 using CleanArchitecture.Application.Features.Users.Commands.CreateUser;
 using CleanArchitecture.Application.Features.Users.Commands.DeactivateUser;
 using CleanArchitecture.Application.Features.Users.Commands.UpdateUser;
@@ -99,10 +100,10 @@ namespace CleanArchitecture.API.Controllers
     }
 
     /// <summary>
-    /// Obtiene todos los roles de un usuario por su ID
+    /// Gets all roles of a user by their ID
     /// </summary>
-    /// <param name="id">ID del usuario</param>
-    /// <returns>Lista de roles del usuario</returns>
+    /// <param name="id">User ID</param>
+    /// <returns>List of user roles</returns>
     [HttpGet("id/{id}/roles")]
     [Authorize]
     [RequireAnyPermission(PermissionNames.ManageUserRoles, PermissionNames.Admin, PermissionNames.SuperAdmin)]
@@ -128,11 +129,11 @@ namespace CleanArchitecture.API.Controllers
     }
 
     /// <summary>
-    /// Actualiza los roles de un usuario por su ID
+    /// Updates the roles of a user by their ID
     /// </summary>
-    /// <param name="id">ID del usuario</param>
-    /// <param name="request">Lista de IDs de roles a asignar</param>
-    /// <returns>Lista actualizada de roles del usuario</returns>
+    /// <param name="id">User ID</param>
+    /// <param name="request">List of role IDs to assign</param>
+    /// <returns>Updated list of user roles</returns>
     [HttpPut("id/{id}/roles")]
     [Authorize]
     [RequireAnyPermission(PermissionNames.ManageUserRoles, PermissionNames.Admin, PermissionNames.SuperAdmin)]
@@ -162,10 +163,48 @@ namespace CleanArchitecture.API.Controllers
     }
 
     /// <summary>
-    /// Obtiene todos los permisos de un usuario por su ID
+    /// Assigns a single role to a user by their ID
     /// </summary>
-    /// <param name="id">ID del usuario</param>
-    /// <returns>Lista de permisos del usuario a través de sus roles</returns>
+    /// <param name="id">User ID</param>
+    /// <param name="request">Role ID to assign</param>
+    /// <returns>Assigned role information</returns>
+    [HttpPatch("id/{id}/roles")]
+    [Authorize]
+    [RequireAnyPermission(PermissionNames.ManageUserRoles, PermissionNames.Admin, PermissionNames.SuperAdmin)]
+    [ProducesResponseType(typeof(ApiResponse<RoleDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<RoleDto>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse<RoleDto>), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AssignRoleToUser(Guid id, [FromBody] AssignRoleToUserRequestDto request)
+    {
+      try
+      {
+        var command = new AssignRoleToUserCommand(id, request.RoleId);
+        var result = await _mediator.Send(command);
+        return Ok(ApiResponse<RoleDto>.SuccessResponse(result, _localizationService.GetSuccessMessage("ROLE_ASSIGNED_TO_USER")));
+      }
+      catch (UserNotFoundByIdError ex)
+      {
+        return NotFound(ApiResponse<RoleDto>.ErrorResponse(ex.Message));
+      }
+      catch (RoleNotFoundByIdError ex)
+      {
+        return NotFound(ApiResponse<RoleDto>.ErrorResponse(ex.Message));
+      }
+      catch (ArgumentException ex)
+      {
+        return BadRequest(ApiResponse<RoleDto>.ErrorResponse(ex.Message));
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ApiResponse<RoleDto>.ErrorResponse(ex.Message));
+      }
+    }
+
+    /// <summary>
+    /// Gets all permissions of a user by their ID
+    /// </summary>
+    /// <param name="id">User ID</param>
+    /// <returns>List of user permissions through their roles</returns>
     [HttpGet("id/{id}/permissions")]
     [Authorize]
     [RequireAnyPermission(PermissionNames.ManageUserRoles, PermissionNames.Admin, PermissionNames.SuperAdmin)]
@@ -191,10 +230,10 @@ namespace CleanArchitecture.API.Controllers
     }
 
     /// <summary>
-    /// Activa un usuario por su ID
+    /// Activates a user by their ID
     /// </summary>
-    /// <param name="id">ID del usuario a activar</param>
-    /// <returns>Resultado de la operación</returns>
+    /// <param name="id">ID of the user to activate</param>
+    /// <returns>Operation result</returns>
     [HttpPatch("id/{id}/activate")]
     [Authorize]
     [RequireAnyPermission(PermissionNames.ManageUsers, PermissionNames.Admin, PermissionNames.SuperAdmin)]
@@ -204,7 +243,7 @@ namespace CleanArchitecture.API.Controllers
       {
         var command = new ActivateUserCommand(id);
         var result = await _mediator.Send(command);
-        return Ok(ApiResponse<bool>.SuccessResponse(result, "Usuario activado exitosamente"));
+        return Ok(ApiResponse<bool>.SuccessResponse(result, "User activated successfully"));
       }
       catch (UserNotFoundByIdError ex)
       {
@@ -216,10 +255,10 @@ namespace CleanArchitecture.API.Controllers
       }
     }
     /// <summary>
-    /// Desactiva un usuario por su ID
+    /// Deactivates a user by their ID
     /// </summary>
-    /// <param name="id">ID del usuario a desactivar</param>
-    /// <returns>Resultado de la operación</returns>
+    /// <param name="id">ID of the user to deactivate</param>
+    /// <returns>Operation result</returns>
     [HttpPatch("id/{id}/deactivate")]
     [Authorize]
     [RequireAnyPermission(PermissionNames.ManageUsers, PermissionNames.Admin, PermissionNames.SuperAdmin)]
@@ -229,7 +268,7 @@ namespace CleanArchitecture.API.Controllers
       {
         var command = new DeactivateUserCommand(id);
         var result = await _mediator.Send(command);
-        return Ok(ApiResponse<bool>.SuccessResponse(result, "Usuario desactivado exitosamente"));
+        return Ok(ApiResponse<bool>.SuccessResponse(result, "User deactivated successfully"));
       }
       catch (UserNotFoundByIdError ex)
       {

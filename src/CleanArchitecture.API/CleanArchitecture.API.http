@@ -4,3 +4,48 @@ GET {{CleanArchitecture.API_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+# Test the new assignable roles endpoint
+GET {{CleanArchitecture.API_HostAddress}}/roles/assignable/user/{{userId}}
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+# Test the new assignable users endpoint
+GET {{CleanArchitecture.API_HostAddress}}/roles/id/{{roleId}}/assignable-users
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+# Test the new assign single role endpoint
+POST {{CleanArchitecture.API_HostAddress}}/users/id/{{userId}}/roles
+Accept: application/json
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "roleId": "{{roleId}}"
+}
+
+###
+
+# Test update role permissions
+PUT {{CleanArchitecture.API_HostAddress}}/roles/id/{{roleId}}/permissions
+Accept: application/json
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "permissionIds": ["32edea54-6b49-4f4f-8257-aa1992f23c28"]
+}
+
+###
+
+# Test get role permissions
+GET {{CleanArchitecture.API_HostAddress}}/roles/id/{{roleId}}/permissions
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###

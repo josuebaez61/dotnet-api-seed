@@ -257,6 +257,10 @@
   <data name="SUCCESS_ROLE_PERMISSIONS_UPDATED" xml:space="preserve">
     <value>Role permissions updated successfully</value>
   </data>
+  <data name="SUCCESS_ROLE_ASSIGNED_TO_USER" xml:space="preserve">
+    <value>Role assigned to user successfully</value>
+  </data>
+
   <data name="VALIDATION_INVALID_PAGINATION_PARAMETERS" xml:space="preserve">
     <value>Invalid pagination parameters</value>
   </data>

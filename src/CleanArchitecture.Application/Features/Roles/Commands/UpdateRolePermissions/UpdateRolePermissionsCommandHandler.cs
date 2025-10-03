@@ -46,60 +46,25 @@ namespace CleanArchitecture.Application.Features.Roles.Commands.UpdateRolePermis
         throw new PermissionNotFoundError();
       }
 
-      // Obtener los permisos actuales del rol
-      var currentRolePermissions = await _context.RolePermissions
+      // Eliminar TODAS las relaciones existentes para este rol
+      var existingRolePermissions = await _context.RolePermissions
           .Where(rp => rp.RoleId == request.RoleId)
           .ToListAsync(cancellationToken);
 
-      // Eliminar los permisos que ya no están en la nueva lista
-      var permissionsToRemove = currentRolePermissions
-          .Where(rp => !request.Request.PermissionIds.Contains(rp.PermissionId))
-          .ToList();
+      _context.RolePermissions.RemoveRange(existingRolePermissions);
 
-      foreach (var permissionToRemove in permissionsToRemove)
+      // Crear NUEVAS relaciones solo con los permisos del payload
+      var newRolePermissions = request.Request.PermissionIds.Select(permissionId => new RolePermission
       {
-        permissionToRemove.IsDeleted = true;
-        permissionToRemove.UpdatedAt = DateTime.UtcNow;
-      }
+        Id = Guid.NewGuid(),
+        RoleId = request.RoleId,
+        PermissionId = permissionId,
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
+        IsDeleted = false
+      }).ToList();
 
-      // Agregar los nuevos permisos que no estaban asignados
-      var currentPermissionIds = currentRolePermissions
-          .Where(rp => !rp.IsDeleted)
-          .Select(rp => rp.PermissionId)
-          .ToList();
-
-      var permissionsToAdd = request.Request.PermissionIds
-          .Except(currentPermissionIds)
-          .ToList();
-
-      foreach (var permissionId in permissionsToAdd)
-      {
-        // Verificar si ya existe un RolePermission para este rol y permiso (aunque esté marcado como eliminado)
-        var existingRolePermission = currentRolePermissions
-            .FirstOrDefault(rp => rp.PermissionId == permissionId);
-
-        if (existingRolePermission != null)
-        {
-          // Si existe pero está marcado como eliminado, reactivarlo
-          existingRolePermission.IsDeleted = false;
-          existingRolePermission.UpdatedAt = DateTime.UtcNow;
-        }
-        else
-        {
-          // Si no existe, crear uno nuevo
-          var newRolePermission = new RolePermission
-          {
-            Id = Guid.NewGuid(),
-            RoleId = request.RoleId,
-            PermissionId = permissionId,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow,
-            IsDeleted = false
-          };
-
-          _context.RolePermissions.Add(newRolePermission);
-        }
-      }
+      _context.RolePermissions.AddRange(newRolePermissions);
 
       // Actualizar el timestamp del rol
       role.UpdatedAt = DateTime.UtcNow;

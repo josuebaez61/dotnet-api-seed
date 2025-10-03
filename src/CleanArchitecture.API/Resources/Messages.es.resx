@@ -114,6 +114,9 @@
   <data name="SUCCESS_USER_ROLES_UPDATED" xml:space="preserve">
     <value>Roles del usuario actualizados exitosamente</value>
   </data>
+  <data name="SUCCESS_ROLE_ASSIGNED_TO_USER" xml:space="preserve">
+    <value>Rol asignado al usuario exitosamente</value>
+  </data>
   
   <!-- Error Messages -->
   <data name="ERROR_INVALID_TEST_EMAIL_TYPE" xml:space="preserve">

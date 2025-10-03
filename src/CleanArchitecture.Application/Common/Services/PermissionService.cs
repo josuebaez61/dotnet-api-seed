@@ -51,7 +51,7 @@ namespace CleanArchitecture.Application.Common.Services
       var permissions = user.UserRoles
           .Where(ur => ur.Role != null)
           .SelectMany(ur => ur.Role.RolePermissions)
-          .Where(rp => rp.Permission != null)
+          .Where(rp => rp.Permission != null && !rp.IsDeleted)
           .Select(rp => rp.Permission)
           .Distinct()
           .ToList();
@@ -73,7 +73,7 @@ namespace CleanArchitecture.Application.Common.Services
         return new List<Permission>();
 
       return role.RolePermissions
-          .Where(rp => rp.Permission != null)
+          .Where(rp => rp.Permission != null && !rp.IsDeleted)
           .Select(rp => rp.Permission)
           .ToList();
     }
@@ -108,7 +108,7 @@ namespace CleanArchitecture.Application.Common.Services
                       .ThenInclude(rp => rp.Permission)
           .Where(u => u.UserRoles
               .Any(ur => ur.Role.RolePermissions
-                  .Any(rp => rp.Permission.Name == permissionName)))
+                  .Any(rp => rp.Permission.Name == permissionName && !rp.IsDeleted)))
           .ToListAsync();
 
       return users;

@@ -11,6 +11,7 @@ namespace CleanArchitecture.Application.Common.Mappings
         {
             // User mappings
             CreateMap<User, UserDto>();
+            CreateMap<User, UserOptionDto>();
 
             // Country mappings
             CreateMap<Country, CountryDto>();
@@ -41,7 +42,7 @@ namespace CleanArchitecture.Application.Common.Mappings
                     src.UserRoles
                         .Where(ur => ur.Role != null && ur.Role.RolePermissions != null)
                         .SelectMany(ur => ur.Role.RolePermissions)
-                        .Where(rp => rp.Permission != null)
+                        .Where(rp => rp.Permission != null && !rp.IsDeleted)
                         .Select(rp => rp.Permission.Name)
                         .Distinct()
                         .ToList()));
