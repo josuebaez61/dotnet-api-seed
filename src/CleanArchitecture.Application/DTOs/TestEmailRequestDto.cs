@@ -16,6 +16,6 @@ namespace CleanArchitecture.Application.DTOs
   {
     Welcome,
     PasswordReset,
-    PasswordChanged
+    PasswordChanged,
   }
 }

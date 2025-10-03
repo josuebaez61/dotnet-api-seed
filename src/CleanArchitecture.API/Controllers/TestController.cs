@@ -84,31 +84,5 @@ namespace CleanArchitecture.API.Controllers
 
       return Ok(ApiResponse<object>.SuccessResponse(testMessages, "Localization test"));
     }
-
-    /// <summary>
-    /// Endpoint de prueba para verificar el envío de emails de password reset
-    /// </summary>
-    /// <param name="email">Email de destino</param>
-    /// <returns>Resultado del envío</returns>
-    [HttpPost("test-password-reset-email")]
-    public async Task<ActionResult<ApiResponse>> TestPasswordResetEmail([FromBody] string email)
-    {
-      try
-      {
-        _logger.LogInformation("Testing password reset email to: {Email}", email);
-        
-        var testCode = "1234-5678";
-        await _emailService.SendPasswordResetEmailAsync(email, "Test User", testCode);
-        
-        _logger.LogInformation("Password reset test email sent successfully to: {Email}", email);
-        
-        return Ok(ApiResponse.SuccessResponse($"Password reset test email sent to {email} with code: {testCode}"));
-      }
-      catch (Exception ex)
-      {
-        _logger.LogError(ex, "Failed to send password reset test email to: {Email}", email);
-        return BadRequest(ApiResponse.ErrorResponse($"Failed to send test email: {ex.Message}"));
-      }
-    }
   }
 }

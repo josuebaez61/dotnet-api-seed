@@ -35,7 +35,7 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.RequestPasswordRe
     public async Task<PasswordResetResponseDto> Handle(RequestPasswordResetCommand request, CancellationToken cancellationToken)
     {
       _logger.LogInformation("Password reset requested for email: {Email}", request.Request.Email);
-      
+
       var user = await _userManager.FindByEmailAsync(request.Request.Email);
       if (user == null)
       {
@@ -54,10 +54,10 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.RequestPasswordRe
       }
 
       _logger.LogInformation("Generating password reset code for user: {UserId}, Email: {Email}", user.Id, user.Email);
-      
+
       // Generar código de reset
       var resetCode = await _authService.GeneratePasswordResetCodeAsync(user.Id);
-      
+
       _logger.LogInformation("Password reset code generated: {ResetCode} for user: {UserId}", resetCode, user.Id);
 
       try

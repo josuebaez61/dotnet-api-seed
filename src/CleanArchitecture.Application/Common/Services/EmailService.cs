@@ -75,13 +75,11 @@ namespace CleanArchitecture.Application.Common.Services
         public async Task SendPasswordResetEmailAsync(string to, string userName, string resetCode)
         {
             var culture = _localizationService.GetCurrentCulture();
-            var frontendUrl = _configuration["FrontendSettings:BaseUrl"] ?? "http://localhost:4200";
-            var resetLink = $"{frontendUrl}/auth/reset-password?code={resetCode}";
 
             var parameters = new Dictionary<string, object>
             {
                 ["UserName"] = userName,
-                ["ResetLink"] = resetLink
+                ["ResetCode"] = resetCode
             };
 
             var body = await _emailTemplateService.RenderEmailAsync("PasswordReset", culture, parameters);
