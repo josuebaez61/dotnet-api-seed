@@ -32,7 +32,7 @@ namespace CleanArchitecture.Application.Common.Services
     private readonly SignInManager<User> _signInManager;
     private readonly IConfiguration _configuration;
     private readonly IPermissionService _permissionService;
-    private readonly IPasswordResetCodeRepository _passwordResetCodeRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly Dictionary<string, RefreshTokenInfo> _refreshTokens = new();
     private readonly IMapper _mapper;
     public AuthService(
@@ -40,14 +40,14 @@ namespace CleanArchitecture.Application.Common.Services
         SignInManager<User> signInManager,
         IConfiguration configuration,
         IPermissionService permissionService,
-        IPasswordResetCodeRepository passwordResetCodeRepository,
+        IUnitOfWork unitOfWork,
         IMapper mapper)
     {
       _userManager = userManager;
       _signInManager = signInManager;
       _configuration = configuration;
       _permissionService = permissionService;
-      _passwordResetCodeRepository = passwordResetCodeRepository;
+      _unitOfWork = unitOfWork;
       _mapper = mapper;
     }
 
@@ -271,14 +271,14 @@ namespace CleanArchitecture.Application.Common.Services
       var code = $"{firstPart}-{secondPart}";
 
       // Limpiar códigos expirados y usados del usuario
-      var expiredCodes = await _passwordResetCodeRepository.FindAsync(prc => 
+      var expiredCodes = await _unitOfWork.PasswordResetCodes.FindAsync(prc => 
           prc.UserId == userId && (prc.ExpiresAt <= DateTime.UtcNow || prc.IsUsed));
 
       if (expiredCodes.Any())
       {
         foreach (var expiredCode in expiredCodes)
         {
-          await _passwordResetCodeRepository.DeleteAsync(expiredCode);
+          await _unitOfWork.PasswordResetCodes.DeleteAsync(expiredCode);
         }
       }
 
@@ -294,14 +294,17 @@ namespace CleanArchitecture.Application.Common.Services
       };
 
       // Agregar nuevo código a la base de datos
-      await _passwordResetCodeRepository.AddAsync(resetCode);
+      await _unitOfWork.PasswordResetCodes.AddAsync(resetCode);
+      
+      // Guardar cambios en la base de datos
+      await _unitOfWork.SaveChangesAsync();
 
       return code;
     }
 
     public async Task<bool> ValidatePasswordResetCodeAsync(Guid userId, string code)
     {
-      var resetCode = await _passwordResetCodeRepository.FirstOrDefaultAsync(prc => 
+      var resetCode = await _unitOfWork.PasswordResetCodes.FirstOrDefaultAsync(prc => 
           prc.UserId == userId && prc.Code == code);
 
       if (resetCode == null)
@@ -324,7 +327,7 @@ namespace CleanArchitecture.Application.Common.Services
 
     public async Task<Guid> ValidatePasswordResetCodeAndGetUserIdAsync(string code)
     {
-      var resetCode = await _passwordResetCodeRepository.GetByCodeAsync(code);
+      var resetCode = await _unitOfWork.PasswordResetCodes.GetByCodeAsync(code);
 
       if (resetCode == null)
       {
@@ -346,12 +349,13 @@ namespace CleanArchitecture.Application.Common.Services
 
     public async Task MarkPasswordResetCodeAsUsedAsync(Guid userId, string code)
     {
-      var resetCode = await _passwordResetCodeRepository.FirstOrDefaultAsync(prc => 
+      var resetCode = await _unitOfWork.PasswordResetCodes.FirstOrDefaultAsync(prc => 
           prc.UserId == userId && prc.Code == code);
 
       if (resetCode != null)
       {
-        await _passwordResetCodeRepository.MarkAsUsedAsync(resetCode.Id);
+        await _unitOfWork.PasswordResetCodes.MarkAsUsedAsync(resetCode.Id);
+        await _unitOfWork.SaveChangesAsync();
       }
     }
   }
