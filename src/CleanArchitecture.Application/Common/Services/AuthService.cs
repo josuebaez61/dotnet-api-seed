@@ -11,6 +11,7 @@ using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Domain.Common.Constants;
+using CleanArchitecture.Domain.Common.Interfaces;
 using CleanArchitecture.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +32,7 @@ namespace CleanArchitecture.Application.Common.Services
     private readonly SignInManager<User> _signInManager;
     private readonly IConfiguration _configuration;
     private readonly IPermissionService _permissionService;
-    private readonly IApplicationDbContext _context;
+    private readonly IPasswordResetCodeRepository _passwordResetCodeRepository;
     private readonly Dictionary<string, RefreshTokenInfo> _refreshTokens = new();
     private readonly IMapper _mapper;
     public AuthService(
@@ -39,14 +40,14 @@ namespace CleanArchitecture.Application.Common.Services
         SignInManager<User> signInManager,
         IConfiguration configuration,
         IPermissionService permissionService,
-        IApplicationDbContext context,
+        IPasswordResetCodeRepository passwordResetCodeRepository,
         IMapper mapper)
     {
       _userManager = userManager;
       _signInManager = signInManager;
       _configuration = configuration;
       _permissionService = permissionService;
-      _context = context;
+      _passwordResetCodeRepository = passwordResetCodeRepository;
       _mapper = mapper;
     }
 
@@ -270,13 +271,15 @@ namespace CleanArchitecture.Application.Common.Services
       var code = $"{firstPart}-{secondPart}";
 
       // Limpiar códigos expirados y usados del usuario
-      var expiredCodes = await _context.PasswordResetCodes
-          .Where(prc => prc.UserId == userId && (prc.ExpiresAt <= DateTime.UtcNow || prc.IsUsed))
-          .ToListAsync();
+      var expiredCodes = await _passwordResetCodeRepository.FindAsync(prc => 
+          prc.UserId == userId && (prc.ExpiresAt <= DateTime.UtcNow || prc.IsUsed));
 
       if (expiredCodes.Any())
       {
-        _context.PasswordResetCodes.RemoveRange(expiredCodes);
+        foreach (var expiredCode in expiredCodes)
+        {
+          await _passwordResetCodeRepository.DeleteAsync(expiredCode);
+        }
       }
 
       var resetCode = new PasswordResetCode
@@ -291,16 +294,15 @@ namespace CleanArchitecture.Application.Common.Services
       };
 
       // Agregar nuevo código a la base de datos
-      _context.PasswordResetCodes.Add(resetCode);
-      await _context.SaveChangesAsync();
+      await _passwordResetCodeRepository.AddAsync(resetCode);
 
       return code;
     }
 
     public async Task<bool> ValidatePasswordResetCodeAsync(Guid userId, string code)
     {
-      var resetCode = await _context.PasswordResetCodes
-          .FirstOrDefaultAsync(prc => prc.UserId == userId && prc.Code == code);
+      var resetCode = await _passwordResetCodeRepository.FirstOrDefaultAsync(prc => 
+          prc.UserId == userId && prc.Code == code);
 
       if (resetCode == null)
       {
@@ -322,8 +324,7 @@ namespace CleanArchitecture.Application.Common.Services
 
     public async Task<Guid> ValidatePasswordResetCodeAndGetUserIdAsync(string code)
     {
-      var resetCode = await _context.PasswordResetCodes
-          .FirstOrDefaultAsync(prc => prc.Code == code);
+      var resetCode = await _passwordResetCodeRepository.GetByCodeAsync(code);
 
       if (resetCode == null)
       {
@@ -345,15 +346,12 @@ namespace CleanArchitecture.Application.Common.Services
 
     public async Task MarkPasswordResetCodeAsUsedAsync(Guid userId, string code)
     {
-      var resetCode = await _context.PasswordResetCodes
-          .FirstOrDefaultAsync(prc => prc.UserId == userId && prc.Code == code);
+      var resetCode = await _passwordResetCodeRepository.FirstOrDefaultAsync(prc => 
+          prc.UserId == userId && prc.Code == code);
 
       if (resetCode != null)
       {
-        resetCode.IsUsed = true;
-        resetCode.UsedAt = DateTime.UtcNow;
-        resetCode.UpdatedAt = DateTime.UtcNow;
-        await _context.SaveChangesAsync();
+        await _passwordResetCodeRepository.MarkAsUsedAsync(resetCode.Id);
       }
     }
   }
