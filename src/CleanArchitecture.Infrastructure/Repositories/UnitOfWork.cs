@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Domain.Common.Interfaces;
 using CleanArchitecture.Domain.Entities;
+using CleanArchitecture.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -11,20 +12,29 @@ namespace CleanArchitecture.Infrastructure.Repositories
 {
   public class UnitOfWork : IUnitOfWork
   {
-    private readonly IApplicationDbContext _context;
+    private readonly ApplicationDbContext _context;
     private IDbContextTransaction? _transaction;
 
-    public UnitOfWork(IApplicationDbContext context)
+    public UnitOfWork(
+        ApplicationDbContext context,
+        IPasswordResetCodeRepository passwordResetCodes,
+        IRepository<User> users,
+        IRepository<Role> roles,
+        IRepository<Permission> permissions,
+        IRepository<RolePermission> rolePermissions,
+        IRepository<UserRole> userRoles,
+        IRepository<Country> countries,
+        IRepository<City> cities)
     {
       _context = context;
-      PasswordResetCodes = new PasswordResetCodeRepository(_context);
-      Users = new Repository<User>(_context);
-      Roles = new Repository<Role>(_context);
-      Permissions = new Repository<Permission>(_context);
-      RolePermissions = new Repository<RolePermission>(_context);
-      UserRoles = new Repository<UserRole>(_context);
-      Countries = new Repository<Country>(_context);
-      Cities = new Repository<City>(_context);
+      PasswordResetCodes = passwordResetCodes;
+      Users = users;
+      Roles = roles;
+      Permissions = permissions;
+      RolePermissions = rolePermissions;
+      UserRoles = userRoles;
+      Countries = countries;
+      Cities = cities;
     }
 
     public IPasswordResetCodeRepository PasswordResetCodes { get; }

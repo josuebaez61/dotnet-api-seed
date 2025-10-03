@@ -271,7 +271,7 @@ namespace CleanArchitecture.Application.Common.Services
       var code = $"{firstPart}-{secondPart}";
 
       // Limpiar códigos expirados y usados del usuario
-      var expiredCodes = await _unitOfWork.PasswordResetCodes.FindAsync(prc => 
+      var expiredCodes = await _unitOfWork.PasswordResetCodes.FindAsync(prc =>
           prc.UserId == userId && (prc.ExpiresAt <= DateTime.UtcNow || prc.IsUsed));
 
       if (expiredCodes.Any())
@@ -295,7 +295,7 @@ namespace CleanArchitecture.Application.Common.Services
 
       // Agregar nuevo código a la base de datos
       await _unitOfWork.PasswordResetCodes.AddAsync(resetCode);
-      
+
       // Guardar cambios en la base de datos
       await _unitOfWork.SaveChangesAsync();
 
@@ -304,7 +304,7 @@ namespace CleanArchitecture.Application.Common.Services
 
     public async Task<bool> ValidatePasswordResetCodeAsync(Guid userId, string code)
     {
-      var resetCode = await _unitOfWork.PasswordResetCodes.FirstOrDefaultAsync(prc => 
+      var resetCode = await _unitOfWork.PasswordResetCodes.FirstOrDefaultAsync(prc =>
           prc.UserId == userId && prc.Code == code);
 
       if (resetCode == null)
@@ -349,7 +349,7 @@ namespace CleanArchitecture.Application.Common.Services
 
     public async Task MarkPasswordResetCodeAsUsedAsync(Guid userId, string code)
     {
-      var resetCode = await _unitOfWork.PasswordResetCodes.FirstOrDefaultAsync(prc => 
+      var resetCode = await _unitOfWork.PasswordResetCodes.FirstOrDefaultAsync(prc =>
           prc.UserId == userId && prc.Code == code);
 
       if (resetCode != null)
