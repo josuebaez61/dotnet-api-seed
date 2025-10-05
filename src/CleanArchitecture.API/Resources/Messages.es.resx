@@ -236,6 +236,9 @@
   <data name="ERROR_MUST_CHANGE_PASSWORD" xml:space="preserve">
     <value>Debes cambiar tu contraseña antes de continuar</value>
   </data>
+    <data name="ERROR_VALIDATION_FAILED" xml:space="preserve">
+    <value>Error de validación</value>
+  </data>
   
   <!-- Validation Messages -->
   <data name="VALIDATION_REQUIRED_FIELD" xml:space="preserve">

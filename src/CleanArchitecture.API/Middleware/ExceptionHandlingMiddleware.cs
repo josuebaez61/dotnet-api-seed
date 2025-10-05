@@ -46,7 +46,7 @@ namespace CleanArchitecture.API.Middleware
       if (exception is ValidationException validationEx)
       {
         apiResponse = ApiResponse.ErrorResponse(
-            "Validation failed",
+            GetLocalizedMessage(context, "VALIDATION_FAILED"),
             validationEx.Errors,
             errorCode: "VALIDATION_ERROR"
         );
