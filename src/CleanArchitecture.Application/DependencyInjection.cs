@@ -1,5 +1,6 @@
 using System.Reflection;
 using AutoMapper;
+using CleanArchitecture.Application.Common.Behaviors;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.Common.Mappings;
 using CleanArchitecture.Application.Common.Services;
@@ -23,6 +24,9 @@ namespace CleanArchitecture.Application
 
       // FluentValidation
       services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+      // MediatR Pipeline Behaviors
+      services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
       // Services
       services.AddScoped<IAuthService, AuthService>();

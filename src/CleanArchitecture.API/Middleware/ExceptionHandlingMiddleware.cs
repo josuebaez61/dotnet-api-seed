@@ -43,7 +43,16 @@ namespace CleanArchitecture.API.Middleware
 
       var apiResponse = new ApiResponse();
 
-      if (exception is Application.Common.Exceptions.ApplicationException appEx)
+      if (exception is ValidationException validationEx)
+      {
+        apiResponse = ApiResponse.ErrorResponse(
+            "Validation failed",
+            validationEx.Errors,
+            errorCode: "VALIDATION_ERROR"
+        );
+        response.StatusCode = (int)HttpStatusCode.BadRequest;
+      }
+      else if (exception is Application.Common.Exceptions.ApplicationException appEx)
       {
         apiResponse = ApiResponse.ErrorResponse(
             GetLocalizedMessage(context, appEx.ErrorCode, appEx.Parameters),

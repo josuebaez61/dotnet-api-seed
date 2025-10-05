@@ -2,6 +2,96 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Launch API (Development) - Dotnet Run",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "dotnet",
+      "args": [
+        "run",
+        "--launch-profile",
+        "http",
+        "--project",
+        "${workspaceFolder}/src/CleanArchitecture.API/CleanArchitecture.API.csproj"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "Now listening on:",
+        "uriFormat": "http://localhost:5103/swagger"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "requireExactSource": false,
+      "enableStepFiltering": false,
+      "justMyCode": false,
+      "symbolOptions": {
+        "searchPaths": [
+          "${workspaceFolder}/src/CleanArchitecture.Application/bin/Debug/net9.0",
+          "${workspaceFolder}/src/CleanArchitecture.Infrastructure/bin/Debug/net9.0",
+          "${workspaceFolder}/src/CleanArchitecture.Domain/bin/Debug/net9.0"
+        ]
+      }
+    },
+    {
+      "name": "Debug API (Development) - DLL",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/src/CleanArchitecture.API/bin/Debug/net9.0/CleanArchitecture.API.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/CleanArchitecture.API",
+      "console": "integratedTerminal",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "Now listening on:",
+        "uriFormat": "http://localhost:5103/swagger"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:5103"
+      },
+      "requireExactSource": false,
+      "enableStepFiltering": false,
+      "justMyCode": false,
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Views"
+      }
+    },
+    {
+      "name": "Debug API (Development) - Attach",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/src/CleanArchitecture.API/bin/Debug/net9.0/CleanArchitecture.API.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/CleanArchitecture.API",
+      "console": "integratedTerminal",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "pattern": "Now listening on:"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:5103",
+        "DOTNET_EnableDiagnostics": "1"
+      },
+      "requireExactSource": false,
+      "enableStepFiltering": false,
+      "justMyCode": false,
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Views"
+      },
+      "logging": {
+        "engineLogging": true,
+        "trace": true,
+        "traceResponse": true
+      }
+    },
+    {
       "name": "Launch API (Development)",
       "type": "coreclr",
       "request": "launch",
@@ -9,14 +99,21 @@
       "program": "${workspaceFolder}/src/CleanArchitecture.API/bin/Debug/net9.0/CleanArchitecture.API.dll",
       "args": [],
       "cwd": "${workspaceFolder}/src/CleanArchitecture.API",
-      "console": "internalConsole",
+      "console": "integratedTerminal",
       "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "Now listening on:",
+        "uriFormat": "http://localhost:5103/swagger"
+      },
       "env": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "https://localhost:7001;http://localhost:5103"
       },
       "sourceFileMap": {
         "/Views": "${workspaceFolder}/Views"
-      }
+      },
+      "requireExactSource": false
     },
     {
       "name": "Launch API (Staging)",
@@ -26,10 +123,16 @@
       "program": "${workspaceFolder}/src/CleanArchitecture.API/bin/Debug/net9.0/CleanArchitecture.API.dll",
       "args": [],
       "cwd": "${workspaceFolder}/src/CleanArchitecture.API",
-      "console": "internalConsole",
+      "console": "integratedTerminal",
       "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+        "uriFormat": "%s/swagger"
+      },
       "env": {
-        "ASPNETCORE_ENVIRONMENT": "Staging"
+        "ASPNETCORE_ENVIRONMENT": "Staging",
+        "ASPNETCORE_URLS": "https://localhost:7002;http://localhost:5002"
       },
       "sourceFileMap": {
         "/Views": "${workspaceFolder}/Views"
@@ -43,10 +146,16 @@
       "program": "${workspaceFolder}/src/CleanArchitecture.API/bin/Debug/net9.0/CleanArchitecture.API.dll",
       "args": [],
       "cwd": "${workspaceFolder}/src/CleanArchitecture.API",
-      "console": "internalConsole",
+      "console": "integratedTerminal",
       "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+        "uriFormat": "%s/swagger"
+      },
       "env": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
+        "ASPNETCORE_ENVIRONMENT": "Production",
+        "ASPNETCORE_URLS": "https://localhost:7003;http://localhost:5003"
       },
       "sourceFileMap": {
         "/Views": "${workspaceFolder}/Views"
@@ -60,7 +169,7 @@
       "program": "${workspaceFolder}/src/CleanArchitecture.API/bin/Debug/net9.0/CleanArchitecture.API.dll",
       "args": ["--seed", "all"],
       "cwd": "${workspaceFolder}/src/CleanArchitecture.API",
-      "console": "internalConsole",
+      "console": "integratedTerminal",
       "stopAtEntry": false,
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development"
@@ -74,7 +183,7 @@
       "program": "${workspaceFolder}/src/CleanArchitecture.API/bin/Debug/net9.0/CleanArchitecture.API.dll",
       "args": ["--seed", "AdminUser"],
       "cwd": "${workspaceFolder}/src/CleanArchitecture.API",
-      "console": "internalConsole",
+      "console": "integratedTerminal",
       "stopAtEntry": false,
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development"

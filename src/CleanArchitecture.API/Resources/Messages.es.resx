@@ -265,6 +265,15 @@
   <data name="VALIDATION_INVALID_PAGINATION_PARAMETERS" xml:space="preserve">
     <value>Parámetros de paginación inválidos</value>
   </data>
+  <data name="VALIDATION_NEW_PASSWORD_REQUIRED" xml:space="preserve">
+    <value>La contraseña nueva es requerida</value>
+  </data>
+  <data name="VALIDATION_NEW_PASSWORD_MIN_LENGTH" xml:space="preserve">
+    <value>La contraseña nueva debe tener al menos {0} caracteres</value>
+  </data>
+  <data name="VALIDATION_NEW_PASSWORD_REGEX" xml:space="preserve">
+    <value>La contraseña nueva debe contener al menos una letra minúscula, una letra mayúscula, un número y un carácter especial</value>
+  </data>
   
   <!-- Email Subject Messages -->
   <data name="EMAIL_EMAIL_CHANGE_VERIFICATION_SUBJECT" xml:space="preserve">

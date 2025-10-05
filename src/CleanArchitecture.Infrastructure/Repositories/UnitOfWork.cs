@@ -5,7 +5,6 @@ using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Domain.Common.Interfaces;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CleanArchitecture.Infrastructure.Repositories

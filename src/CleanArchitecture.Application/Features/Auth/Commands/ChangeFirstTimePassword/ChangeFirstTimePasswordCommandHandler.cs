@@ -60,6 +60,31 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.ChangeFirstTimePa
 
       if (!result.Succeeded)
       {
+        // if (result.Errors.Any(e => e.Code == "PasswordTooShort"))
+        // {
+        //   throw new PasswordTooShortError();
+        // }
+        // if (result.Errors.Any(e => e.Code == "PasswordRequiresNonAlphanumeric"))
+        // {
+        //   throw new PasswordRequiresNonAlphanumericError();
+        // }
+        // if (result.Errors.Any(e => e.Code == "PasswordRequiresUpper"))
+        // {
+        //   throw new PasswordRequiresUpperError();
+        // }
+        // if (result.Errors.Any(e => e.Code == "PasswordRequiresLower"))
+        // {
+        //   throw new PasswordRequiresLowerError();
+        // }
+        // if (result.Errors.Any(e => e.Code == "PasswordRequiresDigit"))
+        // {
+        //   throw new PasswordRequiresDigitError();
+        // }
+        // if (result.Errors.Any(e => e.Code == "PasswordRequiresUniqueChars"))
+        // {
+        //   throw new PasswordRequiresUniqueCharsError();
+        // }
+
         throw new PasswordChangeFailedError(string.Join(", ", result.Errors.Select(e => e.Description)));
       }
 
