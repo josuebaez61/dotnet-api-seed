@@ -12,12 +12,14 @@ using CleanArchitecture.Application.Features.Auth.Commands.Register;
 using CleanArchitecture.Application.Features.Auth.Commands.RequestEmailChange;
 using CleanArchitecture.Application.Features.Auth.Commands.RequestPasswordReset;
 using CleanArchitecture.Application.Features.Auth.Commands.ResetPassword;
+using CleanArchitecture.Application.Features.Auth.Commands.UpdateCurrentUser;
 using CleanArchitecture.Application.Features.Auth.Commands.VerifyEmailChange;
 using CleanArchitecture.Application.Features.Auth.Queries.GetAuthUser;
 using CleanArchitecture.Application.Features.Users.Queries.GetUserById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Localization;
 
 namespace CleanArchitecture.API.Controllers
 {
@@ -109,6 +111,26 @@ namespace CleanArchitecture.API.Controllers
       return Ok(ApiResponse<AuthUserDto>.SuccessResponse(result));
     }
 
+    [HttpPatch("me")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<AuthUserDto>>> UpdateCurrentUser([FromBody] UpdateCurrentUserDto request)
+    {
+      var userIdClaim = User.FindFirst(type: ClaimTypes.NameIdentifier)?.Value;
+      if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+      {
+        return Unauthorized(ApiResponse<AuthUserDto>.ErrorResponse("Invalid user token"));
+      }
+
+      var command = new UpdateCurrentUserCommand
+      {
+        UserId = userId,
+        Request = request
+      };
+
+      var result = await _mediator.Send(command);
+      return Ok(ApiResponse<AuthUserDto>.SuccessResponse(result, _localizationService.GetSuccessMessage("USER_UPDATED")));
+    }
+
     [HttpPost("request-password-reset")]
     public async Task<ActionResult<ApiResponse<PasswordResetResponseDto>>> RequestPasswordReset([FromBody] RequestPasswordResetDto request)
     {
@@ -151,8 +173,6 @@ namespace CleanArchitecture.API.Controllers
 
         throw;
       }
-
-
     }
 
     [HttpPost("verify-email-change")]
