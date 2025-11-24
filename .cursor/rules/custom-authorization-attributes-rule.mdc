@@ -1,0 +1,179 @@
+---
+alwaysApply: true
+---
+
+# Custom Authorization Attributes Rules
+
+This project uses custom authorization attributes that provide flexible permission checking with OR and AND logic.
+
+## Available Attributes
+
+### 1. `[RequireAnyPermission]` - OR Logic
+
+Requires the user to have **ANY** of the specified permissions (OR logic).
+
+```csharp
+[RequireAnyPermission("manage.users", "admin")]
+public ActionResult GetUsers()
+{
+    // User needs: manage.users OR admin
+    return Ok();
+}
+```
+
+**Location:** `src/CleanArchitecture.API/Attributes/RequireAnyPermissionAttribute.cs`
+
+### 2. `[RequireAllPermissions]` - AND Logic
+
+Requires the user to have **ALL** of the specified permissions (AND logic).
+
+```csharp
+[RequireAllPermissions("manage.users", "manage.roles")]
+public ActionResult DeleteUser(Guid id)
+{
+    // User needs: manage.users AND manage.roles
+    return Ok();
+}
+```
+
+**Location:** `src/CleanArchitecture.API/Attributes/RequireAllPermissionsAttribute.cs`
+
+### 3. `[RequirePermission]` - Flexible Mode
+
+Allows dynamic selection between ANY or ALL mode.
+
+```csharp
+// ANY mode
+[RequirePermission(RequirePermissionAttribute.RequireMode.Any, "manage.users", "admin")]
+
+// ALL mode
+[RequirePermission(RequirePermissionAttribute.RequireMode.All, "manage.users", "manage.roles")]
+```
+
+**Location:** `src/CleanArchitecture.API/Attributes/RequirePermissionAttribute.cs`
+
+## Usage Guidelines
+
+### ✅ DO: Use Permission Constants
+
+Always use constants from `PermissionNames` class:
+
+```csharp
+using CleanArchitecture.Domain.Common.Constants;
+
+[RequireAnyPermission(PermissionNames.ManageUsers, PermissionNames.Admin)]
+public ActionResult GetUsers()
+{
+    return Ok();
+}
+```
+
+### ✅ DO: Combine with [Authorize]
+
+You can combine custom attributes with `[Authorize]`:
+
+```csharp
+[Authorize] // First checks authentication
+[RequireAnyPermission(PermissionNames.ManageUsers, PermissionNames.Admin)] // Then checks permissions
+public ActionResult GetUsers()
+{
+    return Ok();
+}
+```
+
+### ❌ DON'T: Use String Literals
+
+Avoid hardcoding permission strings:
+
+```csharp
+// ❌ BAD
+[RequireAnyPermission("manage.users", "admin")]
+
+// ✅ GOOD
+[RequireAnyPermission(PermissionNames.ManageUsers, PermissionNames.Admin)]
+```
+
+## How It Works
+
+1. **Authentication Check**: Verifies user is authenticated (returns 401 if not)
+2. **Permission Extraction**: Gets permissions from JWT token claims (type: "permission")
+3. **Permission Verification**:
+   - `RequireAnyPermission`: Checks if user has ANY of the specified permissions
+   - `RequireAllPermissions`: Checks if user has ALL of the specified permissions
+4. **Authorization Result**:
+   - Returns `ForbidResult` (403) if permissions are missing
+   - Continues to action if permissions are satisfied
+5. **Logging**: Logs authorization failures with detailed information
+
+## Common Permission Constants
+
+Available in `src/CleanArchitecture.Domain/Common/Constants/PermissionNames.cs`:
+
+- `PermissionNames.ManageUsers` - "manage.users"
+- `PermissionNames.ManageRoles` - "manage.roles"
+- `PermissionNames.ManageUserRoles` - "manage.userRoles"
+- `PermissionNames.Admin` - "admin"
+- `PermissionNames.SuperAdmin` - "superAdmin"
+
+## Examples
+
+### Example 1: Admin or SuperAdmin Access
+
+```csharp
+[HttpGet("admin/dashboard")]
+[RequireAnyPermission(PermissionNames.Admin, PermissionNames.SuperAdmin)]
+public ActionResult GetAdminDashboard()
+{
+    return Ok();
+}
+```
+
+### Example 2: Critical Operation Requiring Multiple Permissions
+
+```csharp
+[HttpDelete("users/{id}")]
+[RequireAllPermissions(PermissionNames.ManageUsers, PermissionNames.Admin)]
+public ActionResult DeleteUser(Guid id)
+{
+    // Requires BOTH permissions
+    return Ok();
+}
+```
+
+### Example 3: Multiple Alternative Permissions
+
+```csharp
+[HttpGet("reports")]
+[RequireAnyPermission(
+    PermissionNames.ManageUsers,
+    PermissionNames.ManageRoles,
+    PermissionNames.Admin
+)]
+public ActionResult GetReports()
+{
+    // User needs ANY of these permissions
+    return Ok();
+}
+```
+
+## Error Handling
+
+When authorization fails:
+
+- Returns HTTP 403 (Forbidden)
+- Logs detailed information about missing permissions
+- User receives standard error response from `ExceptionHandlingMiddleware`
+
+## Best Practices
+
+1. **Always use PermissionNames constants** - Never hardcode permission strings
+2. **Be explicit** - Use `RequireAnyPermission` or `RequireAllPermissions` based on your needs
+3. **Combine with [Authorize]** - Use `[Authorize]` first if you need authentication check
+4. **Document complex logic** - Add comments when permission logic is complex
+5. **Test authorization** - Verify that authorization works correctly for different user roles
+
+## References
+
+- Full documentation: `docs/CUSTOM_AUTHORIZATION_ATTRIBUTES.md`
+- Attribute implementations: `src/CleanArchitecture.API/Attributes/`
+- Permission constants: `src/CleanArchitecture.Domain/Common/Constants/PermissionNames.cs`
