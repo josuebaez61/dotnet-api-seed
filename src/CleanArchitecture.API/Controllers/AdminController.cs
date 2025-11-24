@@ -36,19 +36,11 @@ namespace CleanArchitecture.API.Controllers
     [HttpPost("cleanup-expired-codes")]
     public async Task<ActionResult<ApiResponse>> CleanupExpiredCodes()
     {
-      try
-      {
-        _logger.LogInformation("Manual cleanup of expired codes requested by user {UserId}", User.Identity?.Name);
+      _logger.LogInformation("Manual cleanup of expired codes requested by user {UserId}", User.Identity?.Name);
 
-        await _cleanupService.CleanupExpiredCodesAsync();
+      await _cleanupService.CleanupExpiredCodesAsync();
 
-        return Ok(ApiResponse.SuccessResponse("Expired codes cleaned up successfully"));
-      }
-      catch (Exception ex)
-      {
-        _logger.LogError(ex, "Error during manual cleanup of expired codes");
-        return StatusCode(500, ApiResponse.ErrorResponse("An error occurred during cleanup"));
-      }
+      return Ok(ApiResponse.SuccessResponse("Expired codes cleaned up successfully"));
     }
   }
 }

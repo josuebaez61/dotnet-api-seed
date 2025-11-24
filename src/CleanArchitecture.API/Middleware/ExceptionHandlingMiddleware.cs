@@ -98,6 +98,7 @@ namespace CleanArchitecture.API.Middleware
       return exception switch
       {
         UserNotFoundError => (int)HttpStatusCode.NotFound,
+        UserNotFoundByIdError => (int)HttpStatusCode.NotFound,
         InvalidCredentialsError => (int)HttpStatusCode.Unauthorized,
         AccountDeactivatedError => (int)HttpStatusCode.Forbidden,
         UserAlreadyExistsError => (int)HttpStatusCode.Conflict,
@@ -110,7 +111,9 @@ namespace CleanArchitecture.API.Middleware
         PasswordChangeFailedError => (int)HttpStatusCode.BadRequest,
         InsufficientPermissionsError => (int)HttpStatusCode.Forbidden,
         RoleNotFoundError => (int)HttpStatusCode.NotFound,
+        RoleNotFoundByIdError => (int)HttpStatusCode.NotFound,
         PermissionNotFoundError => (int)HttpStatusCode.NotFound,
+        PermissionNotFoundByIdError => (int)HttpStatusCode.NotFound,
         ValidationError => (int)HttpStatusCode.BadRequest,
         _ => (int)HttpStatusCode.BadRequest
       };

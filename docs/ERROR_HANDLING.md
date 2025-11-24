@@ -106,7 +106,7 @@ public abstract class ApplicationException : Exception
     public string ErrorCode { get; }
     public object? Parameters { get; }
 
-    protected ApplicationException(string errorCode, string message, object? parameters = null) 
+    protected ApplicationException(string errorCode, string message, object? parameters = null)
         : base(message)
     {
         ErrorCode = errorCode;
@@ -116,53 +116,78 @@ public abstract class ApplicationException : Exception
 ```
 
 **Features:**
+
 - ✅ Unique error code for identification
 - ✅ Parameters for message customization
 - ✅ Base for all application exceptions
 
 ### Authentication Errors (`AuthExceptions.cs`)
 
-| Error | Code | Description | HTTP Status |
-|-------|------|-------------|-------------|
-| `UserNotFoundError` | `USER_NOT_FOUND` | User not found | 404 |
-| `InvalidCredentialsError` | `INVALID_CREDENTIALS` | Invalid credentials | 401 |
-| `AccountDeactivatedError` | `ACCOUNT_DEACTIVATED` | Account deactivated | 403 |
-| `UserAlreadyExistsError` | `USER_ALREADY_EXISTS` | User already exists | 409 |
-| `InvalidPasswordError` | `INVALID_PASSWORD` | Invalid password | 400 |
-| `InvalidRefreshTokenError` | `INVALID_REFRESH_TOKEN` | Invalid refresh token | 401 |
-| `PasswordResetCodeInvalidError` | `PASSWORD_RESET_CODE_INVALID` | Invalid reset code | 400 |
-| `PasswordResetCodeExpiredError` | `PASSWORD_RESET_CODE_EXPIRED` | Expired reset code | 400 |
-| `PasswordResetCodeAlreadyUsedError` | `PASSWORD_RESET_CODE_ALREADY_USED` | Code already used | 400 |
-| `CurrentPasswordIncorrectError` | `CURRENT_PASSWORD_INCORRECT` | Current password incorrect | 400 |
-| `PasswordChangeFailedError` | `PASSWORD_CHANGE_FAILED` | Password change failed | 400 |
+| Error                               | Code                               | Description                  | HTTP Status |
+| ----------------------------------- | ---------------------------------- | ---------------------------- | ----------- |
+| `InvalidCredentialsError`           | `INVALID_CREDENTIALS`              | Invalid credentials          | 401         |
+| `InvalidPasswordError`              | `INVALID_PASSWORD`                 | Invalid password             | 400         |
+| `InvalidRefreshTokenError`          | `INVALID_REFRESH_TOKEN`            | Invalid refresh token        | 401         |
+| `PasswordResetCodeInvalidError`     | `PASSWORD_RESET_CODE_INVALID`      | Invalid reset code           | 400         |
+| `PasswordResetCodeExpiredError`     | `PASSWORD_RESET_CODE_EXPIRED`      | Expired reset code           | 400         |
+| `PasswordResetCodeAlreadyUsedError` | `PASSWORD_RESET_CODE_ALREADY_USED` | Code already used            | 400         |
+| `CurrentPasswordIncorrectError`     | `CURRENT_PASSWORD_INCORRECT`       | Current password incorrect   | 400         |
+| `PasswordChangeFailedError`         | `PASSWORD_CHANGE_FAILED`           | Password change failed       | 400         |
+| `MustChangePasswordError`           | `MUST_CHANGE_PASSWORD`             | User must change password    | 400         |
+| `PasswordChangeNotRequiredError`    | `PASSWORD_CHANGE_NOT_REQUIRED`     | Password change not required | 400         |
+
+### User Errors (`UserExceptions.cs`)
+
+| Error                                   | Code                              | Description                     | HTTP Status |
+| --------------------------------------- | --------------------------------- | ------------------------------- | ----------- |
+| `UserNotFoundError`                     | `USER_NOT_FOUND`                  | User not found                  | 404         |
+| `UserNotFoundByIdError`                 | `USER_NOT_FOUND`                  | User not found by ID            | 404         |
+| `UserAlreadyExistsError`                | `USER_ALREADY_EXISTS`             | User already exists             | 409         |
+| `AccountDeactivatedError`               | `ACCOUNT_DEACTIVATED`             | Account deactivated             | 403         |
+| `UserNotActiveError`                    | `USER_NOT_ACTIVE`                 | User is not active              | 403         |
+| `UserEmailNotConfirmedError`            | `USER_EMAIL_NOT_CONFIRMED`        | Email not confirmed             | 403         |
+| `UserPasswordResetCodeExpiredError`     | `PASSWORD_RESET_CODE_EXPIRED`     | Password reset code expired     | 400         |
+| `UserPasswordResetCodeUsedError`        | `PASSWORD_RESET_CODE_USED`        | Password reset code used        | 400         |
+| `UserEmailVerificationCodeExpiredError` | `EMAIL_VERIFICATION_CODE_EXPIRED` | Email verification code expired | 400         |
+| `UserEmailVerificationCodeUsedError`    | `EMAIL_VERIFICATION_CODE_USED`    | Email verification code used    | 400         |
+| `UserMustChangePasswordError`           | `USER_MUST_CHANGE_PASSWORD`       | User must change password       | 403         |
 
 ### Validation Errors (`ValidationExceptions.cs`)
 
-| Error | Code | Description | HTTP Status |
-|-------|------|-------------|-------------|
-| `ValidationError` | `VALIDATION_ERROR` | Generic validation error | 400 |
-| `RequiredFieldError` | `REQUIRED_FIELD` | Required field | 400 |
-| `InvalidEmailFormatError` | `INVALID_EMAIL_FORMAT` | Invalid email format | 400 |
-| `PasswordTooWeakError` | `PASSWORD_TOO_WEAK` | Weak password | 400 |
-| `InvalidDateOfBirthError` | `INVALID_DATE_OF_BIRTH` | Invalid date of birth | 400 |
-| `InvalidAgeError` | `INVALID_AGE` | Invalid age | 400 |
-| `UsernameTooShortError` | `USERNAME_TOO_SHORT` | Username too short | 400 |
-| `UsernameTooLongError` | `USERNAME_TOO_LONG` | Username too long | 400 |
-| `InvalidUsernameFormatError` | `INVALID_USERNAME_FORMAT` | Invalid username format | 400 |
+| Error                        | Code                      | Description              | HTTP Status |
+| ---------------------------- | ------------------------- | ------------------------ | ----------- |
+| `ValidationError`            | `VALIDATION_ERROR`        | Generic validation error | 400         |
+| `RequiredFieldError`         | `REQUIRED_FIELD`          | Required field           | 400         |
+| `InvalidEmailFormatError`    | `INVALID_EMAIL_FORMAT`    | Invalid email format     | 400         |
+| `PasswordTooWeakError`       | `PASSWORD_TOO_WEAK`       | Weak password            | 400         |
+| `InvalidDateOfBirthError`    | `INVALID_DATE_OF_BIRTH`   | Invalid date of birth    | 400         |
+| `InvalidAgeError`            | `INVALID_AGE`             | Invalid age              | 400         |
+| `UsernameTooShortError`      | `USERNAME_TOO_SHORT`      | Username too short       | 400         |
+| `UsernameTooLongError`       | `USERNAME_TOO_LONG`       | Username too long        | 400         |
+| `InvalidUsernameFormatError` | `INVALID_USERNAME_FORMAT` | Invalid username format  | 400         |
 
 ### Permission Errors (`PermissionExceptions.cs`)
 
-| Error | Code | Description | HTTP Status |
-|-------|------|-------------|-------------|
-| `InsufficientPermissionsError` | `INSUFFICIENT_PERMISSIONS` | Insufficient permissions | 403 |
-| `RoleNotFoundError` | `ROLE_NOT_FOUND` | Role not found | 404 |
-| `RoleNotFoundByIdError` | `ROLE_NOT_FOUND_BY_ID` | Role not found by ID | 404 |
-| `RoleAlreadyExistsError` | `ROLE_ALREADY_EXISTS` | Role already exists | 409 |
-| `PermissionNotFoundError` | `PERMISSION_NOT_FOUND` | Permission not found | 404 |
-| `PermissionNotFoundByIdError` | `PERMISSION_NOT_FOUND_BY_ID` | Permission not found by ID | 404 |
-| `PermissionAlreadyExistsError` | `PERMISSION_ALREADY_EXISTS` | Permission already exists | 409 |
-| `UserNotInRoleError` | `USER_NOT_IN_ROLE` | User not in role | 400 |
-| `RolePermissionNotFoundError` | `ROLE_PERMISSION_NOT_FOUND` | Role doesn't have permission | 404 |
+| Error                          | Code                         | Description                  | HTTP Status |
+| ------------------------------ | ---------------------------- | ---------------------------- | ----------- |
+| `InsufficientPermissionsError` | `INSUFFICIENT_PERMISSIONS`   | Insufficient permissions     | 403         |
+| `RoleNotFoundError`            | `ROLE_NOT_FOUND`             | Role not found               | 404         |
+| `RoleNotFoundByIdError`        | `ROLE_NOT_FOUND_BY_ID`       | Role not found by ID         | 404         |
+| `RoleAlreadyExistsError`       | `ROLE_ALREADY_EXISTS`        | Role already exists          | 409         |
+| `PermissionNotFoundError`      | `PERMISSION_NOT_FOUND`       | Permission not found         | 404         |
+| `PermissionNotFoundByIdError`  | `PERMISSION_NOT_FOUND_BY_ID` | Permission not found by ID   | 404         |
+| `PermissionAlreadyExistsError` | `PERMISSION_ALREADY_EXISTS`  | Permission already exists    | 409         |
+| `UserNotInRoleError`           | `USER_NOT_IN_ROLE`           | User not in role             | 400         |
+| `RolePermissionNotFoundError`  | `ROLE_PERMISSION_NOT_FOUND`  | Role doesn't have permission | 404         |
+
+### Invalid Operation Errors (`InvalidOperationExceptions.cs`)
+
+| Error                                | Code                                  | Description                     | HTTP Status |
+| ------------------------------------ | ------------------------------------- | ------------------------------- | ----------- |
+| `InvalidOperationError`              | `INVALID_OPERATION`                   | Invalid operation               | 400         |
+| `EmailCannotBeTheSameAsCurrentError` | `EMAIL_CANNOT_BE_THE_SAME_AS_CURRENT` | New email same as current       | 400         |
+| `EmailVerificationCodeExpiredError`  | `EMAIL_VERIFICATION_CODE_EXPIRED`     | Email verification code expired | 400         |
+| `EmailSendingFailedError`            | `EMAIL_SENDING_FAILED`                | Email sending failed            | 500         |
 
 ## 🔄 Exception Handling Middleware
 
@@ -193,6 +218,7 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 ```
 
 **Features:**
+
 - ✅ Automatic capture of all exceptions
 - ✅ Error code mapping to appropriate HTTP codes
 - ✅ Automatic message localization
@@ -206,6 +232,7 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 Error messages are localized using JSON files:
 
 #### Spanish (`es.json`)
+
 ```json
 {
   "Messages": {
@@ -220,6 +247,7 @@ Error messages are localized using JSON files:
 ```
 
 #### English (`en.json`)
+
 ```json
 {
   "Messages": {
@@ -244,6 +272,7 @@ var localizationOptions = new RequestLocalizationOptions()
 ```
 
 **Supported languages:**
+
 - 🇺🇸 **English (en)** - Default language
 - 🇪🇸 **Spanish (es)** - Alternative language
 
@@ -303,7 +332,7 @@ public async Task<ApiResponse> Handle(CreateUserCommand request, CancellationTok
     {
         throw new UserAlreadyExistsError("email", request.Email);
     }
-    
+
     // ... rest of the code
 }
 ```
@@ -323,49 +352,62 @@ public async Task<AuthResponseDto> LoginAsync(LoginRequestDto request)
     {
         throw new AccountDeactivatedError(user.Id.ToString());
     }
-    
+
     // ... rest of the code
 }
 ```
 
-### 3. In Controllers (Optional)
+### 3. In Controllers
 
-Controllers can handle specific exceptions if needed:
+**Controllers should NOT handle exceptions.** The middleware automatically handles all exceptions:
 
 ```csharp
 [HttpPost("login")]
 public async Task<ActionResult<ApiResponse<AuthResponseDto>>> Login([FromBody] LoginRequestDto request)
 {
-    try
-    {
-        var command = new LoginCommand { Request = request };
-        var result = await _mediator.Send(command);
-        return Ok(ApiResponse<AuthResponseDto>.SuccessResponse(result));
-    }
-    catch (ApplicationException ex)
-    {
-        // Middleware will automatically handle these exceptions
-        throw;
-    }
+    var command = new LoginCommand { Request = request };
+    var result = await _mediator.Send(command);
+    return Ok(ApiResponse<AuthResponseDto>.SuccessResponse(result));
 }
 ```
+
+**Note:** All exceptions thrown by services or handlers are automatically caught and handled by the `ExceptionHandlingMiddleware`. No try-catch blocks are needed in controllers.
 
 ## 🔢 HTTP Codes
 
 ### Automatic Code Mapping
 
-| Error Type | HTTP Code | Description |
-|------------|-----------|-------------|
-| `UserNotFoundError` | 404 | Not Found |
-| `InvalidCredentialsError` | 401 | Unauthorized |
-| `AccountDeactivatedError` | 403 | Forbidden |
-| `UserAlreadyExistsError` | 409 | Conflict |
-| `InvalidPasswordError` | 400 | Bad Request |
-| `InsufficientPermissionsError` | 403 | Forbidden |
-| `ValidationError` | 400 | Bad Request |
-| `UnauthorizedAccessException` | 401 | Unauthorized |
-| `ArgumentException` | 400 | Bad Request |
-| Other errors | 500 | Internal Server Error |
+The middleware automatically maps exceptions to appropriate HTTP status codes:
+
+| Error Type                          | HTTP Code | Description                    |
+| ----------------------------------- | --------- | ------------------------------ |
+| **Authentication Errors**           |
+| `UserNotFoundError`                 | 404       | Not Found                      |
+| `UserNotFoundByIdError`             | 404       | Not Found                      |
+| `InvalidCredentialsError`           | 401       | Unauthorized                   |
+| `AccountDeactivatedError`           | 403       | Forbidden                      |
+| `UserAlreadyExistsError`            | 409       | Conflict                       |
+| `InvalidPasswordError`              | 400       | Bad Request                    |
+| `InvalidRefreshTokenError`          | 401       | Unauthorized                   |
+| `PasswordResetCodeInvalidError`     | 400       | Bad Request                    |
+| `PasswordResetCodeExpiredError`     | 400       | Bad Request                    |
+| `PasswordResetCodeAlreadyUsedError` | 400       | Bad Request                    |
+| `CurrentPasswordIncorrectError`     | 400       | Bad Request                    |
+| `PasswordChangeFailedError`         | 400       | Bad Request                    |
+| **Permission Errors**               |
+| `InsufficientPermissionsError`      | 403       | Forbidden                      |
+| `RoleNotFoundError`                 | 404       | Not Found                      |
+| `RoleNotFoundByIdError`             | 404       | Not Found                      |
+| `PermissionNotFoundError`           | 404       | Not Found                      |
+| `PermissionNotFoundByIdError`       | 404       | Not Found                      |
+| **Validation Errors**               |
+| `ValidationError`                   | 400       | Bad Request                    |
+| `ValidationException`               | 400       | Bad Request (FluentValidation) |
+| **System Errors**                   |
+| `UnauthorizedAccessException`       | 401       | Unauthorized                   |
+| `ArgumentException`                 | 400       | Bad Request                    |
+| `ArgumentNullException`             | 400       | Bad Request                    |
+| Other exceptions                    | 500       | Internal Server Error          |
 
 ### Mapping Function
 
@@ -375,11 +417,22 @@ private static int GetStatusCodeForApplicationException(ApplicationException exc
     return exception switch
     {
         UserNotFoundError => (int)HttpStatusCode.NotFound,
+        UserNotFoundByIdError => (int)HttpStatusCode.NotFound,
         InvalidCredentialsError => (int)HttpStatusCode.Unauthorized,
         AccountDeactivatedError => (int)HttpStatusCode.Forbidden,
         UserAlreadyExistsError => (int)HttpStatusCode.Conflict,
         InvalidPasswordError => (int)HttpStatusCode.BadRequest,
+        InvalidRefreshTokenError => (int)HttpStatusCode.Unauthorized,
+        PasswordResetCodeInvalidError => (int)HttpStatusCode.BadRequest,
+        PasswordResetCodeExpiredError => (int)HttpStatusCode.BadRequest,
+        PasswordResetCodeAlreadyUsedError => (int)HttpStatusCode.BadRequest,
+        CurrentPasswordIncorrectError => (int)HttpStatusCode.BadRequest,
+        PasswordChangeFailedError => (int)HttpStatusCode.BadRequest,
         InsufficientPermissionsError => (int)HttpStatusCode.Forbidden,
+        RoleNotFoundError => (int)HttpStatusCode.NotFound,
+        RoleNotFoundByIdError => (int)HttpStatusCode.NotFound,
+        PermissionNotFoundError => (int)HttpStatusCode.NotFound,
+        PermissionNotFoundByIdError => (int)HttpStatusCode.NotFound,
         ValidationError => (int)HttpStatusCode.BadRequest,
         _ => (int)HttpStatusCode.BadRequest
     };
@@ -391,11 +444,13 @@ private static int GetStatusCodeForApplicationException(ApplicationException exc
 ### 1. **Use Specific Exceptions**
 
 ❌ **Bad:**
+
 ```csharp
 throw new Exception("User not found");
 ```
 
 ✅ **Good:**
+
 ```csharp
 throw new UserNotFoundError(request.Email);
 ```
@@ -403,34 +458,46 @@ throw new UserNotFoundError(request.Email);
 ### 2. **Include Context in Exceptions**
 
 ❌ **Bad:**
+
 ```csharp
 throw new UserNotFoundError("User not found");
 ```
 
 ✅ **Good:**
+
 ```csharp
 throw new UserNotFoundError(request.Email);
 ```
 
 ### 3. **Don't Handle Exceptions in Controllers**
 
+**Controllers should NOT have try-catch blocks.** The middleware handles all exceptions automatically.
+
 ❌ **Bad:**
+
 ```csharp
 [HttpPost("login")]
 public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
 {
     try
     {
-        // ... code
+        var command = new LoginCommand { Request = request };
+        var result = await _mediator.Send(command);
+        return Ok(ApiResponse.SuccessResponse(result));
     }
     catch (UserNotFoundError ex)
     {
         return NotFound(ApiResponse.ErrorResponse("User not found"));
     }
+    catch (Exception ex)
+    {
+        return BadRequest(ApiResponse.ErrorResponse(ex.Message));
+    }
 }
 ```
 
 ✅ **Good:**
+
 ```csharp
 [HttpPost("login")]
 public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
@@ -441,15 +508,27 @@ public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
 }
 ```
 
+**Why?** The `ExceptionHandlingMiddleware` automatically:
+
+- Captures all exceptions
+- Maps them to appropriate HTTP status codes
+- Localizes error messages
+- Structures consistent JSON responses
+- Logs errors for debugging
+
+No manual exception handling is needed in controllers.
+
 ### 4. **Use Consistent Error Codes**
 
 ❌ **Bad:**
+
 ```csharp
 throw new ApplicationException("USER_NOT_FOUND", "User not found");
 throw new ApplicationException("user-not-found", "User not found");
 ```
 
 ✅ **Good:**
+
 ```csharp
 throw new UserNotFoundError(request.Email); // Always use "USER_NOT_FOUND"
 ```
@@ -457,34 +536,51 @@ throw new UserNotFoundError(request.Email); // Always use "USER_NOT_FOUND"
 ### 5. **Localize Error Messages**
 
 ❌ **Bad:**
+
 ```csharp
 throw new ApplicationException("USER_NOT_FOUND", "Usuario no encontrado");
 ```
 
 ✅ **Good:**
+
 ```csharp
 throw new UserNotFoundError(request.Email); // Middleware automatically localizes
 ```
 
 ### 6. **Error Logging**
 
+All exceptions are automatically logged by the middleware:
+
 ```csharp
-public class ExceptionHandlingMiddleware
+private async Task HandleExceptionAsync(HttpContext context, Exception exception)
 {
-    public async Task InvokeAsync(HttpContext context)
-    {
-        try
-        {
-            await _next(context);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An unexpected error occurred");
-            await HandleExceptionAsync(context, ex);
-        }
-    }
+    _logger.LogError(exception, "An unexpected error occurred");
+
+    // Exception is automatically:
+    // - Logged with full details
+    // - Mapped to HTTP status code
+    // - Localized based on user's language
+    // - Formatted as consistent JSON response
 }
 ```
+
+### 7. **No Try-Catch in Controllers**
+
+All controllers have been refactored to remove try-catch blocks. The middleware handles everything:
+
+```csharp
+// ✅ Clean controller code
+[HttpPost("users")]
+public async Task<ActionResult<ApiResponse<UserDto>>> CreateUser([FromBody] CreateUserDto request)
+{
+    var command = new CreateUserCommand { User = request };
+    var result = await _mediator.Send(command);
+    return CreatedAtAction(nameof(GetUserById), new { id = result.Id },
+        ApiResponse<UserDto>.SuccessResponse(result));
+}
+```
+
+If an exception is thrown, the middleware automatically handles it.
 
 ## 🔍 Debugging and Testing
 
@@ -496,11 +592,11 @@ public async Task Login_WithNonExistentUser_ThrowsUserNotFoundError()
 {
     // Arrange
     var request = new LoginRequestDto { EmailOrUsername = "nonexistent@example.com" };
-    
+
     // Act & Assert
     var exception = await Assert.ThrowsAsync<UserNotFoundError>(
         () => _authService.LoginAsync(request));
-    
+
     Assert.Equal("USER_NOT_FOUND", exception.ErrorCode);
 }
 ```
@@ -540,5 +636,12 @@ _logger.LogInformation("Password reset code generated for user {UserId}", user.I
 
 ---
 
-**Last updated:** January 13, 2025  
-**Version:** 1.0.0
+**Last updated:** November 24, 2025  
+**Version:** 1.1.0
+
+## 📝 Recent Updates
+
+- ✅ All controllers refactored to remove try-catch blocks
+- ✅ Exception handling fully centralized in `ExceptionHandlingMiddleware`
+- ✅ Added support for `UserNotFoundByIdError`, `RoleNotFoundByIdError`, and `PermissionNotFoundByIdError`
+- ✅ Updated documentation to reflect current implementation

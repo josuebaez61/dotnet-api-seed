@@ -1,7 +1,5 @@
-using System;
 using System.Threading.Tasks;
 using CleanArchitecture.API.Attributes;
-using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.Common.Models;
 using CleanArchitecture.Application.DTOs;
@@ -86,17 +84,10 @@ namespace CleanArchitecture.API.Controllers
     [RequireAnyPermission(PermissionNames.ManageUsers, PermissionNames.Admin, PermissionNames.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<UserDto>>> UpdateUser([FromRoute] Guid id, [FromBody] UpdateUserDto userDto)
     {
-      try
-      {
-        userDto.Id = id; // Ensure the ID from the route is used
-        var command = new UpdateUserCommand { User = userDto };
-        var result = await _mediator.Send(command);
-        return Ok(ApiResponse<UserDto>.SuccessResponse(result, _localizationService.GetSuccessMessage("USER_UPDATED")));
-      }
-      catch (Exception ex)
-      {
-        return BadRequest(ApiResponse<UserDto>.ErrorResponse(ex.Message));
-      }
+      userDto.Id = id; // Ensure the ID from the route is used
+      var command = new UpdateUserCommand { User = userDto };
+      var result = await _mediator.Send(command);
+      return Ok(ApiResponse<UserDto>.SuccessResponse(result, _localizationService.GetSuccessMessage("USER_UPDATED")));
     }
 
     /// <summary>
@@ -112,20 +103,9 @@ namespace CleanArchitecture.API.Controllers
     [ProducesResponseType(typeof(ApiResponse<List<RoleDto>>), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetUserRoles(Guid id)
     {
-      try
-      {
-        var query = new GetUserRolesQuery(id);
-        var result = await _mediator.Send(query);
-        return Ok(ApiResponse<List<RoleDto>>.SuccessResponse(result));
-      }
-      catch (UserNotFoundByIdError ex)
-      {
-        return NotFound(ApiResponse<List<RoleDto>>.ErrorResponse(ex.Message));
-      }
-      catch (Exception ex)
-      {
-        return BadRequest(ApiResponse<List<RoleDto>>.ErrorResponse(ex.Message));
-      }
+      var query = new GetUserRolesQuery(id);
+      var result = await _mediator.Send(query);
+      return Ok(ApiResponse<List<RoleDto>>.SuccessResponse(result));
     }
 
     /// <summary>
@@ -142,24 +122,9 @@ namespace CleanArchitecture.API.Controllers
     [ProducesResponseType(typeof(ApiResponse<List<RoleDto>>), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateUserRoles(Guid id, [FromBody] UpdateUserRolesRequestDto request)
     {
-      try
-      {
-        var command = new UpdateUserRolesCommand(id, request.RoleIds);
-        var result = await _mediator.Send(command);
-        return Ok(ApiResponse<List<RoleDto>>.SuccessResponse(result, _localizationService.GetSuccessMessage("USER_ROLES_UPDATED")));
-      }
-      catch (UserNotFoundByIdError ex)
-      {
-        return NotFound(ApiResponse<List<RoleDto>>.ErrorResponse(ex.Message));
-      }
-      catch (ArgumentException ex)
-      {
-        return BadRequest(ApiResponse<List<RoleDto>>.ErrorResponse(ex.Message));
-      }
-      catch (Exception ex)
-      {
-        return BadRequest(ApiResponse<List<RoleDto>>.ErrorResponse(ex.Message));
-      }
+      var command = new UpdateUserRolesCommand(id, request.RoleIds);
+      var result = await _mediator.Send(command);
+      return Ok(ApiResponse<List<RoleDto>>.SuccessResponse(result, _localizationService.GetSuccessMessage("USER_ROLES_UPDATED")));
     }
 
     /// <summary>
@@ -176,28 +141,9 @@ namespace CleanArchitecture.API.Controllers
     [ProducesResponseType(typeof(ApiResponse<RoleDto>), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AssignRoleToUser(Guid id, [FromBody] AssignRoleToUserRequestDto request)
     {
-      try
-      {
-        var command = new AssignRoleToUserCommand(id, request.RoleId);
-        var result = await _mediator.Send(command);
-        return Ok(ApiResponse<RoleDto>.SuccessResponse(result, _localizationService.GetSuccessMessage("ROLE_ASSIGNED_TO_USER")));
-      }
-      catch (UserNotFoundByIdError ex)
-      {
-        return NotFound(ApiResponse<RoleDto>.ErrorResponse(ex.Message));
-      }
-      catch (RoleNotFoundByIdError ex)
-      {
-        return NotFound(ApiResponse<RoleDto>.ErrorResponse(ex.Message));
-      }
-      catch (ArgumentException ex)
-      {
-        return BadRequest(ApiResponse<RoleDto>.ErrorResponse(ex.Message));
-      }
-      catch (Exception ex)
-      {
-        return BadRequest(ApiResponse<RoleDto>.ErrorResponse(ex.Message));
-      }
+      var command = new AssignRoleToUserCommand(id, request.RoleId);
+      var result = await _mediator.Send(command);
+      return Ok(ApiResponse<RoleDto>.SuccessResponse(result, _localizationService.GetSuccessMessage("ROLE_ASSIGNED_TO_USER")));
     }
 
     /// <summary>
@@ -213,20 +159,9 @@ namespace CleanArchitecture.API.Controllers
     [ProducesResponseType(typeof(ApiResponse<List<PermissionDto>>), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetUserPermissions(Guid id)
     {
-      try
-      {
-        var query = new GetUserPermissionsQuery(id);
-        var result = await _mediator.Send(query);
-        return Ok(ApiResponse<List<PermissionDto>>.SuccessResponse(result, _localizationService.GetSuccessMessage("USER_PERMISSIONS_RETRIEVED")));
-      }
-      catch (UserNotFoundByIdError ex)
-      {
-        return NotFound(ApiResponse<List<PermissionDto>>.ErrorResponse(ex.Message));
-      }
-      catch (Exception ex)
-      {
-        return BadRequest(ApiResponse<List<PermissionDto>>.ErrorResponse(ex.Message));
-      }
+      var query = new GetUserPermissionsQuery(id);
+      var result = await _mediator.Send(query);
+      return Ok(ApiResponse<List<PermissionDto>>.SuccessResponse(result, _localizationService.GetSuccessMessage("USER_PERMISSIONS_RETRIEVED")));
     }
 
     /// <summary>
@@ -239,20 +174,9 @@ namespace CleanArchitecture.API.Controllers
     [RequireAnyPermission(PermissionNames.ManageUsers, PermissionNames.Admin, PermissionNames.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<bool>>> ActivateUser(Guid id)
     {
-      try
-      {
-        var command = new ActivateUserCommand(id);
-        var result = await _mediator.Send(command);
-        return Ok(ApiResponse<bool>.SuccessResponse(result, "User activated successfully"));
-      }
-      catch (UserNotFoundByIdError ex)
-      {
-        return NotFound(ApiResponse<bool>.ErrorResponse(ex.Message));
-      }
-      catch (Exception ex)
-      {
-        return BadRequest(ApiResponse<bool>.ErrorResponse(ex.Message));
-      }
+      var command = new ActivateUserCommand(id);
+      var result = await _mediator.Send(command);
+      return Ok(ApiResponse<bool>.SuccessResponse(result, "User activated successfully"));
     }
     /// <summary>
     /// Deactivates a user by their ID
@@ -264,20 +188,9 @@ namespace CleanArchitecture.API.Controllers
     [RequireAnyPermission(PermissionNames.ManageUsers, PermissionNames.Admin, PermissionNames.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<bool>>> DeactivateUser(Guid id)
     {
-      try
-      {
-        var command = new DeactivateUserCommand(id);
-        var result = await _mediator.Send(command);
-        return Ok(ApiResponse<bool>.SuccessResponse(result, "User deactivated successfully"));
-      }
-      catch (UserNotFoundByIdError ex)
-      {
-        return NotFound(ApiResponse<bool>.ErrorResponse(ex.Message));
-      }
-      catch (Exception ex)
-      {
-        return BadRequest(ApiResponse<bool>.ErrorResponse(ex.Message));
-      }
+      var command = new DeactivateUserCommand(id);
+      var result = await _mediator.Send(command);
+      return Ok(ApiResponse<bool>.SuccessResponse(result, "User deactivated successfully"));
     }
   }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CleanArchitecture.API.Attributes;
@@ -30,16 +29,9 @@ namespace CleanArchitecture.API.Controllers
     [RequireAnyPermission(PermissionNames.ManageRoles, PermissionNames.Admin, PermissionNames.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<List<PermissionDto>>>> GetAllPermissions()
     {
-      try
-      {
-        var query = new GetAllPermissionsQuery();
-        var result = await _mediator.Send(query);
-        return Ok(ApiResponse<List<PermissionDto>>.SuccessResponse(result));
-      }
-      catch (Exception ex)
-      {
-        return BadRequest(ApiResponse<List<PermissionDto>>.ErrorResponse(ex.Message));
-      }
+      var query = new GetAllPermissionsQuery();
+      var result = await _mediator.Send(query);
+      return Ok(ApiResponse<List<PermissionDto>>.SuccessResponse(result));
     }
 
     /// <summary>
@@ -51,16 +43,9 @@ namespace CleanArchitecture.API.Controllers
     [RequireAnyPermission(PermissionNames.ManageRoles, PermissionNames.Admin, PermissionNames.SuperAdmin)]
     public async Task<ActionResult<ApiResponse<List<PermissionsByResourceDto>>>> GetPermissionsByResource()
     {
-      try
-      {
-        var query = new GetPermissionsByResourceQuery();
-        var result = await _mediator.Send(query);
-        return Ok(ApiResponse<List<PermissionsByResourceDto>>.SuccessResponse(result));
-      }
-      catch (Exception ex)
-      {
-        return BadRequest(ApiResponse<List<PermissionsByResourceDto>>.ErrorResponse(ex.Message));
-      }
+      var query = new GetPermissionsByResourceQuery();
+      var result = await _mediator.Send(query);
+      return Ok(ApiResponse<List<PermissionsByResourceDto>>.SuccessResponse(result));
     }
   }
 }

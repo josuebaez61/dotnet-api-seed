@@ -151,28 +151,20 @@ namespace CleanArchitecture.API.Controllers
     [Authorize]
     public async Task<ActionResult<ApiResponse>> RequestEmailChange([FromBody] RequestEmailChangeDto request)
     {
-      try
+      var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
       {
-        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
-        {
-          return Unauthorized(ApiResponse.ErrorResponse("Invalid user token"));
-        }
-
-        var command = new RequestEmailChangeCommand
-        {
-          UserId = userId,
-          Request = request
-        };
-
-        var result = await _mediator.Send(command);
-        return Ok(ApiResponse.SuccessResponse(_localizationService.GetSuccessMessage("EMAIL_CHANGE_VERIFICATION_SENT")));
+        return Unauthorized(ApiResponse.ErrorResponse("Invalid user token"));
       }
-      catch (System.Exception)
+
+      var command = new RequestEmailChangeCommand
       {
+        UserId = userId,
+        Request = request
+      };
 
-        throw;
-      }
+      var result = await _mediator.Send(command);
+      return Ok(ApiResponse.SuccessResponse(_localizationService.GetSuccessMessage("EMAIL_CHANGE_VERIFICATION_SENT")));
     }
 
     [HttpPost("verify-email-change")]
