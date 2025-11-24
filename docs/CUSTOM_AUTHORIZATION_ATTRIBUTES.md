@@ -1,63 +1,63 @@
-# Atributos de Autorización Personalizados
+# Custom Authorization Attributes
 
-Este documento describe cómo usar los nuevos atributos de autorización personalizados que permiten verificar múltiples permisos de manera flexible.
+This document describes how to use the custom authorization attributes that allow flexible verification of multiple permissions.
 
-## 🎯 Problema Resuelto
+## 🎯 Problem Solved
 
-El atributo `[Authorize]` por defecto solo permite una política a la vez y siempre requiere que el usuario tenga TODOS los permisos especificados. Con los nuevos atributos, puedes:
+The default `[Authorize]` attribute only allows one policy at a time and always requires the user to have ALL specified permissions. With the new attributes, you can:
 
-- ✅ Requerir CUALQUIERA de varios permisos (OR lógico)
-- ✅ Requerir TODOS los permisos (AND lógico)
-- ✅ Combinar diferentes tipos de autorización
-- ✅ Tener control granular sobre qué permisos se requieren
+- ✅ Require ANY of multiple permissions (OR logic)
+- ✅ Require ALL permissions (AND logic)
+- ✅ Combine different types of authorization
+- ✅ Have granular control over which permissions are required
 
-## 📋 Atributos Disponibles
+## 📋 Available Attributes
 
-### 1. `[RequireAnyPermission]` - Cualquier Permiso
+### 1. `[RequireAnyPermission]` - Any Permission
 
 ```csharp
 [RequireAnyPermission("manage.users", "admin")]
 public ActionResult ExampleAnyPermission()
 {
-    // El usuario necesita tener CUALQUIERA de estos permisos:
-    // - manage.users O admin
+    // User needs to have ANY of these permissions:
+    // - manage.users OR admin
     return Ok();
 }
 ```
 
-**Casos de uso:**
+**Use cases:**
 
-- Usuarios que pueden gestionar usuarios O ser administradores
-- Acceso a funcionalidades que requieren múltiples roles alternativos
+- Users who can manage users OR be administrators
+- Access to features that require multiple alternative roles
 
-### 2. `[RequireAllPermissions]` - Todos los Permisos
+### 2. `[RequireAllPermissions]` - All Permissions
 
 ```csharp
 [RequireAllPermissions("manage.users", "manage.roles")]
 public ActionResult ExampleAllPermissions()
 {
-    // El usuario necesita tener TODOS estos permisos:
-    // - manage.users Y manage.roles
+    // User needs to have ALL these permissions:
+    // - manage.users AND manage.roles
     return Ok();
 }
 ```
 
-**Casos de uso:**
+**Use cases:**
 
-- Funcionalidades críticas que requieren múltiples permisos
-- Acciones que necesitan autorización de múltiples roles
+- Critical features that require multiple permissions
+- Actions that need authorization from multiple roles
 
-### 3. `[RequirePermission]` - Modo Flexible
+### 3. `[RequirePermission]` - Flexible Mode
 
 ```csharp
-// Modo ANY (cualquiera de los permisos)
+// ANY mode (any of the permissions)
 [RequirePermission(RequirePermissionAttribute.RequireMode.Any, "manage.users", "admin")]
 public ActionResult ExampleFlexibleAny()
 {
     return Ok();
 }
 
-// Modo ALL (todos los permisos)
+// ALL mode (all permissions)
 [RequirePermission(RequirePermissionAttribute.RequireMode.All, "manage.users", "manage.roles", "admin")]
 public ActionResult ExampleFlexibleAll()
 {
@@ -65,39 +65,39 @@ public ActionResult ExampleFlexibleAll()
 }
 ```
 
-**Casos de uso:**
+**Use cases:**
 
-- Cuando necesitas máxima flexibilidad
-- Lógica de autorización compleja
-- Cuando el modo puede cambiar dinámicamente
+- When you need maximum flexibility
+- Complex authorization logic
+- When the mode can change dynamically
 
-## 🔧 Ejemplos Prácticos
+## 🔧 Practical Examples
 
-### Ejemplo 1: Dashboard Administrativo
+### Example 1: Administrative Dashboard
 
 ```csharp
 [HttpGet("admin/dashboard")]
 [RequireAnyPermission(PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
 public ActionResult GetAdminDashboard()
 {
-    // Solo administradores pueden ver este dashboard
+    // Only administrators can view this dashboard
     return Ok();
 }
 ```
 
-### Ejemplo 2: Gestión Completa de Usuarios
+### Example 2: Complete User Management
 
 ```csharp
 [HttpDelete("users/{id}")]
 [RequireAllPermissions(PermissionConstants.ManageUsers, PermissionConstants.Admin)]
 public ActionResult DeleteUser(Guid id)
 {
-    // Solo usuarios con AMBOS permisos pueden eliminar usuarios
+    // Only users with BOTH permissions can delete users
     return Ok();
 }
 ```
 
-### Ejemplo 3: Funcionalidad Multi-Rol
+### Example 3: Multi-Role Functionality
 
 ```csharp
 [HttpGet("reports")]
@@ -108,128 +108,128 @@ public ActionResult DeleteUser(Guid id)
 )]
 public ActionResult GetReports()
 {
-    // Usuarios con cualquiera de estos permisos pueden ver reportes
+    // Users with any of these permissions can view reports
     return Ok();
 }
 ```
 
-### Ejemplo 4: Combinando Autorización
+### Example 4: Combining Authorization
 
 ```csharp
 [HttpGet("sensitive-data")]
-[Authorize] // Primero verifica autenticación
-[RequireAllPermissions(PermissionConstants.Admin, PermissionConstants.ManageUsers)] // Luego permisos
+[Authorize] // First verifies authentication
+[RequireAllPermissions(PermissionConstants.Admin, PermissionConstants.ManageUsers)] // Then permissions
 public ActionResult GetSensitiveData()
 {
-    // Usuario debe estar autenticado Y tener ambos permisos
+    // User must be authenticated AND have both permissions
     return Ok();
 }
 ```
 
-## 🚀 Ventajas de los Nuevos Atributos
+## 🚀 Advantages of the New Attributes
 
-### ✅ Flexibilidad
+### ✅ Flexibility
 
-- **ANY**: Permite acceso con cualquiera de los permisos
-- **ALL**: Requiere todos los permisos especificados
-- **Combinable**: Puedes mezclar con `[Authorize]` tradicional
+- **ANY**: Allows access with any of the permissions
+- **ALL**: Requires all specified permissions
+- **Combinable**: Can be mixed with traditional `[Authorize]`
 
-### ✅ Legibilidad
+### ✅ Readability
 
-- **Intuitivo**: El nombre del atributo indica claramente qué hace
-- **Explícito**: Los permisos requeridos están claramente definidos
-- **Documentado**: Cada atributo tiene documentación XML
+- **Intuitive**: The attribute name clearly indicates what it does
+- **Explicit**: Required permissions are clearly defined
+- **Documented**: Each attribute has XML documentation
 
-### ✅ Mantenibilidad
+### ✅ Maintainability
 
-- **Reutilizable**: Los atributos se pueden usar en cualquier controlador
-- **Consistente**: Mismo comportamiento en toda la aplicación
-- **Extensible**: Fácil agregar nuevos tipos de verificación
+- **Reusable**: Attributes can be used in any controller
+- **Consistent**: Same behavior throughout the application
+- **Extensible**: Easy to add new verification types
 
 ### ✅ Debugging
 
-- **Logs detallados**: Información sobre permisos faltantes
-- **Mensajes claros**: Fácil identificar qué permisos se necesitan
-- **Trazabilidad**: Registro de intentos de acceso fallidos
+- **Detailed logs**: Information about missing permissions
+- **Clear messages**: Easy to identify which permissions are needed
+- **Traceability**: Logging of failed access attempts
 
-## 📊 Comparación con `[Authorize]` Tradicional
+## 📊 Comparison with Traditional `[Authorize]`
 
-| Aspecto                | `[Authorize]` Tradicional | Nuevos Atributos             |
-| ---------------------- | ------------------------- | ---------------------------- |
-| **Múltiples permisos** | ❌ Solo uno por vez       | ✅ Múltiples permisos        |
-| **Lógica OR**          | ❌ No soportado           | ✅ `[RequireAnyPermission]`  |
-| **Lógica AND**         | ❌ Limitado               | ✅ `[RequireAllPermissions]` |
-| **Flexibilidad**       | ❌ Rígido                 | ✅ Muy flexible              |
-| **Legibilidad**        | ⚠️ Políticas predefinidas | ✅ Explícito en el código    |
-| **Mantenimiento**      | ⚠️ Requiere configuración | ✅ Autocontenido             |
+| Aspect                   | Traditional `[Authorize]` | New Attributes               |
+| ------------------------ | ------------------------- | ---------------------------- |
+| **Multiple permissions** | ❌ Only one at a time     | ✅ Multiple permissions      |
+| **OR logic**             | ❌ Not supported          | ✅ `[RequireAnyPermission]`  |
+| **AND logic**            | ❌ Limited                | ✅ `[RequireAllPermissions]` |
+| **Flexibility**          | ❌ Rigid                  | ✅ Very flexible             |
+| **Readability**          | ⚠️ Predefined policies    | ✅ Explicit in code          |
+| **Maintenance**          | ⚠️ Requires configuration | ✅ Self-contained            |
 
-## 🔍 Casos de Uso Comunes
+## 🔍 Common Use Cases
 
-### 1. **Gestión de Usuarios**
+### 1. **User Management**
 
 ```csharp
-// Solo administradores pueden crear usuarios
+// Only administrators can create users
 [HttpPost]
 [RequireAllPermissions(PermissionConstants.ManageUsers, PermissionConstants.Admin)]
 
-// Moderadores o administradores pueden ver usuarios
+// Moderators or administrators can view users
 [HttpGet]
 [RequireAnyPermission(PermissionConstants.ManageUsers, PermissionConstants.Admin)]
 ```
 
-### 2. **Reportes y Analytics**
+### 2. **Reports and Analytics**
 
 ```csharp
-// Cualquier rol de gestión puede ver reportes básicos
+// Any management role can view basic reports
 [HttpGet("basic")]
 [RequireAnyPermission(PermissionConstants.ManageUsers, PermissionConstants.ManageRoles)]
 
-// Solo super administradores pueden ver reportes avanzados
+// Only super administrators can view advanced reports
 [HttpGet("advanced")]
 [RequireAllPermissions(PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
 ```
 
-### 3. **Configuración del Sistema**
+### 3. **System Configuration**
 
 ```csharp
-// Configuración básica: admin o superadmin
+// Basic configuration: admin or superadmin
 [HttpPut("basic-config")]
 [RequireAnyPermission(PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
 
-// Configuración crítica: requiere ambos permisos
+// Critical configuration: requires both permissions
 [HttpPut("critical-config")]
 [RequireAllPermissions(PermissionConstants.Admin, PermissionConstants.SuperAdmin)]
 ```
 
-## 🛠️ Implementación Técnica
+## 🛠️ Technical Implementation
 
-Los atributos implementan `IAsyncAuthorizationFilter` y:
+The attributes implement `IAsyncAuthorizationFilter` and:
 
-1. **Verifican autenticación**: Si el usuario no está autenticado, retorna `UnauthorizedResult`
-2. **Extraen permisos**: Obtienen los permisos del JWT token del usuario
-3. **Aplican lógica**: Verifican según el modo (ANY/ALL)
-4. **Retornan resultado**: `ForbidResult` si no tiene permisos, continúa si los tiene
-5. **Registran logs**: Información detallada para debugging
+1. **Verify authentication**: If the user is not authenticated, returns `UnauthorizedResult`
+2. **Extract permissions**: Gets permissions from the user's JWT token
+3. **Apply logic**: Verifies according to the mode (ANY/ALL)
+4. **Return result**: `ForbidResult` if no permissions, continues if it has them
+5. **Log information**: Detailed information for debugging
 
-## 📝 Migración desde `[Authorize]` Tradicional
+## 📝 Migration from Traditional `[Authorize]`
 
-### Antes:
+### Before:
 
 ```csharp
-[Authorize(Policy = "manage.users.or.admin")] // Política predefinida
+[Authorize(Policy = "manage.users.or.admin")] // Predefined policy
 public ActionResult SomeAction()
 ```
 
-### Después:
+### After:
 
 ```csharp
 [RequireAnyPermission(PermissionConstants.ManageUsers, PermissionConstants.Admin)]
 public ActionResult SomeAction()
 ```
 
-**Ventajas de la migración:**
+**Migration advantages:**
 
-- ✅ Más explícito y claro
-- ✅ No requiere configuración previa en `Program.cs`
-- ✅ Permisos visibles directamente en el código
-- ✅ Más fácil de mantener y entender
+- ✅ More explicit and clear
+- ✅ No prior configuration required in `Program.cs`
+- ✅ Permissions visible directly in code
+- ✅ Easier to maintain and understand

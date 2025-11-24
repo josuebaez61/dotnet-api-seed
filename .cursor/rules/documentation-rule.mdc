@@ -1,0 +1,145 @@
+---
+alwaysApply: true
+---
+
+# Documentation Rules
+
+All project documentation must be written in English and follow these standards.
+
+## Language
+
+- **All documentation must be in English**
+- Use clear, concise, and professional language
+- Avoid jargon unless necessary, and provide definitions when used
+
+## File Naming
+
+- Use UPPERCASE with underscores: `FEATURE_NAME.md`
+- Be descriptive and specific
+- Examples: `AUTHENTICATION.md`, `ERROR_HANDLING.md`, `USER_ROLES_ENDPOINT.md`
+
+## Structure
+
+Every documentation file should follow this structure:
+
+```markdown
+# Title (Clear and Descriptive)
+
+Brief introduction explaining what this document covers.
+
+## Overview
+
+High-level description of the feature/system.
+
+## Features / Components
+
+Detailed breakdown of features or components.
+
+## Usage / Implementation
+
+How to use or implement the feature.
+
+## Examples
+
+Code examples and practical use cases.
+
+## Configuration
+
+Configuration options and settings.
+
+## API Reference (if applicable)
+
+Endpoint documentation with request/response examples.
+
+## Troubleshooting
+
+Common issues and solutions.
+
+## Related Documentation
+
+Links to related documents.
+```
+
+## Formatting Standards
+
+- Use proper markdown syntax
+- Include code blocks with language specification
+- Use emojis sparingly and consistently (only in main README)
+- Add table of contents for long documents (>100 lines)
+- Use proper heading hierarchy (H1 for title, H2 for main sections, H3 for subsections)
+
+## Code Examples
+
+- Always include language tags in code blocks: ` ```csharp `, ` ```bash `, etc.
+- Show complete, working examples when possible
+- Include comments explaining complex logic
+- Use proper indentation and formatting
+
+## Links and References
+
+- Use relative paths for internal documentation links
+- Reference specific files with proper paths: `docs/FEATURE.md`
+- Link to code files when relevant: `src/Project/File.cs`
+
+## Keeping Documentation Updated
+
+- Update documentation when code changes
+- Remove outdated information
+- Add migration guides when breaking changes occur
+- Mark deprecated features clearly
+
+## Categories
+
+Organize documentation by category:
+
+- **Core Features**: Authentication, Permissions, Roles
+- **Infrastructure**: Database, Configuration, Error Handling
+- **API Reference**: Endpoints, DTOs, Request/Response examples
+- **Guides**: Setup, Deployment, Development
+- **Migration**: Breaking changes, version updates
+
+## Examples
+
+### Good Documentation Title
+
+```markdown
+# Authentication System
+
+This document describes the JWT-based authentication system...
+```
+
+### Good Code Example
+
+```csharp
+// Example: Creating a new user
+var user = new User
+{
+    Email = "user@example.com",
+    FirstName = "John",
+    LastName = "Doe"
+};
+```
+
+### Good Structure
+
+```markdown
+# Feature Name
+
+Introduction paragraph.
+
+## Overview
+
+Description...
+
+## Implementation
+
+Details...
+
+## Examples
+
+Code examples...
+
+## Related Documentation
+
+- [Related Feature](docs/RELATED_FEATURE.md)
+```

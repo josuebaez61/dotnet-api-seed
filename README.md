@@ -1,184 +1,162 @@
 # Clean Architecture .NET Core Project
 
-Este es un proyecto de Clean Architecture implementado en .NET Core con Entity Framework Core, Identity, y PostgreSQL.
+A Clean Architecture implementation in .NET Core with Entity Framework Core, ASP.NET Core Identity, and PostgreSQL.
 
-## 📁 Estructura del Proyecto
+## 📁 Project Structure
 
 ```
 src/
-├── CleanArchitecture.API/          # Capa de presentación (Web API)
-├── CleanArchitecture.Application/  # Capa de aplicación (CQRS, DTOs, Servicios)
-├── CleanArchitecture.Domain/       # Capa de dominio (Entidades, Interfaces)
-└── CleanArchitecture.Infrastructure/ # Capa de infraestructura (EF Core, Repositorios)
+├── CleanArchitecture.API/          # Presentation layer (Web API)
+├── CleanArchitecture.Application/  # Application layer (CQRS, DTOs, Services)
+├── CleanArchitecture.Domain/       # Domain layer (Entities, Interfaces)
+└── CleanArchitecture.Infrastructure/ # Infrastructure layer (EF Core, Repositories)
 
-docs/                               # Documentación del proyecto
-├── README.md                       # Documentación principal
-├── AUTHENTICATION.md               # Sistema de autenticación
-├── PERMISSIONS_AND_ROLES.md        # Sistema de permisos y roles
-├── HIERARCHICAL_PERMISSIONS.md     # Sistema de permisos jerárquicos
-├── NEW_PERMISSIONS_MIGRATION.md    # Migración al nuevo sistema de permisos
-├── ERROR_HANDLING.md               # Manejo de errores
-├── LOCALIZATION_AND_EMAIL.md       # Localización y emails
-├── UTC_DATETIME_SYSTEM.md          # Sistema de fechas UTC
-└── ...                             # Más documentación
+docs/                               # Project documentation
+├── AUTHENTICATION.md               # Authentication system
+├── PERMISSIONS_AND_ROLES.md        # Permissions and roles system
+├── ERROR_HANDLING.md               # Error handling system
+├── LOCALIZATION_AND_EMAIL.md       # Localization and email system
+├── UTC_DATETIME_SYSTEM.md          # UTC DateTime system
+└── ...                             # More documentation
 ```
 
-## 🚀 Características Principales
+## 🚀 Key Features
 
-- **Clean Architecture**: Separación clara de responsabilidades
-- **CQRS**: Patrón Command Query Responsibility Segregation
-- **Entity Framework Core**: ORM con PostgreSQL
-- **ASP.NET Core Identity**: Sistema de autenticación y autorización
-- **AutoMapper**: Mapeo automático de objetos
-- **MediatR**: Mediator pattern para desacoplamiento
-- **UTC DateTime**: Manejo automático de fechas UTC
-- **Snake Case**: Convención de nomenclatura para base de datos
-- **Lazy Loading**: Carga diferida de entidades relacionadas
+- **Clean Architecture**: Clear separation of concerns
+- **CQRS**: Command Query Responsibility Segregation pattern
+- **Entity Framework Core**: ORM with PostgreSQL
+- **ASP.NET Core Identity**: Authentication and authorization system
+- **AutoMapper**: Automatic object mapping
+- **MediatR**: Mediator pattern for decoupling
+- **UTC DateTime**: Automatic UTC date handling
+- **Snake Case**: Database naming convention
+- **Soft Delete**: Soft delete support for entities
+- **Localization**: Multi-language support (English/Spanish)
+- **Email Service**: SMTP email service with templates
+- **JWT Authentication**: Secure token-based authentication
 
-## 📚 Documentación
+## 📚 Documentation
 
-La documentación completa del proyecto se encuentra en la carpeta `docs/`:
+Complete project documentation is available in the `docs/` folder. For API endpoint documentation, see the Swagger UI when running the application.
 
-### **Documentación Principal:**
+### **Core Features:**
 
-- [📖 README Principal](docs/README.md) - Documentación completa del proyecto
-- [🔐 Autenticación](docs/AUTHENTICATION.md) - Sistema de autenticación JWT
-- [👥 Permisos y Roles](docs/PERMISSIONS_AND_ROLES.md) - Sistema de autorización
+- [🔐 Authentication](docs/AUTHENTICATION.md) - JWT authentication system
+- [👥 Permissions and Roles](docs/PERMISSIONS_AND_ROLES.md) - Authorization system
 
-### **APIs y Endpoints:**
+### **Infrastructure:**
 
-- [👤 Usuario Roles - GET](docs/USER_ROLES_ENDPOINT.md) - Endpoint para obtener roles de usuario
-- [✏️ Usuario Roles - PUT](docs/UPDATE_USER_ROLES_ENDPOINT.md) - Endpoint para actualizar roles de usuario
-- [🔐 Usuario Permisos - GET](docs/USER_PERMISSIONS_ENDPOINT.md) - Endpoint para obtener permisos de usuario
+- [📅 UTC DateTime System](docs/UTC_DATETIME_SYSTEM.md) - UTC date handling
+- [⚠️ Error Handling](docs/ERROR_HANDLING.md) - Custom exception system
+- [📝 Error Handling Examples](docs/ERROR_HANDLING_EXAMPLES.md) - Practical examples
 
-### **Infraestructura:**
+### **Features:**
 
-- [🗄️ Configuraciones EF Core](docs/AUTOMATIC_CONFIGURATION_APPLICATION.md) - Configuraciones automáticas
-- [🔧 Identity Refactor](docs/IDENTITY_CONFIGURATION_REFACTOR.md) - Refactorización de configuraciones Identity
-- [📅 Sistema UTC DateTime](docs/UTC_DATETIME_SYSTEM.md) - Manejo de fechas UTC
-- [⚠️ Manejo de Errores](docs/ERROR_HANDLING.md) - Sistema de excepciones custom
+- [🌐 Localization and Email](docs/LOCALIZATION_AND_EMAIL.md) - Email and localization system
+- [🔑 Password Recovery](docs/PASSWORD_RECOVERY.md) - Password recovery flow
+- [🎯 Custom Authorization Attributes](docs/CUSTOM_AUTHORIZATION_ATTRIBUTES.md) - Custom authorization attributes
 
-### **Funcionalidades:**
+### **Development:**
 
-- [🌐 Localización y Email](docs/LOCALIZATION_AND_EMAIL.md) - Sistema de emails y localización
-- [🔑 Recuperación de Contraseña](docs/PASSWORD_RECOVERY.md) - Flujo de recuperación
-- [🏗️ Permisos Jerárquicos](docs/HIERARCHICAL_PERMISSIONS.md) - Sistema de permisos avanzado
+- [🤖 Scripts and Automation](docs/SCRIPTS_AND_AUTOMATION.md) - Development scripts
+- [🌍 Environment Validation](docs/ENVIRONMENT_VALIDATION.md) - Environment validation system
+- [📋 Environment Examples](docs/ENVIRONMENT_EXAMPLES.md) - Configuration examples
 
-### **Automatización:**
+## 🛠️ Quick Setup
 
-- [🤖 Scripts y Automatización](docs/SCRIPTS_AND_AUTOMATION.md) - Scripts de desarrollo
-- [📝 Ejemplos de Manejo de Errores](docs/ERROR_HANDLING_EXAMPLES.md) - Ejemplos prácticos
-
-### **Configuración y Entornos:**
-
-- [🌍 Validación de Entornos](docs/ENVIRONMENT_VALIDATION.md) - Sistema de validación de entornos
-- [📋 Ejemplos de Configuración](docs/ENVIRONMENT_EXAMPLES.md) - Ejemplos prácticos de configuración
-
-## 🛠️ Configuración Rápida
-
-### **Prerrequisitos:**
+### **Prerequisites:**
 
 - .NET 9.0 SDK
 - PostgreSQL
-- Node.js (para scripts de desarrollo)
+- Node.js (for development scripts)
 
-### **Instalación:**
+### **Installation:**
 
 ```bash
-# Clonar el repositorio
+# Clone the repository
 git clone <repository-url>
 cd CleanArchitecture
 
-# Restaurar dependencias
+# Restore dependencies
 dotnet restore
 
-# Configurar variables de entorno (requerido)
+# Configure environment variables (required)
 export ASPNETCORE_ENVIRONMENT=Development
 export ConnectionStrings__DefaultConnection="Host=localhost;Database=CleanArchitectureDB_Dev;Username=postgres;Password=postgres"
 
-# Configurar base de datos
-# Editar connection string en appsettings.json o usar variables de entorno
+# Configure database
+# Edit connection string in appsettings.json or use environment variables
 
-# Ejecutar migraciones
+# Run migrations
 dotnet ef database update --project src/CleanArchitecture.Infrastructure
 
-# Ejecutar la aplicación
+# Run the application
 dotnet run --project src/CleanArchitecture.API
 ```
 
-### **Variables de Entorno Requeridas:**
+### **Required Environment Variables:**
 
-- `ASPNETCORE_ENVIRONMENT` - Entorno de la aplicación (Development/Staging/Production)
-- `ConnectionStrings__DefaultConnection` - Cadena de conexión a PostgreSQL
-- `JwtSettings__SecretKey` - Clave secreta para JWT (mínimo 32 caracteres)
+- `ASPNETCORE_ENVIRONMENT` - Application environment (Development/Staging/Production)
+- `ConnectionStrings__DefaultConnection` - PostgreSQL connection string
+- `JwtSettings__SecretKey` - JWT secret key (minimum 32 characters)
 
-📖 **Ver documentación completa:** [Validación de Entornos](docs/ENVIRONMENT_VALIDATION.md)
+📖 **See complete documentation:** [Environment Validation](docs/ENVIRONMENT_VALIDATION.md)
 
-## 🔧 Comandos Útiles
+## 🔧 Useful Commands
 
 ```bash
-# Crear nueva migración
-dotnet ef migrations add NombreMigracion --project src/CleanArchitecture.Infrastructure
+# Create new migration
+dotnet ef migrations add MigrationName --project src/CleanArchitecture.Infrastructure
 
-# Aplicar migraciones
+# Apply migrations
 dotnet ef database update --project src/CleanArchitecture.Infrastructure
 
-# Ejecutar tests
+# Run tests
 dotnet test
 
-# Compilar proyecto
+# Build project
 dotnet build
 
-# Ejecutar con hot reload
+# Run with hot reload
 dotnet watch run --project src/CleanArchitecture.API
 ```
 
-## 📋 Endpoints Principales
+## 📋 API Documentation
 
-### **Autenticación:**
+Complete API documentation with request/response examples, authentication requirements, and detailed endpoint descriptions is available through **Swagger UI** when running the application.
 
-- `POST /api/v1/auth/login` - Iniciar sesión
-- `POST /api/v1/auth/register` - Registrar usuario
-- `POST /api/v1/auth/refresh-token` - Renovar token
+Access Swagger UI at: `https://localhost:7000/swagger` (or your configured URL)
 
-### **Usuarios:**
+The API includes endpoints for:
 
-- `GET /api/v1/users` - Listar usuarios (paginado)
-- `GET /api/v1/users/id/{id}` - Obtener usuario por ID
-- `GET /api/v1/users/id/{id}/roles` - Obtener roles de usuario
-- `PUT /api/v1/users/id/{id}/roles` - Actualizar roles de usuario
+- **Authentication** - Login, registration, password recovery, email change
+- **Users** - User management, roles, and permissions
+- **Roles** - Role management and permissions assignment
+- **Permissions** - Permission management and resource grouping
+- **Geographic Data** - Countries, states, and cities
 
-### **Roles:**
+## 🤝 Contributing
 
-- `GET /api/v1/roles` - Listar roles
-- `GET /api/v1/roles/id/{id}` - Obtener rol por ID
+1. Fork the project
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'feat: add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-### **Países y Estados:**
+**Note:** All commit messages must follow the [Conventional Commits](https://www.conventionalcommits.org/) specification in English.
 
-- `GET /api/v1/countries` - Listar países
-- `GET /api/v1/countries/{countryId}/states` - Estados por país
-- `GET /api/v1/cities` - Listar ciudades
+## 📄 License
 
-## 🤝 Contribución
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+## 📞 Support
 
-## 📄 Licencia
+If you have questions or need help, please:
 
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
-
-## 📞 Soporte
-
-Si tienes preguntas o necesitas ayuda, por favor:
-
-- Revisa la documentación en `docs/`
-- Abre un issue en el repositorio
-- Contacta al equipo de desarrollo
+- Review the documentation in `docs/`
+- Open an issue in the repository
+- Contact the development team
 
 ---
 
-**¡Gracias por usar Clean Architecture .NET Core!** 🎉
+**Thank you for using Clean Architecture .NET Core!** 🎉
