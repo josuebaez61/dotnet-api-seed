@@ -119,14 +119,11 @@ namespace CleanArchitecture.Application.Common.Services
         public async Task SendEmailChangeVerificationEmailAsync(string to, string userName, string verificationCode)
         {
             var culture = _localizationService.GetCurrentCulture();
-            var frontendUrl = _configuration["FrontendSettings:BaseUrl"] ?? "http://localhost:4200";
-            var verificationLink = $"{frontendUrl}/auth/confirm-email?code={verificationCode}";
 
             var parameters = new Dictionary<string, object>
             {
                 ["UserName"] = userName,
-                ["VerificationCode"] = verificationCode,
-                ["VerificationLink"] = verificationLink
+                ["VerificationCode"] = verificationCode
             };
 
             var body = await _emailTemplateService.RenderEmailAsync("EmailChangeVerification", culture, parameters);

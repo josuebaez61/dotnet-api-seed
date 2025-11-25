@@ -49,6 +49,8 @@ Complete project documentation is available in the `docs/` folder. For API endpo
 - [📅 UTC DateTime System](docs/UTC_DATETIME_SYSTEM.md) - UTC date handling
 - [⚠️ Error Handling](docs/ERROR_HANDLING.md) - Custom exception system
 - [📝 Error Handling Examples](docs/ERROR_HANDLING_EXAMPLES.md) - Practical examples
+- [🗄️ Repository Pattern](docs/REPOSITORY_PATTERN.md) - Repository pattern implementation
+- [🔴 Redis Implementation](docs/REDIS_IMPLEMENTATION.md) - Redis cache for refresh tokens
 
 ### **Features:**
 

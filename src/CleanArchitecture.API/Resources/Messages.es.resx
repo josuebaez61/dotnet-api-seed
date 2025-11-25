@@ -141,7 +141,7 @@
     <value>Contraseña inválida</value>
   </data>
   <data name="ERROR_INVALID_REFRESH_TOKEN" xml:space="preserve">
-    <value>Token de actualización inválido</value>
+    <value>La sesión ha expirado. Por favor, vuelva a iniciar sesión.</value>
   </data>
   <data name="ERROR_PASSWORD_RESET_CODE_INVALID" xml:space="preserve">
     <value>Código de restablecimiento de contraseña inválido</value>

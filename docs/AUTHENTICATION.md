@@ -15,6 +15,7 @@ This document describes the authentication system implemented in the Clean Archi
 ## Authentication Endpoints
 
 ### 1. User Registration
+
 ```http
 POST /api/v1/auth/register
 Content-Type: application/json
@@ -31,6 +32,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -58,6 +60,7 @@ Content-Type: application/json
 ```
 
 ### 2. Login
+
 ```http
 POST /api/v1/auth/login
 Content-Type: application/json
@@ -71,6 +74,7 @@ Content-Type: application/json
 **Response:** Same structure as registration.
 
 ### 3. Refresh Token
+
 ```http
 POST /api/v1/auth/refresh-token
 Content-Type: application/json
@@ -83,6 +87,7 @@ Content-Type: application/json
 **Response:** Same structure as login.
 
 ### 4. Change Password
+
 ```http
 POST /api/v1/auth/change-password
 Authorization: Bearer {token}
@@ -95,6 +100,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -104,12 +110,14 @@ Content-Type: application/json
 ```
 
 ### 5. Current User Information
+
 ```http
 GET /api/v1/auth/me
 Authorization: Bearer {token}
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -127,6 +135,7 @@ Authorization: Bearer {token}
 ```
 
 ### 6. Request Email Change
+
 ```http
 POST /api/v1/auth/request-email-change
 Authorization: Bearer {token}
@@ -138,6 +147,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -147,6 +157,7 @@ Content-Type: application/json
 ```
 
 ### 7. Verify Email Change
+
 ```http
 POST /api/v1/auth/verify-email-change
 Content-Type: application/json
@@ -157,6 +168,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -166,6 +178,7 @@ Content-Type: application/json
 ```
 
 ### 8. Request Password Reset
+
 ```http
 POST /api/v1/auth/request-password-reset
 Content-Type: application/json
@@ -176,6 +189,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -188,6 +202,7 @@ Content-Type: application/json
 ```
 
 ### 9. Reset Password
+
 ```http
 POST /api/v1/auth/reset-password
 Content-Type: application/json
@@ -200,6 +215,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -218,12 +234,13 @@ JWT configuration is found in `appsettings.json`:
     "SecretKey": "YourSuperSecretKeyThatIsAtLeast32CharactersLong!",
     "Issuer": "CleanArchitecture",
     "Audience": "CleanArchitectureUsers",
-    "ExpiryHours": 1
+    "ExpiryMinutes": 15
   }
 }
 ```
 
 ### Parameters:
+
 - **SecretKey**: Secret key for signing tokens (minimum 32 characters)
 - **Issuer**: Token issuer
 - **Audience**: Token audience
@@ -232,6 +249,7 @@ JWT configuration is found in `appsettings.json`:
 ## Validations
 
 ### Registration:
+
 - **FirstName**: Required, maximum 100 characters
 - **LastName**: Required, maximum 100 characters
 - **Email**: Required, valid format, maximum 256 characters, unique
@@ -240,22 +258,26 @@ JWT configuration is found in `appsettings.json`:
   - At least one lowercase letter
   - At least one uppercase letter
   - At least one digit
-  - At least one special character (@$!%*?&)
+  - At least one special character (@$!%\*?&)
 - **DateOfBirth**: Required, must be in the past, maximum 120 years
 - **ProfilePicture**: Optional, maximum 500 characters
 
 ### Login:
+
 - **EmailOrUsername**: Required, maximum 256 characters
 - **Password**: Required
 
 ### Change Password:
+
 - **CurrentPassword**: Required
 - **NewPassword**: Required, same format as registration
 
 ### Email Change:
+
 - **NewEmail**: Required, valid format, maximum 256 characters, unique
 
 ### Password Reset:
+
 - **Email**: Required, valid format
 - **Code**: Required, exactly 6 digits
 - **NewPassword**: Required, same format as registration
@@ -269,6 +291,7 @@ Authorization: Bearer {token}
 ```
 
 ### Example:
+
 ```http
 GET /api/v1/users
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -277,6 +300,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ## Security
 
 ### Security Features:
+
 1. **Signed JWT tokens**: Impossible to forge without the secret key
 2. **Token expiration**: Tokens expire automatically
 3. **Refresh tokens**: Secure renewal without re-authentication
@@ -285,6 +309,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 6. **HTTPS**: Encrypted communication (in production)
 
 ### Best Practices:
+
 1. **Change the secret key** in production
 2. **Use HTTPS** in production
 3. **Implement rate limiting** to prevent brute force attacks
@@ -331,16 +356,19 @@ sequenceDiagram
 ### Common Errors:
 
 **401 Unauthorized:**
+
 - Invalid credentials
 - Expired token
 - Invalid token
 
 **400 Bad Request:**
+
 - Invalid input data
 - User already exists (registration)
 - Incorrect current password (change)
 
 **422 Unprocessable Entity:**
+
 - FluentValidation errors
 
 ## Testing
@@ -348,6 +376,7 @@ sequenceDiagram
 ### Test Examples:
 
 1. **Successful registration:**
+
 ```bash
 curl -X POST "https://localhost:7000/api/v1/auth/register" \
   -H "Content-Type: application/json" \
@@ -362,6 +391,7 @@ curl -X POST "https://localhost:7000/api/v1/auth/register" \
 ```
 
 2. **Successful login:**
+
 ```bash
 curl -X POST "https://localhost:7000/api/v1/auth/login" \
   -H "Content-Type: application/json" \
@@ -372,12 +402,14 @@ curl -X POST "https://localhost:7000/api/v1/auth/login" \
 ```
 
 3. **Access protected endpoint:**
+
 ```bash
 curl -X GET "https://localhost:7000/api/v1/users" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
 4. **Request password reset:**
+
 ```bash
 curl -X POST "https://localhost:7000/api/v1/auth/request-password-reset" \
   -H "Content-Type: application/json" \
@@ -385,6 +417,7 @@ curl -X POST "https://localhost:7000/api/v1/auth/request-password-reset" \
 ```
 
 5. **Reset password:**
+
 ```bash
 curl -X POST "https://localhost:7000/api/v1/auth/reset-password" \
   -H "Content-Type: application/json" \

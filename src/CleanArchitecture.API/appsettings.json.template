@@ -8,6 +8,17 @@
       "Microsoft.AspNetCore": "Warning"
     }
   },
+  "SwaggerSettings": {
+    "Title": "Clean Architecture API",
+    "Contact": {
+      "Name": "Clean Architecture Team",
+      "Email": "dev@cleanarchitecture.com"
+    }
+  },
+  "CompanySettings": {
+    "Name": "NgPanel",
+    "SupportEmail": "support@ngpanel.com",
+  },
   "EmailSettings": {
     "SmtpHost": "",
     "SmtpPort": 587,
@@ -22,5 +33,21 @@
   "CleanupSettings": {
     "IntervalHours": 0.5,
     "Enabled": true
+  },
+  "AllowedOrigins": [
+    "https://staging.yourdomain.com",
+    "https://staging-admin.yourdomain.com"
+  ],
+  "JwtSettings": {
+    "SecretKey": "YourStagingSecretKeyThatIsAtLeast32CharactersLong!",
+    "Issuer": "CleanArchitecture-Staging",
+    "Audience": "CleanArchitectureUsers-Staging",
+    "ExpiryMinutes": 15
+  },
+  "RedisSettings": {
+    "ConnectionString": "",
+    "InstanceName": "CleanArchitecture",
+    "Database": 0,
+    "RefreshTokenCacheExpiration": "7.00:00:00"
   }
 }

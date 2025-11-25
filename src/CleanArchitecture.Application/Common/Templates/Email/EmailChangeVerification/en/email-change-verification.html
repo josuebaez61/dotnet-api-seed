@@ -1,22 +1,45 @@
 <h2>Verify Your Email Change</h2>
 <p>Hello {{UserName}},</p>
-<p>We received a request to change your email address to a new one. To complete this change, please click the button below:</p>
+<p>
+  We received a request to change your email address to a new one. To complete
+  this change, please use the verification code below:
+</p>
 
-<div style="text-align: center; margin: 30px 0;">
-    <a href="{{VerificationLink}}" class="button">Verify Email Change</a>
+<div style="text-align: center; margin: 30px 0">
+  <div
+    class="verification-code"
+    style="
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      padding: 20px;
+      background-color: #f5f5f5;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      display: inline-block;
+    "
+  >
+    {{VerificationCode}}
+  </div>
 </div>
 
-<p>If the button doesn't work, copy and paste the following link into your browser:</p>
-<div class="code">{{VerificationLink}}</div>
+<p>Enter this code in the application to verify your email change.</p>
 
-<p>This link will expire in 15 minutes for security reasons.</p>
+<p>This code will expire in 24 hours for security reasons.</p>
 
 <div class="warning">
-    <strong>Important:</strong> If you didn't request this email change, please ignore this email and contact our support team immediately. Your email address will remain unchanged.
+  <strong>Important:</strong> If you didn't request this email change, please
+  ignore this email and contact our support team immediately. Your email address
+  will remain unchanged.
 </div>
 
-<p>For security reasons, please do not share this link with anyone. Our support team will never ask for this link.</p>
+<p>
+  For security reasons, please do not share this link with anyone. Our support
+  team will never ask for this link.
+</p>
 
-<p>If you have any questions or need assistance, please contact our support team.</p>
+<p>
+  If you have any questions or need assistance, please contact our support team.
+</p>
 
-<p>Best regards,<br>The Clean Architecture Team</p>
+<p>Best regards,<br />The Clean Architecture Team</p>

@@ -1,0 +1,163 @@
+---
+alwaysApply: true
+---
+
+# Error Handling System Rules
+
+This project uses a centralized exception handling system. All exceptions are automatically handled by the `ExceptionHandlingMiddleware`.
+
+## Critical Rules
+
+### 1. **NEVER use try-catch blocks in Controllers**
+
+❌ **WRONG:**
+
+```csharp
+[HttpPost("users")]
+public async Task<ActionResult> CreateUser([FromBody] CreateUserDto request)
+{
+    try
+    {
+        var command = new CreateUserCommand { User = request };
+        var result = await _mediator.Send(command);
+        return Ok(ApiResponse.SuccessResponse(result));
+    }
+    catch (Exception ex)
+    {
+        return BadRequest(ApiResponse.ErrorResponse(ex.Message));
+    }
+}
+```
+
+✅ **CORRECT:**
+
+```csharp
+[HttpPost("users")]
+public async Task<ActionResult> CreateUser([FromBody] CreateUserDto request)
+{
+    var command = new CreateUserCommand { User = request };
+    var result = await _mediator.Send(command);
+    return Ok(ApiResponse.SuccessResponse(result));
+}
+```
+
+### 2. **Always throw specific ApplicationException types**
+
+❌ **WRONG:**
+
+```csharp
+throw new Exception("User not found");
+```
+
+✅ **CORRECT:**
+
+```csharp
+throw new UserNotFoundError(emailOrUsername);
+throw new UserNotFoundByIdError(userId);
+throw new RoleNotFoundByIdError(roleId);
+```
+
+### 3. **Exception Handling Flow**
+
+1. **Controller** - No exception handling, just business logic
+2. **Service/Handler** - Throws specific `ApplicationException` with error code
+3. **ExceptionHandlingMiddleware** - Automatically captures and handles:
+   - Maps exception to HTTP status code
+   - Localizes error message
+   - Structures JSON response
+   - Logs error
+
+## Available Exception Types
+
+### User Exceptions
+
+- `UserNotFoundError` - 404
+- `UserNotFoundByIdError` - 404
+- `UserAlreadyExistsError` - 409
+- `AccountDeactivatedError` - 403
+- `UserNotActiveError` - 403
+- `UserEmailNotConfirmedError` - 403
+- `UserMustChangePasswordError` - 403
+
+### Authentication Exceptions
+
+- `InvalidCredentialsError` - 401
+- `InvalidPasswordError` - 400
+- `InvalidRefreshTokenError` - 401
+- `PasswordResetCodeInvalidError` - 400
+- `PasswordResetCodeExpiredError` - 400
+- `PasswordResetCodeAlreadyUsedError` - 400
+- `CurrentPasswordIncorrectError` - 400
+- `PasswordChangeFailedError` - 400
+
+### Permission Exceptions
+
+- `InsufficientPermissionsError` - 403
+- `RoleNotFoundError` - 404
+- `RoleNotFoundByIdError` - 404
+- `PermissionNotFoundError` - 404
+- `PermissionNotFoundByIdError` - 404
+- `RoleAlreadyExistsError` - 409
+- `PermissionAlreadyExistsError` - 409
+
+### Validation Exceptions
+
+- `ValidationError` - 400
+- `ValidationException` (FluentValidation) - 400
+- `RequiredFieldError` - 400
+- `InvalidEmailFormatError` - 400
+- `PasswordTooWeakError` - 400
+
+### Invalid Operation Exceptions
+
+- `InvalidOperationError` - 400
+- `EmailCannotBeTheSameAsCurrentError` - 400
+- `EmailVerificationCodeExpiredError` - 400
+- `EmailSendingFailedError` - 500
+
+## Exception Handling Middleware
+
+Located at: `src/CleanArchitecture.API/Middleware/ExceptionHandlingMiddleware.cs`
+
+**Features:**
+
+- Automatically captures all unhandled exceptions
+- Maps exceptions to appropriate HTTP status codes
+- Localizes error messages based on user's language (en/es)
+- Structures consistent JSON responses using `ApiResponse<T>`
+- Logs all errors for debugging
+
+**Configuration:**
+
+```csharp
+// In Program.cs
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+```
+
+## Response Format
+
+All error responses follow this structure:
+
+```json
+{
+  "success": false,
+  "message": "User not found",
+  "errorCode": "USER_NOT_FOUND",
+  "timestamp": "2025-11-24T12:00:00.000Z"
+}
+```
+
+## When Adding New Features
+
+1. **In Controllers**: Write clean code without try-catch blocks
+2. **In Services/Handlers**: Throw specific exceptions when errors occur
+3. **If new exception type needed**:
+   - Create it in `src/CleanArchitecture.Application/Common/Exceptions/`
+   - Add it to `ExceptionHandlingMiddleware.GetStatusCodeForApplicationException()`
+   - Add localization keys to resource files
+
+## References
+
+- Full documentation: `docs/ERROR_HANDLING.md`
+- Middleware implementation: `src/CleanArchitecture.API/Middleware/ExceptionHandlingMiddleware.cs`
+- Exception classes: `src/CleanArchitecture.Application/Common/Exceptions/`

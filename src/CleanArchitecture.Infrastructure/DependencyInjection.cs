@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
+using DomainRole = CleanArchitecture.Domain.Entities.Role;
 
 namespace CleanArchitecture.Infrastructure
 {
@@ -26,7 +28,7 @@ namespace CleanArchitecture.Infrastructure
       services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
       // Identity - Full configuration with SignInManager
-      services.AddIdentity<User, Role>(options =>
+      services.AddIdentity<User, DomainRole>(options =>
       {
         // Password settings
         options.Password.RequireDigit = true;
@@ -67,6 +69,23 @@ namespace CleanArchitecture.Infrastructure
       // Cleanup services
       services.AddHostedService<CleanupService>();
       services.AddScoped<ICleanupService, ManualCleanupService>();
+
+      // Redis Configuration
+      services.AddSingleton<IConnectionMultiplexer>(provider =>
+      {
+        var redisConnection = configuration.GetSection("RedisSettings:ConnectionString").Value;
+        return ConnectionMultiplexer.Connect(redisConnection ?? "localhost:6379");
+      });
+
+      // Redis Distributed Cache
+      services.AddStackExchangeRedisCache(options =>
+      {
+        options.Configuration = configuration.GetSection("RedisSettings:ConnectionString").Value ?? "localhost:6379";
+        options.InstanceName = configuration.GetSection("RedisSettings:InstanceName").Value ?? "CleanArchitecture";
+      });
+
+      // Cache Service
+      services.AddScoped<ICacheService, RedisCacheService>();
 
       return services;
     }

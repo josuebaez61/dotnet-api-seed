@@ -1,16 +1,13 @@
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
 using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
+using CleanArchitecture.Application.Common.Models;
 using CleanArchitecture.Application.DTOs;
-using CleanArchitecture.Domain.Common.Constants;
 using CleanArchitecture.Domain.Common.Interfaces;
 using CleanArchitecture.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -20,12 +17,6 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CleanArchitecture.Application.Common.Services
 {
-  public class RefreshTokenInfo
-  {
-    public Guid UserId { get; set; }
-    public DateTime ExpiresAt { get; set; }
-  }
-
   public class AuthService : IAuthService
   {
     private readonly UserManager<User> _userManager;
@@ -33,15 +24,17 @@ namespace CleanArchitecture.Application.Common.Services
     private readonly IConfiguration _configuration;
     private readonly IPermissionService _permissionService;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly Dictionary<string, RefreshTokenInfo> _refreshTokens = new();
     private readonly IMapper _mapper;
+    private readonly ICacheService _cacheService;
+
     public AuthService(
         UserManager<User> userManager,
         SignInManager<User> signInManager,
         IConfiguration configuration,
         IPermissionService permissionService,
         IUnitOfWork unitOfWork,
-        IMapper mapper)
+        IMapper mapper,
+        ICacheService cacheService)
     {
       _userManager = userManager;
       _signInManager = signInManager;
@@ -49,6 +42,7 @@ namespace CleanArchitecture.Application.Common.Services
       _permissionService = permissionService;
       _unitOfWork = unitOfWork;
       _mapper = mapper;
+      _cacheService = cacheService;
     }
 
     public async Task<AuthDataDto> LoginAsync(LoginRequestDto request)
@@ -114,14 +108,11 @@ namespace CleanArchitecture.Application.Common.Services
 
     public async Task<AuthDataDto> RefreshTokenAsync(string refreshToken)
     {
-      if (!_refreshTokens.TryGetValue(refreshToken, out var tokenInfo))
-      {
-        throw new InvalidRefreshTokenError();
-      }
+      var cacheKey = $"refresh_token:{refreshToken}";
+      var tokenInfo = await _cacheService.GetAsync<CachedRefreshTokenInfo>(cacheKey);
 
-      if (tokenInfo.ExpiresAt < DateTime.UtcNow)
+      if (tokenInfo == null || !tokenInfo.IsValid)
       {
-        _refreshTokens.Remove(refreshToken);
         throw new InvalidRefreshTokenError();
       }
 
@@ -141,8 +132,8 @@ namespace CleanArchitecture.Application.Common.Services
         throw new UserNotFoundError(userId.ToString());
       }
 
-      // Remove old refresh token
-      _refreshTokens.Remove(refreshToken);
+      // Remove old refresh token from cache
+      await _cacheService.RemoveAsync(cacheKey);
 
       // Generate new tokens
       return await GenerateAuthDataAsync(user);
@@ -167,12 +158,9 @@ namespace CleanArchitecture.Application.Common.Services
 
     public async Task<bool> LogoutAsync(string refreshToken)
     {
-      if (_refreshTokens.ContainsKey(refreshToken))
-      {
-        _refreshTokens.Remove(refreshToken);
-        return true;
-      }
-      return false;
+      var cacheKey = $"refresh_token:{refreshToken}";
+      await _cacheService.RemoveAsync(cacheKey);
+      return true;
     }
 
     public async Task<User?> GetUserByEmailOrUsernameAsync(string emailOrUsername)
@@ -193,7 +181,7 @@ namespace CleanArchitecture.Application.Common.Services
       var secretKey = jwtSettings["SecretKey"] ?? "YourSuperSecretKeyThatIsAtLeast32CharactersLong!";
       var issuer = jwtSettings["Issuer"] ?? "CleanArchitecture";
       var audience = jwtSettings["Audience"] ?? "CleanArchitectureUsers";
-      var expiryHours = int.Parse(jwtSettings["ExpiryHours"] ?? "1");
+      var expiryMinutes = int.Parse(jwtSettings["ExpiryMinutes"] ?? "15");
 
       var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
       var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -221,7 +209,7 @@ namespace CleanArchitecture.Application.Common.Services
           issuer: issuer,
           audience: audience,
           claims: claims,
-          expires: DateTime.UtcNow.AddHours(expiryHours),
+          expires: DateTime.UtcNow.AddMinutes(expiryMinutes),
           signingCredentials: credentials
       );
 
@@ -247,12 +235,21 @@ namespace CleanArchitecture.Application.Common.Services
       var token = await GenerateJwtTokenAsync(user);
       var refreshToken = GenerateRefreshToken();
 
-      // Store refresh token (in production, store in database)
-      _refreshTokens[refreshToken] = new RefreshTokenInfo
+      // Get Redis expiration from configuration
+      var redisSettings = _configuration.GetSection("RedisSettings");
+      var refreshTokenCacheExpiration = redisSettings["RefreshTokenCacheExpiration"] ?? "7.00:00:00";
+      var expiration = TimeSpan.Parse(refreshTokenCacheExpiration, System.Globalization.CultureInfo.InvariantCulture);
+
+      // Store refresh token in Redis cache
+      var cacheKey = $"refresh_token:{refreshToken}";
+      var tokenInfo = new CachedRefreshTokenInfo
       {
         UserId = user.Id,
-        ExpiresAt = DateTime.UtcNow.AddDays(7)
+        ExpiresAt = DateTime.UtcNow.Add(expiration),
+        CreatedAt = DateTime.UtcNow
       };
+
+      await _cacheService.SetAsync(cacheKey, tokenInfo, expiration);
 
       return new AuthDataDto
       {

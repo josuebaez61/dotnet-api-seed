@@ -6,13 +6,9 @@ using CleanArchitecture.API.Extensions;
 using CleanArchitecture.API.Middleware;
 using CleanArchitecture.Application;
 using CleanArchitecture.Infrastructure;
-using CleanArchitecture.Infrastructure.Data;
 using CleanArchitecture.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -65,13 +61,13 @@ if (builder.Environment.IsDevelopment() || builder.Environment.IsStaging())
         var environment = builder.Environment.EnvironmentName;
         c.SwaggerDoc("v1", new OpenApiInfo
         {
-            Title = $"Clean Architecture API ({environment.ToUpper()})",
+            Title = builder.Configuration.GetSection("SwaggerSettings:Title")?.Value ?? "Clean Architecture API" + " (" + environment.ToUpper() + ")",
             Version = "v1",
             Description = $"API documentation for {environment} environment",
             Contact = new OpenApiContact
             {
-                Name = "Clean Architecture Team",
-                Email = "dev@cleanarchitecture.com"
+                Name = builder.Configuration.GetSection("SwaggerSettings:Contact:Name")?.Value ?? "Clean Architecture Team",
+                Email = builder.Configuration.GetSection("SwaggerSettings:Contact:Email")?.Value ?? "dev@cleanarchitecture.com"
             }
         });
 
@@ -111,8 +107,8 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     var supportedCultures = new[] { "en", "es" };
     options.SetDefaultCulture("en")
-           .AddSupportedCultures(supportedCultures)
-           .AddSupportedUICultures(supportedCultures);
+        .AddSupportedCultures(supportedCultures)
+        .AddSupportedUICultures(supportedCultures);
 });
 
 
@@ -168,10 +164,10 @@ builder.Services.AddCors(options =>
                     "https://localhost:4200",
                     "https://localhost:5173",
                     "https://localhost:8080"
-                  )
-                  .AllowAnyMethod()
-                  .AllowAnyHeader()
-                  .AllowCredentials();
+                )
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
         });
     }
     else
@@ -181,9 +177,9 @@ builder.Services.AddCors(options =>
         options.AddPolicy("AllowSpecificOrigins", policy =>
         {
             policy.WithOrigins(allowedOrigins)
-                  .AllowAnyMethod()
-                  .AllowAnyHeader()
-                  .AllowCredentials();
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
         });
     }
 });

@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace CleanArchitecture.Application.Common.Services
@@ -13,11 +14,12 @@ namespace CleanArchitecture.Application.Common.Services
     {
         private readonly ILogger<EmailTemplateService> _logger;
         private readonly ILocalizationService _localizationService;
-
-        public EmailTemplateService(ILogger<EmailTemplateService> logger, ILocalizationService localizationService)
+        private readonly IConfiguration _configuration;
+        public EmailTemplateService(ILogger<EmailTemplateService> logger, ILocalizationService localizationService, IConfiguration configuration)
         {
             _logger = logger;
             _localizationService = localizationService;
+            _configuration = configuration;
         }
 
         public async Task<string> RenderTemplateAsync(string templateName, string culture, Dictionary<string, object> parameters)
@@ -26,7 +28,7 @@ namespace CleanArchitecture.Application.Common.Services
             {
                 var templatePath = GetTemplatePath(templateName, culture);
                 var templateContent = await LoadTemplateAsync(templatePath);
-                
+
                 return ReplaceParameters(templateContent, parameters);
             }
             catch (Exception ex)
@@ -42,11 +44,11 @@ namespace CleanArchitecture.Application.Common.Services
             {
                 // Load the specific template content
                 var templateContent = await RenderTemplateAsync(templateName, culture, parameters);
-                
+
                 // Load the base email template
                 var baseTemplatePath = GetBaseTemplatePath();
                 var baseTemplate = await LoadTemplateAsync(baseTemplatePath);
-                
+
                 // Prepare parameters for the base template
                 var baseParameters = new Dictionary<string, object>(parameters)
                 {
@@ -54,11 +56,11 @@ namespace CleanArchitecture.Application.Common.Services
                     ["Culture"] = culture,
                     ["Title"] = GetEmailTitle(templateName, culture),
                     ["HeaderTitle"] = GetHeaderTitle(templateName, culture),
-                    ["CompanyName"] = "Clean Architecture",
+                    ["CompanyName"] = _configuration.GetSection("CompanySettings:Name")?.Value ?? "Clean Architecture",
                     ["FooterMessage"] = GetFooterMessage(culture),
-                    ["SupportEmail"] = "support@cleanarchitecture.com"
+                    ["SupportEmail"] = _configuration.GetSection("CompanySettings:SupportEmail")?.Value ?? "support@cleanarchitecture.com"
                 };
-                
+
                 return ReplaceParameters(baseTemplate, baseParameters);
             }
             catch (Exception ex)
@@ -80,7 +82,7 @@ namespace CleanArchitecture.Application.Common.Services
                 "TemporaryPassword" => "temporary-password.html",
                 _ => throw new ArgumentException($"Unknown template name: {templateName}")
             };
-            
+
             return $"CleanArchitecture.Application.Common.Templates.Email.{templateName}.{culture}.{fileName}";
         }
 
@@ -92,7 +94,7 @@ namespace CleanArchitecture.Application.Common.Services
         private async Task<string> LoadTemplateAsync(string resourceName)
         {
             var assembly = Assembly.GetExecutingAssembly();
-            
+
             using var stream = assembly.GetManifestResourceStream(resourceName);
             if (stream == null)
             {
@@ -106,14 +108,14 @@ namespace CleanArchitecture.Application.Common.Services
         private string ReplaceParameters(string template, Dictionary<string, object> parameters)
         {
             var result = template;
-            
+
             foreach (var parameter in parameters)
             {
                 var placeholder = $"{{{{{parameter.Key}}}}}";
                 var value = parameter.Value?.ToString() ?? string.Empty;
                 result = result.Replace(placeholder, value);
             }
-            
+
             return result;
         }
 
@@ -147,7 +149,7 @@ namespace CleanArchitecture.Application.Common.Services
 
         private string GetFooterMessage(string culture)
         {
-            return culture == "es" 
+            return culture == "es"
                 ? "Este es un correo automático, por favor no respondas a este mensaje."
                 : "This is an automated email, please do not reply to this message.";
         }

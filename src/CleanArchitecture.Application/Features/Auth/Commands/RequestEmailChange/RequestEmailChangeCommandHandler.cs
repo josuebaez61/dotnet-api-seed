@@ -90,7 +90,7 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.RequestEmailChang
       // Enviar email de verificación
       await _emailService.SendEmailChangeVerificationEmailAsync(
         request.Request.NewEmail,
-        user.UserName,
+        user.UserName ?? "Usuario",
         verificationCode
       );
 
@@ -99,10 +99,11 @@ namespace CleanArchitecture.Application.Features.Auth.Commands.RequestEmailChang
 
     private static string GenerateVerificationCode()
     {
-      using var rng = RandomNumberGenerator.Create();
-      var bytes = new byte[16];
-      rng.GetBytes(bytes);
-      return Convert.ToHexString(bytes);
+      // Generar código de 8 dígitos separados por guión medio (formato: 1234-5678)
+      var random = new Random();
+      var firstPart = random.Next(1000, 9999); // 4 dígitos
+      var secondPart = random.Next(1000, 9999); // 4 dígitos
+      return $"{firstPart}-{secondPart}";
     }
   }
 }

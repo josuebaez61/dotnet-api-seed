@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Domain.Entities;
@@ -30,6 +31,20 @@ namespace CleanArchitecture.Application.Features.Users.Commands.CreateUser
 
     public async Task<UserDto> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
+
+      // Check if user already exists
+      var existingUserByEmail = await _userManager.FindByEmailAsync(request.User.Email);
+      if (existingUserByEmail != null)
+      {
+        throw new UserAlreadyExistsError("email", request.User.Email);
+      }
+
+      var existingUserByUserName = await _userManager.FindByNameAsync(request.User.UserName);
+      if (existingUserByUserName != null)
+      {
+        throw new UserAlreadyExistsError("username", request.User.UserName);
+      }
+
       // Generate a secure temporary password
       var temporaryPassword = _passwordGeneratorService.GenerateSecurePassword();
 

@@ -80,6 +80,9 @@ Links to related documents.
 - Use relative paths for internal documentation links
 - Reference specific files with proper paths: `docs/FEATURE.md`
 - Link to code files when relevant: `src/Project/File.cs`
+- **All documentation files referenced in README.md MUST be located in the `docs/` folder**
+- Never place documentation files in the project root or other directories
+- If a documentation file exists outside `docs/`, it must be moved to `docs/` and references updated
 
 ## Keeping Documentation Updated
 

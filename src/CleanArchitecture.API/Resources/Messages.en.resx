@@ -142,7 +142,7 @@
     <value>Invalid password</value>
   </data>
   <data name="ERROR_INVALID_REFRESH_TOKEN" xml:space="preserve">
-    <value>Invalid refresh token</value>
+    <value>Session expired. Please log in again.</value>
   </data>
   <data name="ERROR_PASSWORD_RESET_CODE_INVALID" xml:space="preserve">
     <value>Invalid password reset code</value>
