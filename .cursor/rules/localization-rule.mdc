@@ -1,0 +1,334 @@
+---
+alwaysApply: true
+---
+
+# Localization Rules
+
+This project uses a localization system with English (en) as default and Spanish (es) as alternative language. All user-facing messages must be localized.
+
+## Supported Languages
+
+- **English (en)** - Default language
+- **Spanish (es)** - Alternative language
+
+## Language Detection Priority
+
+The system detects language in the following order (highest to lowest priority):
+
+1. **Query Parameter** - `?culture=es` or `?culture=en`
+2. **Accept-Language Header** - `Accept-Language: es-ES` or `Accept-Language: en-US`
+3. **Default Language** - English (en) if no language is specified
+
+## Using LocalizationService
+
+### ✅ DO: Inject and Use ILocalizationService
+
+Always inject `ILocalizationService` in your handlers, services, or controllers:
+
+```csharp
+public class MyCommandHandler : IRequestHandler<MyCommand, MyResult>
+{
+  private readonly ILocalizationService _localizationService;
+
+  public MyCommandHandler(ILocalizationService localizationService)
+  {
+    _localizationService = localizationService;
+  }
+
+  public async Task<MyResult> Handle(MyCommand request, CancellationToken cancellationToken)
+  {
+    // Get localized messages
+    var successMessage = _localizationService.GetSuccessMessage("USER_CREATED");
+    var errorMessage = _localizationService.GetErrorMessage("USER_NOT_FOUND");
+    var validationMessage = _localizationService.GetValidationMessage("REQUIRED_FIELD", "Email");
+
+    return new MyResult();
+  }
+}
+```
+
+### ✅ DO: Use Clean Error Codes in Exceptions
+
+Exceptions should use clean error codes without prefixes. The `LocalizationService` automatically adds the appropriate prefix:
+
+```csharp
+// ✅ CORRECT: Clean error code
+throw new InvalidCredentialsError(); // ErrorCode = "INVALID_CREDENTIALS"
+throw new UserNotFoundError("admin"); // ErrorCode = "USER_NOT_FOUND"
+
+// ❌ WRONG: Don't add prefixes in exceptions
+throw new InvalidCredentialsError(); // ErrorCode = "ERROR_INVALID_CREDENTIALS" ❌
+```
+
+### ✅ DO: Use Appropriate LocalizationService Methods
+
+```csharp
+// For error messages (automatically adds ERROR_ prefix)
+var errorMsg = _localizationService.GetErrorMessage("INVALID_CREDENTIALS");
+// → Looks for "ERROR_INVALID_CREDENTIALS" in .resx files
+
+// For success messages (automatically adds SUCCESS_ prefix)
+var successMsg = _localizationService.GetSuccessMessage("LOGIN_SUCCESSFUL");
+// → Looks for "SUCCESS_LOGIN_SUCCESSFUL" in .resx files
+
+// For validation messages (automatically adds VALIDATION_ prefix)
+var validationMsg = _localizationService.GetValidationMessage("REQUIRED_FIELD", "Email");
+// → Looks for "VALIDATION_REQUIRED_FIELD" in .resx files
+
+// For direct string access (no prefix added)
+var customMsg = _localizationService.GetString("CUSTOM_MESSAGE_KEY");
+// → Looks for "CUSTOM_MESSAGE_KEY" in .resx files
+```
+
+## Translation Key Naming Convention
+
+### ✅ DO: Use UPPER_SNAKE_CASE for All Keys
+
+All translation keys must follow **UPPER_SNAKE_CASE** convention:
+
+- **ERROR\_** - Error messages: `ERROR_USER_NOT_FOUND`, `ERROR_INVALID_CREDENTIALS`
+- **SUCCESS\_** - Success messages: `SUCCESS_LOGIN_SUCCESSFUL`, `SUCCESS_USER_CREATED`
+- **VALIDATION\_** - Validation messages: `VALIDATION_REQUIRED_FIELD`, `VALIDATION_INVALID_EMAIL_FORMAT`
+- **EMAIL\_** - Email subjects: `EMAIL_WELCOME_SUBJECT`, `EMAIL_PASSWORD_RESET_SUBJECT`
+
+### ❌ DON'T: Use Inconsistent Naming
+
+```csharp
+// ❌ WRONG: Mixed case, no prefix
+"UserNotFound"
+"invalid_credentials"
+"LoginSuccessful"
+
+// ✅ CORRECT: UPPER_SNAKE_CASE with prefix
+"ERROR_USER_NOT_FOUND"
+"ERROR_INVALID_CREDENTIALS"
+"SUCCESS_LOGIN_SUCCESSFUL"
+```
+
+## Resource Files (.resx)
+
+### File Locations
+
+- `src/CleanArchitecture.API/Resources/Messages.resx` - English resources (default)
+- `src/CleanArchitecture.API/Resources/Messages.es.resx` - Spanish resources
+- `src/CleanArchitecture.API/Resources/Messages.cs` - Shared resource class
+
+### ✅ DO: Add Translations to Both Files
+
+When adding a new translation, you **MUST** add it to both `.resx` files:
+
+**Messages.resx (English):**
+
+```xml
+<data name="ERROR_USER_NOT_FOUND" xml:space="preserve">
+  <value>User not found</value>
+</data>
+```
+
+**Messages.es.resx (Spanish):**
+
+```xml
+<data name="ERROR_USER_NOT_FOUND" xml:space="preserve">
+  <value>Usuario no encontrado</value>
+</data>
+```
+
+### ✅ DO: Follow the Structure
+
+```xml
+<data name="KEY_NAME" xml:space="preserve">
+  <value>Translation text</value>
+</data>
+```
+
+## Exception and Localization Separation
+
+### Critical Rule: Clean Error Codes in Exceptions
+
+**Exceptions use clean error codes without prefixes.** The `LocalizationService` automatically adds the appropriate prefix when looking up translations.
+
+#### Exception Definition
+
+```csharp
+// ✅ CORRECT: Clean error code in exception
+public class InvalidCredentialsError : ApplicationException
+{
+  public InvalidCredentialsError()
+    : base("INVALID_CREDENTIALS", "Invalid credentials")
+  {
+  }
+}
+```
+
+#### Resource Files
+
+```xml
+<!-- Messages.resx -->
+<data name="ERROR_INVALID_CREDENTIALS" xml:space="preserve">
+  <value>Invalid credentials</value>
+</data>
+
+<!-- Messages.es.resx -->
+<data name="ERROR_INVALID_CREDENTIALS" xml:space="preserve">
+  <value>Credenciales inválidas</value>
+</data>
+```
+
+#### Usage Flow
+
+```csharp
+// 1. Throw exception with clean error code
+throw new InvalidCredentialsError(); // ErrorCode = "INVALID_CREDENTIALS"
+
+// 2. Middleware calls LocalizationService
+localizationService.GetErrorMessage("INVALID_CREDENTIALS");
+
+// 3. LocalizationService adds prefix and looks up translation
+// Searches for "ERROR_INVALID_CREDENTIALS" in .resx files
+
+// 4. Returns localized message based on culture
+// Spanish: "Credenciales inválidas"
+// English: "Invalid credentials"
+```
+
+## Adding New Translations
+
+### Step-by-Step Process
+
+1. **Define Exception (if error message):**
+
+```csharp
+public class NewError : ApplicationException
+{
+  public NewError()
+    : base("NEW_ERROR_CODE", "Default message")
+  {
+  }
+}
+```
+
+2. **Add to Resource Files:**
+
+```xml
+<!-- Messages.resx (English) -->
+<data name="ERROR_NEW_ERROR_CODE" xml:space="preserve">
+  <value>New error message</value>
+</data>
+
+<!-- Messages.es.resx (Spanish) -->
+<data name="ERROR_NEW_ERROR_CODE" xml:space="preserve">
+  <value>Mensaje de nuevo error</value>
+</data>
+```
+
+3. **Use in Code:**
+
+```csharp
+throw new NewError(); // Clean error code
+// LocalizationService automatically handles prefix and translation
+```
+
+## Best Practices
+
+### ✅ DO: Use LocalizationService for All User Messages
+
+```csharp
+// ✅ CORRECT: Use localization service
+var message = _localizationService.GetErrorMessage("USER_NOT_FOUND");
+return BadRequest(ApiResponse.ErrorResponse(message));
+
+// ❌ WRONG: Hardcoded messages
+return BadRequest(ApiResponse.ErrorResponse("User not found"));
+```
+
+### ✅ DO: Let Middleware Handle Exception Localization
+
+The `ExceptionHandlingMiddleware` automatically localizes all exceptions. You don't need to manually localize exception messages:
+
+```csharp
+// ✅ CORRECT: Throw exception, middleware handles localization
+throw new UserNotFoundError(email);
+
+// ❌ WRONG: Don't manually localize in exception handlers
+var message = _localizationService.GetErrorMessage("USER_NOT_FOUND");
+throw new Exception(message);
+```
+
+### ✅ DO: Use Query Parameters for Testing
+
+When testing localization, use query parameters:
+
+```http
+POST /api/v1/auth/login?culture=es
+GET /api/v1/users?culture=en
+```
+
+### ❌ DON'T: Hardcode Language-Specific Messages
+
+```csharp
+// ❌ WRONG: Hardcoded Spanish message
+return BadRequest("Usuario no encontrado");
+
+// ✅ CORRECT: Use localization service
+var message = _localizationService.GetErrorMessage("USER_NOT_FOUND");
+return BadRequest(ApiResponse.ErrorResponse(message));
+```
+
+### ❌ DON'T: Add Prefixes to Exception Error Codes
+
+```csharp
+// ❌ WRONG: Exception with prefix
+throw new InvalidCredentialsError(); // ErrorCode = "ERROR_INVALID_CREDENTIALS"
+
+// ✅ CORRECT: Clean error code
+throw new InvalidCredentialsError(); // ErrorCode = "INVALID_CREDENTIALS"
+```
+
+## Response Format
+
+All API responses are automatically localized by the `ExceptionHandlingMiddleware`. The response includes:
+
+- **Localized message** based on request culture
+- **Error code** (clean format without prefix)
+- **Standardized structure**
+
+### Example Response (Spanish)
+
+```json
+{
+  "success": false,
+  "message": "Usuario no encontrado",
+  "errorCode": "USER_NOT_FOUND",
+  "timestamp": "2025-09-13T14:48:20.161813Z"
+}
+```
+
+### Example Response (English)
+
+```json
+{
+  "success": false,
+  "message": "User not found",
+  "errorCode": "USER_NOT_FOUND",
+  "timestamp": "2025-09-13T14:48:20.161813Z"
+}
+```
+
+## Configuration
+
+Localization is automatically configured in `Program.cs`. No additional configuration is needed unless adding new languages.
+
+## Benefits of This Approach
+
+1. **Separation of Concerns**: Exceptions focus on business logic, localization handles presentation
+2. **Consistency**: All translation keys follow the same UPPER_SNAKE_CASE convention
+3. **Maintainability**: Easy to add new translations following the established pattern
+4. **Flexibility**: LocalizationService can handle different message types (error, success, validation)
+5. **Clean Code**: Exception error codes are readable and don't include implementation details
+
+## Related Documentation
+
+- Full documentation: `docs/LOCALIZATION_AND_EMAIL.md`
+- Error handling: `docs/ERROR_HANDLING.md`
+- ExceptionHandlingMiddleware: `src/CleanArchitecture.API/Middleware/ExceptionHandlingMiddleware.cs`
+- LocalizationService: `src/CleanArchitecture.Application/Common/Services/LocalizationService.cs`
